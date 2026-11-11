@@ -177,3 +177,31 @@ export function Tail({ e, lang, className = "" }: { e: { tags?: string[]; links:
     </div>
   );
 }
+
+/** Social profile links as text (no brand assets), with rel="me". */
+export function Socials({ socials, className = "", linkClassName = "pf-link" }: { socials: { url: string; label: string }[]; className?: string; linkClassName?: string }) {
+  if (!socials.length) return null;
+  return (
+    <ul className={className}>
+      {socials.map((s) => (
+        <li key={s.url}>
+          <a href={s.url} target="_blank" rel="noopener noreferrer me" className={linkClassName}>
+            {s.label}
+            <span aria-hidden="true"> ↗</span>
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** A metric as value + label, sized by the surrounding font-size. */
+export function Metric({ metric, className = "" }: { metric: MetricValue; className?: string }) {
+  return (
+    <span className={`pf-metric ${className}`}>
+      <span className="pf-metric-value">{metric.value}</span>
+      {metric.label ? <span className="pf-metric-label">{metric.label}</span> : null}
+    </span>
+  );
+}

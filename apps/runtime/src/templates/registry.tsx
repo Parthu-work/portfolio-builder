@@ -1,11 +1,19 @@
 import type { Portfolio } from "../schema/portfolio";
 import { DEFAULT_TEMPLATE_ID, TEMPLATES } from "./meta";
 import type { Template, TemplateComponent } from "./types";
+import Aurora from "./aurora";
+import Brutal from "./brutal";
+import Bento from "./bento";
+import Editorial from "./editorial";
 import Signal from "./signal";
 import Swiss from "./swiss";
 
 /** Template id → component. Adding a template = one entry here + one in meta.ts. */
 export const TEMPLATE_COMPONENTS: Record<string, TemplateComponent> = {
+  aurora: Aurora,
+  brutal: Brutal,
+  bento: Bento,
+  editorial: Editorial,
   signal: Signal,
   swiss: Swiss,
 };

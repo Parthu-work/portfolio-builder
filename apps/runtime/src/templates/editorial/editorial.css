@@ -1,0 +1,111 @@
+[data-template="editorial"] {
+  font-feature-settings: "liga", "kern";
+
+  .ed-dropcap > p:first-child::first-letter {
+    float: left;
+    font-family: var(--pf-display);
+    font-size: 4.6em;
+    line-height: 0.82;
+    font-weight: 400;
+    padding: 0.06em 0.1em 0 0;
+    color: var(--sig);
+  }
+  .ed-quote {
+    position: relative;
+  }
+  .ed-quote::before {
+    content: "“";
+    position: absolute;
+    left: -0.5em;
+    top: -0.1em;
+    font-size: 1.6em;
+    line-height: 1;
+    color: var(--sig);
+  }
+  @media (max-width: 767px) {
+    .ed-quote::before {
+      position: static;
+      display: block;
+      height: 0.55em;
+    }
+  }
+  .ed-nav {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.2s;
+    padding-bottom: 2px;
+  }
+  .ed-nav:hover,
+  .ed-nav:focus-visible {
+    background-size: 100% 1px;
+    color: var(--ink);
+  }
+  .ed-row {
+    transition: padding-left 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .ed-row:hover {
+    padding-left: 0.75rem;
+  }
+  .ed-cell + .ed-cell {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 1023px) {
+    .ed-cell:nth-child(odd) {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+  @media (min-width: 1024px) {
+    .ed-cell:nth-child(4n + 1) {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+  .pf-img,
+  .pf-cover {
+    border-radius: var(--r);
+  }
+  .pf-btn {
+    font-family: var(--pf-body);
+    letter-spacing: 0.02em;
+  }
+  .pf-tag {
+    font-style: italic;
+    font-family: var(--pf-display);
+    font-size: 0.9375rem;
+    border-color: var(--edge);
+    background: transparent;
+  }
+}
+
+/* Scroll-linked image reveal: the image is unveiled as it scrolls into view. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    [data-template="editorial"]:not([data-motion="none"]) .ed-reveal {
+      animation: ed-unveil linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 38%;
+    }
+    [data-template="editorial"]:not([data-motion="none"]) .ed-reveal img {
+      animation: ed-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 60%;
+    }
+  }
+}
+@keyframes ed-unveil {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes ed-settle {
+  from {
+    transform: scale(1.18);
+  }
+  to {
+    transform: none;
+  }
+}

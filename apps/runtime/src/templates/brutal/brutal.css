@@ -1,0 +1,193 @@
+[data-template="brutal"] {
+  /* Springy overshoot without JavaScript: a linear() easing sampled from a spring. */
+  --br-spring: linear(0, 0.34 6%, 0.86 14%, 1.12 21%, 1.19 26%, 1.14 33%, 1.02 43%, 0.97 52%, 0.99 66%, 1);
+  --br-shadow: 6px 6px 0 var(--line);
+  font-weight: 500;
+
+  .br-box {
+    background: var(--surface);
+    border: 3px solid var(--line);
+    border-radius: var(--r);
+    box-shadow: var(--br-shadow);
+    min-width: 0;
+  }
+  .br-fill {
+    background: var(--sig);
+    color: var(--sigink);
+  }
+  .br-invert {
+    background: var(--ink);
+    color: var(--ground);
+  }
+  .br-fill .pf-link,
+  .br-fill .pf-prose a,
+  .br-fill .pf-dl dt,
+  .br-fill .pf-metric-label {
+    color: var(--sigink);
+  }
+  .br-invert .pf-link,
+  .br-invert .pf-prose a,
+  .br-invert .pf-dl dt,
+  .br-invert .pf-metric-label,
+  .br-invert .pf-prose strong {
+    color: var(--ground);
+  }
+  .br-fill .pf-btn {
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .br-fill .pf-btn-ghost,
+  .br-invert .pf-btn-ghost {
+    background: var(--ground);
+    color: var(--ink);
+  }
+  .br-fill :focus-visible,
+  .br-invert :focus-visible {
+    outline-color: currentColor;
+  }
+  .br-pop {
+    transition: transform 0.45s var(--br-spring), box-shadow 0.45s var(--br-spring);
+  }
+  .br-pop:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 10px 10px 0 var(--line);
+  }
+  .br-media {
+    border: 3px solid var(--line);
+    border-radius: var(--r);
+    box-shadow: var(--br-shadow);
+  }
+  .br-tilt {
+    rotate: -2deg;
+    transition: rotate 0.5s var(--br-spring);
+  }
+  .br-tilt:hover {
+    rotate: 1.5deg;
+  }
+  .br-sticker {
+    display: inline-block;
+    padding: 0.3rem 0.7rem;
+    background: var(--ink);
+    color: var(--ground);
+    font-size: 0.8125rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-radius: calc(var(--r) * 0.5);
+  }
+  .br-num {
+    font-family: var(--pf-display);
+    font-weight: 900;
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    line-height: 1;
+    padding: 0.35rem 0.6rem;
+    border: 3px solid var(--line);
+    background: var(--sig);
+    color: var(--sigink);
+    box-shadow: 4px 4px 0 var(--line);
+    rotate: -4deg;
+  }
+  .br-nav {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.3em;
+    transition: text-decoration-color 0.15s;
+  }
+  .br-nav:hover,
+  .br-nav:focus-visible {
+    text-decoration-color: var(--sig);
+  }
+  .br-row {
+    transition: background-color 0.15s;
+  }
+  .br-row:hover {
+    background: color-mix(in oklch, var(--sig) 14%, var(--surface));
+  }
+
+  /* Marquee ticker (decorative; hidden from assistive tech, paused on hover). */
+  .br-ticker {
+    overflow: hidden;
+    border-block: 3px solid var(--line);
+    background: var(--ink);
+    color: var(--ground);
+  }
+  .br-ticker-track {
+    display: flex;
+    width: max-content;
+    animation: br-marquee 38s linear infinite;
+  }
+  .br-ticker:hover .br-ticker-track {
+    animation-play-state: paused;
+  }
+  .br-ticker ul {
+    display: flex;
+    flex: none;
+  }
+  .br-ticker li {
+    padding: 0.7rem 0.75rem;
+    font-family: var(--pf-display);
+    font-weight: 900;
+    font-size: clamp(1.25rem, 3vw, 2.25rem);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .br-ticker li span {
+    padding-left: 0.75rem;
+    opacity: 0.7;
+  }
+
+  .pf-btn {
+    border: 3px solid var(--line);
+    border-radius: var(--r);
+    box-shadow: 4px 4px 0 var(--line);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: transform 0.35s var(--br-spring), box-shadow 0.35s var(--br-spring);
+    filter: none;
+  }
+  .pf-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 var(--line);
+    filter: none;
+  }
+  .pf-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--line);
+  }
+  .pf-btn-ghost {
+    background: var(--surface);
+    border-color: var(--line);
+  }
+  .pf-tag {
+    border: 2px solid var(--line);
+    border-radius: calc(var(--r) * 0.5);
+    background: var(--ground);
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .br-fill .pf-tag,
+  .br-invert .pf-tag {
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .pf-link {
+    font-weight: 700;
+    text-decoration-thickness: 2px;
+  }
+  .pf-dl dt {
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .pf-code,
+  .pf-media {
+    border: 3px solid var(--line);
+  }
+}
+
+@keyframes br-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
