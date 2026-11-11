@@ -88,6 +88,8 @@ export type Entry = {
   tags?: string[];
   links: LinkValue[];
   metric?: MetricValue;
+  /** Definition of the field that supplied `metric` (lets layouts without a metric slot fall back to the generic renderer). */
+  metricDef?: FieldDef;
   rest: Slot[];
 };
 
@@ -130,8 +132,10 @@ export function toEntry(id: string, defs: FieldDef[], values: Record<string, unk
         else e.rest.push({ def, value: v });
         break;
       case "metric":
-        if (e.metric === undefined) e.metric = v as MetricValue;
-        else e.rest.push({ def, value: v });
+        if (e.metric === undefined) {
+          e.metric = v as MetricValue;
+          e.metricDef = def;
+        } else e.rest.push({ def, value: v });
         break;
       case "link": {
         const l = v as LinkValue;
@@ -219,13 +223,24 @@ export function viewSection(section: Section, lang: string, anchor: string): Sec
     .filter((e) => !isEmptyEntry(e));
   const hasLead = !isEmptyEntry(lead);
   if (!hasLead && entries.length === 0) return null;
+  const layout = resolveLayout(section, entries);
+  // Only "metrics" and "grid" layouts have a dedicated place for a metric. Everywhere
+  // else it joins the generically rendered fields, so no value is ever dropped.
+  if (layout !== "metrics" && layout !== "grid") {
+    for (const e of entries) {
+      if (e.metric && e.metricDef) {
+        e.rest.unshift({ def: e.metricDef, value: e.metric });
+        delete e.metric;
+      }
+    }
+  }
   return {
     id: section.id,
     anchor,
     kind: section.kind,
     title: section.title,
     ...(section.subtitle ? { subtitle: section.subtitle } : {}),
-    layout: resolveLayout(section, entries),
+    layout,
     lead: hasLead ? lead : null,
     entries,
   };

@@ -60,6 +60,7 @@ export function Cover({ seed, label, className = "", style }: { seed: string; la
     <span
       aria-hidden="true"
       className={`pf-cover ${className}`}
+      {...(label ? { "data-label": initials(label) } : {})}
       style={
         {
           "--cx1": `${x1}%`,
@@ -70,8 +71,6 @@ export function Cover({ seed, label, className = "", style }: { seed: string; la
           ...style,
         } as CSSProperties
       }
-    >
-      {label ? <span className="pf-cover-label">{initials(label)}</span> : null}
-    </span>
+    />
   );
 }

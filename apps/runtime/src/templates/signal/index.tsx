@@ -40,7 +40,7 @@ function Lead({ s, lang }: { s: SectionView; lang: string }) {
     );
   }
   return (
-    <div className={`grid gap-6 ${e.image ? "md:grid-cols-[1fr_minmax(0,18rem)]" : ""}`}>
+    <div className={`grid gap-6 ${e.image ? "md:grid-cols-[minmax(0,1fr)_minmax(0,18rem)]" : ""}`}>
       <div className="grid content-start gap-5">
         {e.title ? <p className="font-display text-xl font-semibold">{e.title}</p> : null}
         {e.subtitle ? <p className="text-mute">{e.subtitle}</p> : null}
@@ -149,7 +149,7 @@ function Items({ s, lang }: { s: SectionView; lang: string }) {
       return (
         <ul className="sg-panel divide-y divide-line">
           {s.entries.map((e) => (
-            <li key={e.id} className="sg-row grid gap-x-6 gap-y-1 px-5 py-4 md:grid-cols-[7.5rem_1fr]">
+            <li key={e.id} className="sg-row grid gap-x-6 gap-y-1 px-5 py-4 md:grid-cols-[7.5rem_minmax(0,1fr)]">
               <p className={`${MONO} pt-1`}>{e.date || "—"}</p>
               <div className="grid gap-2">
                 <h3 className="font-medium">

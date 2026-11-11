@@ -1,0 +1,261 @@
+[data-template="os"] {
+  --os-bar: 2.5rem;
+  background-image: radial-gradient(color-mix(in oklch, var(--ink) 16%, transparent) 1px, transparent 1.5px);
+  background-size: 22px 22px;
+
+  .os-menubar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    height: var(--os-bar);
+    padding-inline: 0.9rem;
+    font-size: 0.8125rem;
+    background: var(--surface);
+    border-bottom: 2px solid var(--line);
+  }
+  .os-logo {
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 3px;
+    background: var(--sig);
+    box-shadow: 3px 3px 0 var(--comp);
+  }
+  .os-menulink {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color 0.15s;
+  }
+  .os-menulink:hover {
+    text-decoration-color: var(--sig);
+  }
+
+  .os-window {
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: calc(var(--r) * 0.9);
+    box-shadow: 6px 6px 0 color-mix(in oklch, var(--line) 85%, transparent);
+    overflow: hidden;
+  }
+  .os-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.4rem 0.6rem;
+    background: var(--ground);
+    border-bottom: 2px solid var(--line);
+    font-size: 0.8125rem;
+    user-select: none;
+    outline-offset: -3px;
+  }
+  .os-window[data-active] .os-titlebar {
+    background: var(--sig);
+    color: var(--sigink);
+  }
+  .os-window[data-active] .os-titlebar:focus-visible,
+  .os-window[data-active] .os-close:focus-visible {
+    outline-color: var(--sigink);
+  }
+  .os-title {
+    font-family: var(--pf-display);
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .os-grip {
+    flex: 1;
+    height: 0.6rem;
+    min-width: 1rem;
+    background: repeating-linear-gradient(currentColor 0 1px, transparent 1px 4px);
+    opacity: 0.45;
+  }
+  .os-close {
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: none;
+    border: 2px solid currentColor;
+    border-radius: calc(var(--r) * 0.3);
+    background: var(--surface);
+    color: var(--ink);
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .os-close:hover {
+    background: var(--ink);
+    color: var(--surface);
+  }
+  .os-body {
+    padding: 1.1rem 1.2rem 1.4rem;
+  }
+  .os-inset {
+    background: var(--ground);
+    border: 1px solid var(--edge);
+    border-radius: calc(var(--r) * 0.6);
+    min-width: 0;
+  }
+  .os-media {
+    border: 2px solid var(--line);
+    border-radius: calc(var(--r) * 0.6);
+  }
+  .pf-btn {
+    border: 2px solid var(--line);
+    box-shadow: 3px 3px 0 var(--line);
+    border-radius: calc(var(--r) * 0.6);
+  }
+  .pf-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+  }
+  .pf-btn-ghost {
+    background: var(--surface);
+  }
+
+  /* ── Small screens: no window manager, just a clean stacked page. ── */
+  @media (max-width: 899px) {
+    .os-desktop {
+      display: grid;
+      gap: 1rem;
+      padding: 1rem 0.75rem 2rem;
+    }
+    .os-window {
+      display: block !important;
+      transform: none !important;
+      width: auto !important;
+      box-shadow: 4px 4px 0 color-mix(in oklch, var(--line) 85%, transparent);
+    }
+    .os-window .os-titlebar {
+      background: var(--sig);
+      color: var(--sigink);
+    }
+    .os-close,
+    .os-dock,
+    .os-hint {
+      display: none;
+    }
+  }
+
+  /* ── Desktop: a fixed-viewport desktop with draggable windows and a dock. ── */
+  @media (min-width: 900px) {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .os-menubar {
+      position: static;
+      flex: none;
+    }
+    .os-main {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+    }
+    .os-desktop {
+      position: absolute;
+      inset: 0 0 4.75rem 0;
+      overflow: hidden;
+    }
+    .os-window {
+      position: absolute;
+      left: 0;
+      top: 0;
+      max-width: calc(100% - 2rem);
+      max-height: calc(100% - 1rem);
+      display: flex;
+      flex-direction: column;
+    }
+    .os-window[hidden] {
+      display: none;
+    }
+    .os-window:not([data-active]) {
+      box-shadow: 3px 3px 0 color-mix(in oklch, var(--line) 60%, transparent);
+    }
+    .os-titlebar {
+      cursor: grab;
+      flex: none;
+      touch-action: none;
+    }
+    .os-titlebar:active {
+      cursor: grabbing;
+    }
+    .os-body {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .os-dock {
+      position: absolute;
+      left: 50%;
+      bottom: 0.75rem;
+      translate: -50% 0;
+      z-index: 60;
+      max-width: calc(100% - 1.5rem);
+      padding: 0.4rem;
+      background: var(--surface);
+      border: 2px solid var(--line);
+      border-radius: calc(var(--r) * 1.1 + 4px);
+      box-shadow: 4px 4px 0 color-mix(in oklch, var(--line) 85%, transparent);
+    }
+    .os-dock ul {
+      display: flex;
+      gap: 0.35rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .os-dock-btn {
+      position: relative;
+      display: grid;
+      justify-items: center;
+      gap: 0.15rem;
+      width: 4.5rem;
+      padding: 0.3rem 0.2rem 0.45rem;
+      border-radius: calc(var(--r) * 0.7);
+      cursor: pointer;
+      transition: background-color 0.15s, translate 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .os-dock-btn:hover {
+      background: var(--ground);
+      translate: 0 -3px;
+    }
+    .os-dock-icon {
+      display: grid;
+      place-items: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      border: 2px solid var(--line);
+      border-radius: calc(var(--r) * 0.6 + 2px);
+      background: var(--ground);
+      font-family: var(--pf-display);
+      font-size: 0.8125rem;
+      font-weight: 800;
+    }
+    .os-dock-btn[aria-pressed="true"] .os-dock-icon {
+      background: var(--sig);
+      color: var(--sigink);
+    }
+    .os-dock-btn[aria-pressed="true"]::after {
+      content: "";
+      position: absolute;
+      bottom: 0.1rem;
+      width: 0.3rem;
+      height: 0.3rem;
+      border-radius: 999px;
+      background: var(--ink);
+    }
+    .os-dock-label {
+      max-width: 100%;
+      font-size: 0.6875rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

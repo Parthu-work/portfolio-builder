@@ -134,3 +134,17 @@ describe("migrate", () => {
     expect(() => migrate({ schemaVersion: 1 })).toThrow(MigrationError);
   });
 });
+
+describe("template registry", () => {
+  it("has a component for every template in meta (and nothing else)", async () => {
+    const { TEMPLATE_COMPONENTS, REGISTRY } = await import("../templates/registry");
+    expect(Object.keys(TEMPLATE_COMPONENTS).sort()).toEqual(TEMPLATES.map((t) => t.id).sort());
+    expect(REGISTRY).toHaveLength(8);
+    for (const t of REGISTRY) {
+      expect(t.palettes.length).toBeGreaterThanOrEqual(3);
+      expect(t.palettes.length).toBeLessThanOrEqual(4);
+      expect(t.fontPairs.length).toBeGreaterThanOrEqual(2);
+      expect(t.fontPairs.length).toBeLessThanOrEqual(3);
+    }
+  });
+});

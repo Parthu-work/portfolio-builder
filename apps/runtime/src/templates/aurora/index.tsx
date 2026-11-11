@@ -23,7 +23,7 @@ function Lead({ s, lang }: { s: SectionView; lang: string }) {
   if (!e) return null;
   const contact = s.kind === "contact";
   return (
-    <div className={`${GLASS} ${contact ? "au-glow justify-items-center py-12 text-center md:py-16" : e.image ? "md:grid-cols-[1fr_minmax(0,16rem)] md:items-start" : ""}`}>
+    <div className={`${GLASS} ${contact ? "au-glow justify-items-center py-12 text-center md:py-16" : e.image ? "md:grid-cols-[minmax(0,1fr)_minmax(0,16rem)] md:items-start" : ""}`}>
       <div className={`grid content-start gap-5 ${contact ? "justify-items-center" : ""}`}>
         {e.title ? <p className="font-display text-xl font-semibold">{e.title}</p> : null}
         {e.subtitle ? <p className="text-mute">{e.subtitle}</p> : null}
@@ -114,7 +114,7 @@ function Items({ s, lang }: { s: SectionView; lang: string }) {
       return (
         <ul className="au-glass divide-y divide-line">
           {s.entries.map((e) => (
-            <li key={e.id} className="grid gap-x-6 gap-y-1 px-6 py-5 md:grid-cols-[1fr_auto]">
+            <li key={e.id} className="grid gap-x-6 gap-y-1 px-6 py-5 md:grid-cols-[minmax(0,1fr)_auto]">
               <div className="grid gap-2">
                 <h3 className="font-display text-[1.125rem] font-semibold">
                   {e.title}
@@ -131,7 +131,7 @@ function Items({ s, lang }: { s: SectionView; lang: string }) {
       return (
         <ol className="grid gap-4">
           {s.entries.map((e) => (
-            <li key={e.id} className={`${GLASS} pf-reveal md:grid-cols-[11rem_1fr] md:gap-8`}>
+            <li key={e.id} className={`${GLASS} pf-reveal md:grid-cols-[11rem_minmax(0,1fr)] md:gap-8`}>
               <p className={`${KICKER} md:pt-1.5`}>{e.date}</p>
               <div className="grid content-start gap-3">
                 <h3 className="font-display text-[1.375rem] font-semibold leading-tight tracking-[-0.015em]">{e.title}</h3>

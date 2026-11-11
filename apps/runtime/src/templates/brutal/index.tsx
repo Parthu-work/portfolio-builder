@@ -22,7 +22,7 @@ function Lead({ s, lang }: { s: SectionView; lang: string }) {
   if (!e) return null;
   const contact = s.kind === "contact";
   return (
-    <div className={`grid gap-6 ${e.image && !contact ? "md:grid-cols-[1fr_minmax(0,20rem)]" : ""}`}>
+    <div className={`grid gap-6 ${e.image && !contact ? "md:grid-cols-[minmax(0,1fr)_minmax(0,20rem)]" : ""}`}>
       <div className={`${BOX} ${contact ? "br-invert md:p-10" : ""} gap-5`}>
         {e.title ? <p className="font-display text-2xl font-black uppercase">{e.title}</p> : null}
         {e.subtitle ? <p className="font-bold">{e.subtitle}</p> : null}
@@ -118,7 +118,7 @@ function Items({ s, lang }: { s: SectionView; lang: string }) {
       return (
         <ul className="br-box divide-y-[3px] divide-line">
           {s.entries.map((e) => (
-            <li key={e.id} className="br-row grid gap-x-6 gap-y-1 px-5 py-4 md:grid-cols-[1fr_auto] md:px-6">
+            <li key={e.id} className="br-row grid gap-x-6 gap-y-1 px-5 py-4 md:grid-cols-[minmax(0,1fr)_auto] md:px-6">
               <div className="grid gap-2">
                 <h3 className="font-display text-[1.25rem] font-black uppercase leading-tight">{e.title}</h3>
                 {e.subtitle ? <p className="-mt-1 font-bold">{e.subtitle}</p> : null}
@@ -133,7 +133,7 @@ function Items({ s, lang }: { s: SectionView; lang: string }) {
       return (
         <ol className="grid gap-6">
           {s.entries.map((e) => (
-            <li key={e.id} className={`${BOX} br-pop md:grid-cols-[12rem_1fr] md:gap-8`}>
+            <li key={e.id} className={`${BOX} br-pop md:grid-cols-[12rem_minmax(0,1fr)] md:gap-8`}>
               <p className="br-sticker h-fit w-fit">{e.date || "—"}</p>
               <div className="grid content-start gap-3">
                 <h3 className="font-display text-[1.75rem] font-black uppercase leading-[0.98] tracking-[-0.01em]">{e.title}</h3>
@@ -177,7 +177,7 @@ export default function Brutal({ portfolio }: TemplateProps) {
 
       <main id="main" tabIndex={-1}>
         <section id="top" className={`${WRAP} ${hero.present ? "py-12 md:py-20" : "py-10"}`}>
-          <div className="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
+          <div className="grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_auto]">
             <div className="grid gap-6">
               {hero.eyebrow ? <p className="br-sticker br-tilt w-fit">{hero.eyebrow}</p> : null}
               <h1 className={`font-display font-black uppercase leading-[0.82] tracking-[-0.045em] ${hero.present ? "text-[clamp(3.5rem,15vw,14rem)]" : "text-[clamp(2.5rem,7vw,5rem)]"}`}>{hero.name}</h1>

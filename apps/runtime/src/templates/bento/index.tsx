@@ -36,8 +36,12 @@ function metricSpan(i: number, n: number): string {
 
 const pair = (i: number, n: number) => `col-span-2 ${n % 2 === 1 && i === 0 ? "md:col-span-4" : "md:col-span-2"}`;
 
+const HEAVY = new Set(["longtext", "richtext", "image", "gallery", "code", "video", "linklist"]);
+/** Small leftover fields are shown right on the tile; heavy ones (galleries, code, long text) wait in the detail view. */
+const light = (e: Entry) => e.rest.filter((r) => !HEAVY.has(r.def.type));
+
 function hasMore(e: Entry) {
-  return Boolean(e.body || e.rest.length || e.image);
+  return Boolean(e.body || e.image || e.rest.some((r) => HEAVY.has(r.def.type)));
 }
 
 function Tile({ e, lang, motion, className = "", children }: { e: Entry; lang: string; motion: string; className?: string; children: ReactNode }) {
@@ -54,6 +58,7 @@ function Items({ s, lang, motion }: { s: SectionView; lang: string; motion: stri
           {e.metric ? <p className="font-display text-[clamp(2.25rem,5vw,3.75rem)] font-bold leading-none tracking-[-0.04em] tabular-nums">{e.metric.value}</p> : null}
           {e.metric?.label && e.title ? <p className="text-sm text-mute">{e.title}</p> : null}
           {e.subtitle ? <p className="text-sm text-mute">{e.subtitle}</p> : null}
+          <Rest slots={light(e)} lang={lang} />
           <Links links={e.links} />
         </Tile>
       ));
@@ -63,6 +68,7 @@ function Items({ s, lang, motion }: { s: SectionView; lang: string; motion: stri
           <h3 className={KICKER}>{e.title}</h3>
           {e.subtitle ? <p className="text-sm text-mute">{e.subtitle}</p> : null}
           {e.tags?.length ? <Tags tags={e.tags} /> : null}
+          <Rest slots={light(e)} lang={lang} />
           <Links links={e.links} />
         </Tile>
       ));
@@ -99,6 +105,7 @@ function Items({ s, lang, motion }: { s: SectionView; lang: string; motion: stri
           ) : null}
           {e.body ? <Prose html={e.body} className="line-clamp-3 text-[0.9375rem] leading-relaxed text-mute" /> : null}
           {e.tags?.length ? <Tags tags={e.tags} /> : null}
+          <Rest slots={light(e)} lang={lang} />
           <Links links={e.links} />
         </Tile>
       ));
@@ -110,6 +117,7 @@ function Items({ s, lang, motion }: { s: SectionView; lang: string; motion: stri
           {e.subtitle ? <p className="text-sm text-mute">{e.subtitle}</p> : null}
           {e.body ? <Prose html={e.body} className="line-clamp-2 text-sm leading-relaxed text-mute" /> : null}
           {e.tags?.length ? <Tags tags={e.tags} /> : null}
+          <Rest slots={light(e)} lang={lang} />
           <Links links={e.links} />
         </Tile>
       ));
@@ -124,6 +132,7 @@ function Items({ s, lang, motion }: { s: SectionView; lang: string; motion: stri
           {e.subtitle ? <p className="font-medium text-sig">{e.subtitle}</p> : null}
           {e.body ? <Prose html={e.body} className={`${i === 0 ? "line-clamp-4" : "line-clamp-2"} text-[0.9375rem] leading-relaxed text-mute`} /> : null}
           {e.tags?.length ? <Tags tags={e.tags} /> : null}
+          <Rest slots={light(e)} lang={lang} />
           <Links links={e.links} />
         </Tile>
       ));

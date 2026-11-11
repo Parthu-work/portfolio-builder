@@ -137,7 +137,7 @@ function Items({ s, lang }: { s: SectionView; lang: string }) {
       return (
         <ul className="border-t border-ink">
           {s.entries.map((e) => (
-            <li key={e.id} className="ed-row grid gap-x-8 gap-y-1 border-b border-line py-5 md:grid-cols-[1fr_auto]">
+            <li key={e.id} className="ed-row grid gap-x-8 gap-y-1 border-b border-line py-5 md:grid-cols-[minmax(0,1fr)_auto]">
               <div className="grid gap-2">
                 <h3 className="font-display text-[1.5rem] font-medium leading-tight tracking-[-0.01em]">
                   {e.title}
@@ -181,7 +181,7 @@ export default function Editorial({ portfolio }: TemplateProps) {
           {hero.name}
         </a>
         {v.nav.length ? (
-          <nav aria-label="Sections" className="hidden md:block">
+          <nav aria-label="Sections" className="hidden lg:block">
             <ul className={`${CAPS} flex gap-7`}>
               {v.nav.slice(0, 6).map((n) => (
                 <li key={n.href}>
@@ -233,7 +233,7 @@ export default function Editorial({ portfolio }: TemplateProps) {
       </main>
 
       <footer className="border-t border-ink">
-        <div className={`${WRAP} grid gap-6 py-10 md:grid-cols-[1fr_auto] md:items-end`}>
+        <div className={`${WRAP} grid gap-6 py-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-end`}>
           <p className="font-display text-[clamp(2rem,6vw,5rem)] font-light italic leading-none tracking-[-0.03em]">{hero.name}</p>
           <div className={`${CAPS} grid gap-3 md:justify-items-end`}>
             <Socials socials={v.socials} className="flex flex-wrap gap-x-6 gap-y-2" linkClassName="ed-nav text-ink" />

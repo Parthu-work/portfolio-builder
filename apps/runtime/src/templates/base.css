@@ -30,6 +30,10 @@
     background: var(--sig);
     color: var(--sigink);
   }
+  .pf-root :is(h1, h2, h3) {
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
   .pf-root main:focus {
     outline: none;
   }
@@ -209,7 +213,9 @@
       radial-gradient(circle at var(--cx2) var(--cy2), color-mix(in oklch, var(--comp) 40%, transparent), transparent 50%),
       linear-gradient(var(--ca), var(--surface), color-mix(in oklch, var(--surface) 82%, var(--ink)));
   }
-  .pf-cover-label {
+  /* The monogram is drawn with generated content: it is decoration, not text. */
+  .pf-cover[data-label]::after {
+    content: attr(data-label);
     position: absolute;
     right: 0.06em;
     bottom: -0.18em;

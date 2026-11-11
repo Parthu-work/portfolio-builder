@@ -4,7 +4,9 @@ import type { Template, TemplateComponent } from "./types";
 import Aurora from "./aurora";
 import Brutal from "./brutal";
 import Bento from "./bento";
+import Cinematic from "./cinematic";
 import Editorial from "./editorial";
+import DesktopOs from "./os";
 import Signal from "./signal";
 import Swiss from "./swiss";
 
@@ -13,7 +15,9 @@ export const TEMPLATE_COMPONENTS: Record<string, TemplateComponent> = {
   aurora: Aurora,
   brutal: Brutal,
   bento: Bento,
+  cinematic: Cinematic,
   editorial: Editorial,
+  os: DesktopOs,
   signal: Signal,
   swiss: Swiss,
 };
