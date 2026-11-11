@@ -1,0 +1,183 @@
+import { describe, expect, it } from "vitest";
+import { renderToStaticMarkup } from "react-dom/server";
+import { FIELD_TYPES, type FieldType } from "../schema/portfolio";
+import { createSection } from "../schema/presets";
+import { SEEDS } from "../schema/seeds";
+import { FieldValue, Rest } from "./FieldValue";
+import { sanitizeRichText, safeHref, textToHtml } from "./sanitize";
+import { formatDate, formatRange, isEmptyValue, toEntry, viewPortfolio, viewSection } from "./view";
+import { contrast, oklchToSrgb, toHex, paletteGrade } from "./color";
+import { TEMPLATES } from "../templates/meta";
+
+const SAMPLE: Record<FieldType, unknown> = {
+  text: "Plain text",
+  longtext: "Line one\n\nLine <two>",
+  richtext: "<p>Hello <strong>bold</strong></p>",
+  url: "https://example.com/page",
+  email: "a@example.com",
+  phone: "+1 (555) 010-9999",
+  number: 12345,
+  metric: { value: "42%", label: "uplift" },
+  date: "2024-03",
+  daterange: { start: "2020-01", end: "", present: true },
+  image: { src: "https://example.com/a.png", alt: "A thing" },
+  gallery: [{ src: "https://example.com/1.png", alt: "One" }, { src: "", alt: "" }],
+  tags: ["alpha", "beta"],
+  link: { label: "Docs", href: "https://example.com/docs" },
+  linklist: [{ label: "One", href: "https://example.com/1" }],
+  video: "https://example.com/watch?v=1",
+  code: { language: "ts", code: "const a = 1 < 2;" },
+  select: "Option A",
+};
+
+describe("generic field renderer", () => {
+  it.each(FIELD_TYPES)("renders %s", (type) => {
+    const html = renderToStaticMarkup(<FieldValue def={{ type, label: "Label" }} value={SAMPLE[type]} />);
+    expect(html.length).toBeGreaterThan(0);
+    expect(html).not.toContain("<script");
+  });
+
+  it.each(FIELD_TYPES)("renders nothing for an empty or malformed %s", (type) => {
+    expect(renderToStaticMarkup(<FieldValue def={{ type, label: "L" }} value={null} />)).toBe("");
+    if (type !== "number") expect(renderToStaticMarkup(<FieldValue def={{ type, label: "L" }} value={{ nonsense: true }} />)).toBe("");
+  });
+
+  it("escapes text and code, formats dates, numbers and links", () => {
+    expect(renderToStaticMarkup(<FieldValue def={{ type: "longtext", label: "" }} value={SAMPLE.longtext} />)).toContain("Line &lt;two&gt;");
+    expect(renderToStaticMarkup(<FieldValue def={{ type: "code", label: "Snippet" }} value={SAMPLE.code} />)).toContain("1 &lt; 2");
+    expect(renderToStaticMarkup(<FieldValue def={{ type: "date", label: "" }} value="2024-03" />)).toContain("Mar 2024");
+    expect(renderToStaticMarkup(<FieldValue def={{ type: "number", label: "" }} value={12345} />)).toContain("12,345");
+    const link = renderToStaticMarkup(<FieldValue def={{ type: "url", label: "" }} value="https://www.example.com/x" />);
+    expect(link).toContain('rel="noopener noreferrer"');
+    expect(link).toContain("example.com");
+    expect(renderToStaticMarkup(<FieldValue def={{ type: "phone", label: "" }} value="+1 (555) 010" />)).toContain('href="tel:+1555010"');
+  });
+
+  it("renders leftover slots as a labelled list and skips empties", () => {
+    const html = renderToStaticMarkup(
+      <Rest slots={[{ def: { key: "a", label: "Patent no.", type: "text" }, value: "EP 1" }, { def: { key: "b", label: "Empty", type: "tags" }, value: [] }]} />,
+    );
+    expect(html).toContain("<dt>Patent no.</dt>");
+    expect(html).toContain("EP 1");
+  });
+});
+
+describe("sanitizer", () => {
+  it("keeps the allowlist and strips everything else", () => {
+    expect(sanitizeRichText('<p onclick="x()">Hi <b>there</b> <u>u</u><img src=x onerror=alert(1)></p>')).toBe("<p>Hi <b>there</b> u</p>");
+    expect(sanitizeRichText("<ul><li>a</li><li>b</li></ul>")).toBe("<ul><li>a</li><li>b</li></ul>");
+  });
+  it("drops script/style with their content", () => {
+    expect(sanitizeRichText("<p>a</p><script>alert(1)</script><style>p{}</style><p>b</p>")).toBe("<p>a</p><p>b</p>");
+    expect(sanitizeRichText("a<script>alert(1)")).toBe("a");
+    expect(sanitizeRichText("<svg><script>x</script></svg>ok")).toBe("ok");
+  });
+  it("only allows safe hrefs", () => {
+    expect(sanitizeRichText('<a href="javascript:alert(1)">x</a>')).toBe("<a>x</a>");
+    expect(sanitizeRichText('<a href="jav&#x61;script:alert(1)">x</a>')).toBe("<a>x</a>");
+    expect(sanitizeRichText("<a href=' java\tscript:alert(1)'>x</a>")).toBe("<a>x</a>");
+    expect(sanitizeRichText('<a href="data:text/html,x">x</a>')).toBe("<a>x</a>");
+    expect(sanitizeRichText('<a href="https://example.com/?a=1&amp;b=2" style="x">x</a>')).toBe(
+      '<a href="https://example.com/?a=1&amp;b=2" target="_blank" rel="noopener noreferrer nofollow">x</a>',
+    );
+    expect(sanitizeRichText('<a href="mailto:a@b.co">x</a>')).toBe('<a href="mailto:a@b.co">x</a>');
+    expect(safeHref("//evil.example")).toBeNull();
+  });
+  it("balances tags and neutralises stray angle brackets", () => {
+    expect(sanitizeRichText("<p><strong>a</p>")).toBe("<p><strong>a</strong></p>");
+    expect(sanitizeRichText("</p>1 < 2 & 3 > 2 &amp; &copy;")).toBe("1 &lt; 2 &amp; 3 &gt; 2 &amp; &copy;");
+    expect(sanitizeRichText('<p>x</p><!-- c --><p title="a>b">y</p>')).toBe("<p>x</p><p>y</p>");
+    expect(sanitizeRichText("<scr<script>ipt>alert(1)</script>")).not.toContain("<script");
+  });
+  it("converts plain text to paragraphs", () => {
+    expect(textToHtml("a\nb\n\n<c>")).toBe("<p>a<br>b</p><p>&lt;c&gt;</p>");
+  });
+});
+
+describe("view model", () => {
+  it("assigns slots from field types, not keys", () => {
+    const e = toEntry(
+      "x",
+      [
+        { key: "zzz", label: "Name", type: "text" },
+        { key: "n", label: "Patent no.", type: "text" },
+        { key: "extra", label: "Office", type: "text" },
+        { key: "when", label: "Filed", type: "date" },
+        { key: "u", label: "Registry", type: "url" },
+        { key: "c", label: "Claims", type: "number" },
+      ],
+      { zzz: "Widget", n: "EP 1", extra: "EPO", when: "2023-08", u: "https://example.com/p", c: 12 },
+    );
+    expect(e).toMatchObject({ title: "Widget", subtitle: "EP 1", date: "Aug 2023", links: [{ href: "https://example.com/p", label: "Registry" }] });
+    expect(e.rest.map((r) => r.def.key)).toEqual(["extra", "c"]);
+  });
+
+  it("detects empty values per type", () => {
+    expect(isEmptyValue("richtext", "<p><br></p>")).toBe(true);
+    expect(isEmptyValue("metric", { value: " ", label: "x" })).toBe(true);
+    expect(isEmptyValue("tags", ["", " "])).toBe(true);
+    expect(isEmptyValue("number", 0)).toBe(false);
+    expect(isEmptyValue("link", { label: "x", href: "" })).toBe(true);
+  });
+
+  it("omits hidden and empty sections and items, and gives sections unique anchors", () => {
+    const p = structuredClone(SEEDS.developer.portfolio);
+    p.sections.push(createSection("awards")); // empty → never rendered
+    p.sections.push({ ...structuredClone(p.sections.find((s) => s.kind === "projects")!), id: "projects-2" });
+    p.sections.find((s) => s.kind === "skills")!.visible = false;
+    const projects = p.sections.find((s) => s.kind === "projects")!;
+    projects.items![0]!.visible = false;
+    const v = viewPortfolio(p);
+    expect(v.sections.some((s) => s.kind === "awards")).toBe(false);
+    expect(v.sections.some((s) => s.kind === "skills")).toBe(false);
+    expect(v.sections.find((s) => s.id === "projects")!.entries).toHaveLength(3);
+    const anchors = v.sections.map((s) => s.anchor);
+    expect(new Set(anchors).size).toBe(anchors.length);
+    expect(anchors).toContain("projects");
+    expect(anchors).toContain("patents");
+    expect(v.hero).toMatchObject({ name: "Maya Okafor", eyebrow: "Open to staff+ roles", present: true });
+    expect(v.hero.links).toHaveLength(2);
+  });
+
+  it("resolves layouts for presets and infers them for custom sections", () => {
+    const v = viewPortfolio(SEEDS.developer.portfolio);
+    const by = Object.fromEntries(v.sections.map((s) => [s.id, s.layout]));
+    expect(by).toMatchObject({ experience: "timeline", projects: "grid", skills: "tags", metrics: "metrics", talks: "list", patents: "list" });
+    expect(viewSection({ ...SEEDS.developer.portfolio.sections.find((s) => s.id === "patents")!, layout: undefined }, "en", "x")!.layout).toBe("timeline");
+    expect(viewSection(createSection("custom"), "en", "x")).toBeNull();
+  });
+
+  it("formats dates and ranges", () => {
+    expect(formatDate("2024")).toBe("2024");
+    expect(formatDate("2024-10-03")).toBe("Oct 3, 2024");
+    expect(formatDate("bogus")).toBe("");
+    expect(formatRange({ start: "2020-01", end: "2021-06" })).toBe("Jan 2020 — Jun 2021");
+    expect(formatRange({ start: "2020-01", present: true })).toBe("Jan 2020 — Present");
+    expect(formatDate("2024-10", "not a locale")).toBe("Oct 2024");
+  });
+});
+
+describe("colour maths", () => {
+  it("converts OKLCH to sRGB", () => {
+    expect(oklchToSrgb("1 0 0")).toEqual([255, 255, 255]);
+    expect(oklchToSrgb("0 0 0")).toEqual([0, 0, 0]);
+    const red = oklchToSrgb("0.62796 0.25768 29.234");
+    expect(red[0]).toBeGreaterThanOrEqual(254);
+    expect(red[1]).toBeLessThanOrEqual(2);
+    expect(red[2]).toBeLessThanOrEqual(2);
+    expect(toHex("0.5999 0 0")).toMatch(/^#8[0-1]8[0-1]8[0-1]$/);
+  });
+  it("gamut-maps out-of-range chroma instead of producing invalid channels", () => {
+    for (const c of oklchToSrgb("0.7 0.4 150")) {
+      expect(c).toBeGreaterThanOrEqual(0);
+      expect(c).toBeLessThanOrEqual(255);
+    }
+  });
+  it("computes WCAG contrast", () => {
+    expect(contrast("1 0 0", "0 0 0")).toBeCloseTo(21, 1);
+    expect(contrast("0.5 0.1 200", "0.5 0.1 200")).toBeCloseTo(1, 5);
+  });
+  it("every shipped palette is at least AA", () => {
+    for (const t of TEMPLATES) for (const p of t.palettes) expect(paletteGrade(p).grade).not.toBe("fail");
+  });
+});

@@ -1,0 +1,213 @@
+import { LAYOUTS, TOKEN_NAMES, type FontPair, type Palette, type TemplateMeta, type Tokens } from "./types";
+
+const tk = (...v: string[]): Tokens =>
+  Object.fromEntries(TOKEN_NAMES.map((name, i) => [name, v[i] ?? "0 0 0"])) as Tokens;
+const pal = (id: string, name: string, light: Tokens, dark: Tokens): Palette => ({ id, name, light, dark });
+
+const F = {
+  inter: "'Inter Variable'",
+  jet: "'JetBrains Mono Variable'",
+  fraunces: "'Fraunces Variable'",
+  space: "'Space Grotesk Variable'",
+  news: "'Newsreader Variable'",
+  bric: "'Bricolage Grotesque Variable'",
+  manrope: "'Manrope Variable'",
+  archivo: "'Archivo Variable'",
+  syne: "'Syne Variable'",
+  dm: "'DM Sans Variable'",
+  playfair: "'Playfair Display Variable'",
+  sora: "'Sora Variable'",
+};
+const SANS = "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
+const SERIF = "ui-serif, Georgia, Cambria, 'Times New Roman', serif";
+const MONO = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+const fp = (id: string, name: string, display: string, body: string, mono = F.jet): FontPair => {
+  const stack = (f: string) => `${f}, ${f === F.jet ? MONO : [F.fraunces, F.news, F.playfair].includes(f) ? SERIF : SANS}`;
+  return { id, name, display: stack(display), body: stack(body), mono: stack(mono) };
+};
+
+/* Token order: ground, surface, ink, mute, line, edge, sig, sigink, comp */
+export const TEMPLATES: TemplateMeta[] = [
+  {
+    id: "signal",
+    name: "Signal",
+    description: "A DevTools-flavoured portfolio: a terminal that diagnoses your visitor, a metric bento and a live architecture diagram.",
+    signature: "Terminal hero · ⌘K command palette · animated data flow",
+    tags: ["developer", "dark", "technical", "interactive"],
+    preferredMode: "dark",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("phosphor", "Phosphor",
+        tk("0.985 0.005 150", "0.955 0.01 150", "0.22 0.03 160", "0.46 0.03 160", "0.89 0.015 155", "0.58 0.03 160", "0.48 0.14 152", "0.99 0.01 150", "0.52 0.14 50"),
+        tk("0.17 0.015 160", "0.21 0.018 160", "0.95 0.02 150", "0.74 0.03 155", "0.30 0.02 160", "0.55 0.03 160", "0.85 0.2 150", "0.18 0.03 150", "0.78 0.15 60")),
+      pal("cobalt", "Cobalt",
+        tk("0.985 0.004 260", "0.955 0.01 260", "0.22 0.03 265", "0.46 0.03 265", "0.89 0.015 262", "0.58 0.03 265", "0.48 0.19 262", "0.99 0.005 260", "0.52 0.13 55"),
+        tk("0.17 0.02 265", "0.21 0.025 265", "0.96 0.01 260", "0.75 0.03 262", "0.30 0.03 265", "0.56 0.04 265", "0.78 0.14 250", "0.17 0.03 265", "0.80 0.15 75")),
+      pal("ember", "Ember",
+        tk("0.985 0.006 70", "0.955 0.012 70", "0.23 0.02 40", "0.46 0.03 45", "0.89 0.02 60", "0.58 0.03 50", "0.50 0.16 40", "0.99 0.005 70", "0.50 0.10 215"),
+        tk("0.17 0.012 40", "0.215 0.015 40", "0.96 0.012 60", "0.75 0.025 55", "0.30 0.02 40", "0.56 0.03 45", "0.80 0.16 55", "0.18 0.03 40", "0.80 0.12 200")),
+    ],
+    fontPairs: [fp("grotesk-mono", "Space Grotesk + Inter", F.space, F.inter), fp("all-mono", "JetBrains Mono", F.jet, F.jet), fp("sora", "Sora + Inter", F.sora, F.inter)],
+  },
+  {
+    id: "editorial",
+    name: "Editorial",
+    description: "A magazine feature about you: huge serif display type, an asymmetric grid, drop caps and pull quotes.",
+    signature: "Scroll-linked image reveals · drop caps · pull quotes",
+    tags: ["designer", "writer", "light", "serif", "elegant"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("paper", "Paper & Vermilion",
+        tk("0.975 0.012 85", "0.945 0.018 85", "0.2 0.02 60", "0.45 0.03 60", "0.87 0.02 80", "0.57 0.03 70", "0.48 0.17 28", "0.99 0.01 85", "0.45 0.09 250"),
+        tk("0.18 0.012 60", "0.225 0.015 60", "0.95 0.02 85", "0.76 0.03 80", "0.31 0.02 60", "0.57 0.03 65", "0.76 0.15 35", "0.17 0.02 40", "0.78 0.08 240")),
+      pal("rosewood", "Rosewood",
+        tk("0.975 0.01 15", "0.945 0.018 15", "0.22 0.04 10", "0.46 0.04 10", "0.88 0.02 15", "0.57 0.04 12", "0.45 0.15 5", "0.99 0.005 15", "0.48 0.09 150"),
+        tk("0.18 0.02 10", "0.225 0.025 10", "0.95 0.015 20", "0.76 0.03 15", "0.31 0.03 10", "0.57 0.04 12", "0.78 0.12 10", "0.18 0.03 10", "0.80 0.09 150")),
+      pal("olive", "Olive Grove",
+        tk("0.975 0.012 110", "0.945 0.02 110", "0.22 0.03 120", "0.45 0.04 120", "0.87 0.025 110", "0.56 0.04 115", "0.46 0.11 130", "0.99 0.01 110", "0.50 0.14 40"),
+        tk("0.18 0.015 120", "0.225 0.02 120", "0.95 0.02 105", "0.76 0.035 110", "0.31 0.025 120", "0.57 0.04 115", "0.82 0.14 120", "0.18 0.03 120", "0.78 0.13 50")),
+    ],
+    fontPairs: [fp("fraunces", "Fraunces + Newsreader", F.fraunces, F.news), fp("playfair", "Playfair + DM Sans", F.playfair, F.dm), fp("newsreader", "Newsreader + Inter", F.news, F.inter)],
+  },
+  {
+    id: "bento",
+    name: "Bento",
+    description: "Your work as a modular grid of tiles. Hover for a spotlight, open a tile and it grows into a full detail view.",
+    signature: "Spotlight hover · tiles expand with shared-layout animation",
+    tags: ["designer", "developer", "modern", "grid", "interactive"],
+    preferredMode: "dark",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("graphite", "Graphite & Lime",
+        tk("0.965 0.003 270", "0.995 0 0", "0.2 0.01 270", "0.46 0.012 270", "0.9 0.005 270", "0.56 0.012 270", "0.48 0.15 135", "0.99 0.01 128", "0.50 0.18 300"),
+        tk("0.16 0.005 270", "0.205 0.008 270", "0.97 0.003 270", "0.74 0.01 270", "0.29 0.01 270", "0.56 0.012 270", "0.86 0.17 128", "0.18 0.03 128", "0.75 0.14 300")),
+      pal("lilac", "Lilac Haze",
+        tk("0.965 0.012 295", "0.995 0.003 295", "0.22 0.04 295", "0.46 0.04 295", "0.9 0.02 295", "0.56 0.04 295", "0.48 0.2 295", "0.99 0.005 295", "0.52 0.12 80"),
+        tk("0.17 0.025 295", "0.215 0.03 295", "0.96 0.012 295", "0.76 0.035 295", "0.30 0.035 295", "0.57 0.045 295", "0.78 0.14 300", "0.17 0.04 295", "0.85 0.14 95")),
+      pal("citrus", "Citrus",
+        tk("0.965 0.015 95", "0.995 0.005 95", "0.22 0.03 80", "0.46 0.035 80", "0.89 0.03 90", "0.56 0.04 85", "0.49 0.11 75", "0.99 0.005 95", "0.52 0.18 25"),
+        tk("0.17 0.015 80", "0.215 0.02 80", "0.96 0.015 90", "0.76 0.03 85", "0.3 0.025 80", "0.57 0.035 80", "0.86 0.17 95", "0.19 0.04 90", "0.74 0.15 20")),
+    ],
+    fontPairs: [fp("bricolage", "Bricolage + Inter", F.bric, F.inter), fp("manrope", "Manrope", F.manrope, F.manrope), fp("sora", "Sora + DM Sans", F.sora, F.dm)],
+  },
+  {
+    id: "aurora",
+    name: "Aurora",
+    description: "Frosted glass floating over a slow mesh gradient that drifts toward the cursor. Soft depth, calm confidence.",
+    signature: "Cursor-reactive mesh gradient · frosted glass cards",
+    tags: ["designer", "product", "glass", "soft", "colourful"],
+    preferredMode: "dark",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("borealis", "Borealis",
+        tk("0.975 0.012 220", "0.95 0.02 220", "0.22 0.04 250", "0.45 0.04 245", "0.88 0.025 225", "0.57 0.04 240", "0.47 0.1 190", "0.99 0.005 200", "0.52 0.2 320"),
+        tk("0.16 0.03 250", "0.22 0.035 250", "0.97 0.01 220", "0.78 0.03 230", "0.32 0.04 250", "0.58 0.05 245", "0.84 0.14 175", "0.17 0.03 200", "0.78 0.16 320")),
+      pal("dusk", "Dusk",
+        tk("0.975 0.012 320", "0.95 0.022 320", "0.23 0.05 300", "0.46 0.045 300", "0.88 0.03 315", "0.57 0.045 305", "0.50 0.2 345", "0.99 0.005 320", "0.52 0.12 60"),
+        tk("0.17 0.035 300", "0.225 0.04 300", "0.97 0.01 310", "0.78 0.03 305", "0.32 0.045 300", "0.58 0.05 300", "0.80 0.14 340", "0.18 0.04 320", "0.82 0.12 70")),
+      pal("lagoon", "Lagoon",
+        tk("0.975 0.012 200", "0.95 0.02 200", "0.22 0.04 220", "0.45 0.04 215", "0.88 0.025 205", "0.57 0.04 210", "0.48 0.11 235", "0.99 0.005 210", "0.5 0.12 110"),
+        tk("0.17 0.03 205", "0.22 0.035 205", "0.97 0.01 190", "0.78 0.03 200", "0.32 0.04 205", "0.58 0.045 205", "0.82 0.12 210", "0.17 0.03 220", "0.84 0.15 100")),
+    ],
+    fontPairs: [fp("sora", "Sora + Inter", F.sora, F.inter), fp("manrope", "Manrope", F.manrope, F.manrope), fp("fraunces", "Fraunces + DM Sans", F.fraunces, F.dm)],
+  },
+  {
+    id: "brutal",
+    name: "Brutal",
+    description: "Neo-brutalism with manners: thick borders, hard shadows, oversized type and a ticker that will not be ignored.",
+    signature: "Marquee ticker · hard shadows · snappy spring motion",
+    tags: ["designer", "bold", "playful", "high-contrast"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("hazard", "Hazard",
+        tk("0.93 0.17 100", "0.99 0.01 100", "0.15 0 0", "0.35 0.02 90", "0.15 0 0", "0.15 0 0", "0.42 0.22 265", "0.99 0 0", "0.50 0.2 28"),
+        tk("0.16 0 0", "0.22 0 0", "0.97 0.02 100", "0.78 0.03 100", "0.9 0.17 100", "0.9 0.17 100", "0.9 0.18 100", "0.15 0 0", "0.72 0.19 30")),
+      pal("bubblegum", "Bubblegum",
+        tk("0.9 0.08 350", "0.99 0.005 350", "0.16 0.02 350", "0.36 0.04 350", "0.16 0.02 350", "0.16 0.02 350", "0.42 0.2 265", "0.99 0 0", "0.45 0.12 160"),
+        tk("0.17 0.03 350", "0.23 0.04 350", "0.97 0.02 350", "0.8 0.05 350", "0.82 0.14 350", "0.82 0.14 350", "0.82 0.14 350", "0.17 0.03 350", "0.85 0.16 160")),
+      pal("mono", "Mono + Red",
+        tk("0.97 0 0", "1 0 0", "0.13 0 0", "0.38 0 0", "0.13 0 0", "0.13 0 0", "0.52 0.23 28", "0.99 0 0", "0.45 0.2 265"),
+        tk("0.14 0 0", "0.2 0 0", "0.97 0 0", "0.78 0 0", "0.97 0 0", "0.97 0 0", "0.72 0.19 28", "0.13 0 0", "0.78 0.13 250")),
+    ],
+    fontPairs: [fp("archivo", "Archivo + Space Grotesk", F.archivo, F.space), fp("syne", "Syne + DM Sans", F.syne, F.dm), fp("bricolage-mono", "Bricolage + JetBrains Mono", F.bric, F.jet)],
+  },
+  {
+    id: "cinematic",
+    name: "Cinematic",
+    description: "Scroll storytelling in full-viewport chapters, with pinned scenes and a horizontal reel for your projects.",
+    signature: "Pinned chapters · horizontal project reel · progress rail",
+    tags: ["designer", "storytelling", "dark", "immersive"],
+    preferredMode: "dark",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("noir", "Noir & Gold",
+        tk("0.97 0.01 85", "0.94 0.015 85", "0.18 0.01 80", "0.44 0.02 80", "0.87 0.015 85", "0.57 0.02 80", "0.48 0.1 75", "0.99 0.005 85", "0.5 0.16 25"),
+        tk("0.13 0.005 80", "0.18 0.008 80", "0.95 0.015 85", "0.74 0.02 85", "0.27 0.01 80", "0.55 0.02 80", "0.82 0.12 85", "0.16 0.02 80", "0.72 0.12 25")),
+      pal("crimson", "Crimson",
+        tk("0.975 0.008 30", "0.945 0.015 30", "0.2 0.03 20", "0.45 0.04 20", "0.88 0.02 25", "0.57 0.04 20", "0.5 0.21 25", "0.99 0.005 30", "0.48 0.09 210"),
+        tk("0.14 0.02 20", "0.19 0.03 20", "0.96 0.01 30", "0.75 0.03 25", "0.28 0.03 20", "0.56 0.04 20", "0.72 0.19 22", "0.14 0.02 20", "0.82 0.1 200")),
+      pal("abyss", "Abyss",
+        tk("0.975 0.008 210", "0.945 0.015 210", "0.2 0.03 225", "0.45 0.035 220", "0.88 0.02 212", "0.57 0.035 215", "0.47 0.09 205", "0.99 0.005 200", "0.52 0.14 50"),
+        tk("0.14 0.025 220", "0.19 0.03 220", "0.96 0.01 200", "0.76 0.03 210", "0.28 0.035 220", "0.56 0.04 215", "0.82 0.13 190", "0.15 0.03 220", "0.8 0.14 60")),
+    ],
+    fontPairs: [fp("playfair", "Playfair + Inter", F.playfair, F.inter), fp("syne", "Syne + Manrope", F.syne, F.manrope), fp("fraunces", "Fraunces + DM Sans", F.fraunces, F.dm)],
+  },
+  {
+    id: "swiss",
+    name: "Swiss",
+    description: "A strict typographic grid, monochrome plus one accent. Precise, quiet and the most recruiter-safe choice.",
+    signature: "Twelve-column grid · numbered sections · precise micro-interactions",
+    tags: ["minimal", "recruiter-safe", "typographic", "light"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("classic", "Classic Red",
+        tk("0.985 0 0", "0.955 0 0", "0.17 0 0", "0.45 0 0", "0.88 0 0", "0.58 0 0", "0.52 0.23 27", "0.99 0 0", "0.35 0 0"),
+        tk("0.15 0 0", "0.2 0 0", "0.96 0 0", "0.74 0 0", "0.3 0 0", "0.56 0 0", "0.7 0.2 27", "0.13 0 0", "0.8 0 0")),
+      pal("klein", "Klein Blue",
+        tk("0.985 0.002 260", "0.955 0.004 260", "0.17 0.01 260", "0.45 0.01 260", "0.88 0.004 260", "0.58 0.01 260", "0.45 0.26 265", "0.99 0 0", "0.35 0.01 260"),
+        tk("0.15 0.005 260", "0.2 0.008 260", "0.96 0.003 260", "0.74 0.01 260", "0.3 0.01 260", "0.56 0.012 260", "0.74 0.15 262", "0.13 0.01 260", "0.8 0.01 260")),
+      pal("forest", "Forest",
+        tk("0.985 0.003 150", "0.955 0.006 150", "0.17 0.01 150", "0.45 0.012 150", "0.88 0.006 150", "0.58 0.012 150", "0.47 0.13 155", "0.99 0 0", "0.35 0.01 150"),
+        tk("0.15 0.005 150", "0.2 0.008 150", "0.96 0.004 150", "0.74 0.012 150", "0.3 0.01 150", "0.56 0.014 150", "0.8 0.16 155", "0.13 0.01 150", "0.8 0.012 150")),
+    ],
+    fontPairs: [fp("inter", "Inter", F.inter, F.inter), fp("archivo", "Archivo + Inter", F.archivo, F.inter), fp("dm", "DM Sans", F.dm, F.dm)],
+  },
+  {
+    id: "os",
+    name: "Desktop OS",
+    description: "A playful retro desktop: every section is an app in a draggable window, with a dock to launch them.",
+    signature: "Draggable windows · dock · fully keyboard accessible",
+    tags: ["playful", "developer", "retro", "interactive"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("platinum", "Platinum",
+        tk("0.94 0.03 200", "0.985 0.005 200", "0.2 0.02 250", "0.44 0.03 240", "0.2 0.02 250", "0.5 0.03 240", "0.46 0.2 265", "0.99 0 0", "0.52 0.2 15"),
+        tk("0.18 0.03 250", "0.235 0.035 250", "0.96 0.01 240", "0.77 0.03 245", "0.45 0.04 250", "0.6 0.04 250", "0.8 0.13 240", "0.17 0.03 250", "0.8 0.15 15")),
+      pal("sunset", "Sunset",
+        tk("0.93 0.05 60", "0.985 0.01 70", "0.22 0.03 40", "0.44 0.04 40", "0.22 0.03 40", "0.5 0.04 45", "0.48 0.19 30", "0.99 0.005 70", "0.45 0.12 290"),
+        tk("0.19 0.03 40", "0.24 0.035 40", "0.96 0.015 70", "0.78 0.035 60", "0.45 0.05 45", "0.6 0.05 45", "0.8 0.15 55", "0.18 0.03 40", "0.78 0.12 290")),
+      pal("mint", "Mint",
+        tk("0.93 0.045 165", "0.985 0.008 165", "0.2 0.03 170", "0.43 0.04 170", "0.2 0.03 170", "0.5 0.04 170", "0.44 0.1 165", "0.99 0.005 165", "0.5 0.2 330"),
+        tk("0.18 0.025 170", "0.235 0.03 170", "0.96 0.012 165", "0.77 0.035 165", "0.45 0.04 170", "0.6 0.045 170", "0.84 0.14 165", "0.17 0.03 170", "0.8 0.14 330")),
+    ],
+    fontPairs: [fp("space", "Space Grotesk + Inter", F.space, F.inter), fp("mono", "JetBrains Mono", F.jet, F.jet), fp("bricolage", "Bricolage + DM Sans", F.bric, F.dm)],
+  },
+];
+
+export const TEMPLATE_IDS = TEMPLATES.map((t) => t.id);
+export const DEFAULT_TEMPLATE_ID = "swiss";
+
+/** Looks a template up by id, falling back to the default so a site never fails to render. */
+export function getTemplateMeta(id: string): TemplateMeta {
+  return TEMPLATES.find((t) => t.id === id) ?? TEMPLATES.find((t) => t.id === DEFAULT_TEMPLATE_ID)!;
+}
+export function getPalette(meta: TemplateMeta, paletteId: string): Palette {
+  return meta.palettes.find((p) => p.id === paletteId) ?? meta.palettes[0]!;
+}
+export function getFontPair(meta: TemplateMeta, fontPairId: string): FontPair {
+  return meta.fontPairs.find((p) => p.id === fontPairId) ?? meta.fontPairs[0]!;
+}

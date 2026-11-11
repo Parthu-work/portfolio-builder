@@ -1,0 +1,32 @@
+[data-template="swiss"] {
+  .sw-media {
+    border-radius: var(--r);
+    background: var(--surface);
+  }
+  .sw-nav {
+    background: linear-gradient(var(--sig), var(--sig)) 0 100% / 0 1px no-repeat;
+    transition: background-size 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.15s;
+  }
+  .sw-nav:hover,
+  .sw-nav:focus-visible {
+    background-size: 100% 1px;
+  }
+  .sw-row {
+    transition: background-color 0.2s, padding 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .sw-row:hover {
+    background: var(--surface);
+    padding-inline: 0.75rem;
+  }
+  .sw-card .pf-img img,
+  .sw-card .pf-cover {
+    transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .sw-card:hover .pf-img img {
+    transform: scale(1.03);
+  }
+  .pf-tag {
+    border-color: var(--edge);
+    background: transparent;
+  }
+}

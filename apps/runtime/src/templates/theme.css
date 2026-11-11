@@ -1,0 +1,18 @@
+/* Maps the active palette / fonts / radius (set by <TemplateRoot>) to Tailwind utilities. */
+@theme inline {
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-mute: var(--mute);
+  --color-line: var(--line);
+  --color-edge: var(--edge);
+  --color-sig: var(--sig);
+  --color-sigink: var(--sigink);
+  --color-comp: var(--comp);
+  --font-display: var(--pf-display, ui-sans-serif, system-ui, sans-serif);
+  --font-body: var(--pf-body, ui-sans-serif, system-ui, sans-serif);
+  --font-mono: var(--pf-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  --radius-pf: var(--r, 0px);
+  --radius-pf-sm: calc(var(--r, 0px) * 0.5);
+  --radius-pf-lg: calc(var(--r, 0px) * 1.6);
+}

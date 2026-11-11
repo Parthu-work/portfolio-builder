@@ -1,0 +1,25 @@
+{
+  "name": "persona",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter ./apps/* dev",
+    "dev:builder": "pnpm --filter @persona/builder dev",
+    "dev:runtime": "pnpm --filter persona-runtime dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "contrast": "pnpm --filter persona-runtime contrast",
+    "e2e": "playwright test",
+    "lighthouse": "node scripts/lighthouse.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.63.0",
+    "typescript": "^5.9.3"
+  }
+}
