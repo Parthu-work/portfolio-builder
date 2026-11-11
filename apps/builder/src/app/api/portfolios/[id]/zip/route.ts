@@ -1,0 +1,15 @@
+import files from "@/generated/runtime-files.json";
+import { HttpError, route } from "@/lib/api";
+import { buildZip, type RuntimeFiles } from "@/lib/zip";
+
+/** "Download code (.zip)": the runtime with the owner's current draft baked in. */
+export const GET = route<undefined, { id: string }>({ auth: "user", rate: { name: "zip", capacity: 5, perMinute: 5 } }, async ({ store, user, event }, { id }) => {
+  const row = await store.getPortfolio(user!.id, id);
+  if (!row) throw new HttpError(404, "Portfolio not found");
+  const folder = `${row.slug}-portfolio`;
+  const zip = buildZip(files as RuntimeFiles, row.draft, folder);
+  await event("zip_downloaded", { portfolioId: id, props: { templateId: row.templateId } });
+  return new Response(zip.buffer as ArrayBuffer, {
+    headers: { "content-type": "application/zip", "content-disposition": `attachment; filename="${folder}.zip"`, "cache-control": "no-store" },
+  });
+});
