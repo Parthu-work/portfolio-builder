@@ -2,7 +2,6 @@
 -- Users can only ever touch their own rows; analytics, audit and rate-limit
 -- tables have NO policies, so only the server (service role) can use them.
 
-create extension if not exists pgcrypto;
 
 -- ─────────────────────────── profiles ───────────────────────────
 create table public.profiles (

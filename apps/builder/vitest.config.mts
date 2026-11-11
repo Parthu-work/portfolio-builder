@@ -5,6 +5,7 @@ export default defineConfig({
   oxc: { jsx: { runtime: "automatic" } },
   resolve: {
     alias: {
+      "server-only": fileURLToPath(new URL("./src/test/server-only.ts", import.meta.url)),
       "@runtime": fileURLToPath(new URL("../runtime/src", import.meta.url)),
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
