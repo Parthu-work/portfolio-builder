@@ -386,6 +386,27 @@ export const TEMPLATES: TemplateMeta[] = [
     ],
     fontPairs: [fp("dm", "DM Sans", F.dm, F.dm), fp("space", "Space Grotesk + Inter", F.space, F.inter), fp("playfair", "Playfair + Inter", F.playfair, F.inter)],
   },
+  {
+    id: "margin",
+    name: "Margin",
+    description: "Set like a well-made paper: a calm reading column, sidenotes in the margin, publications as a proper reference list.",
+    signature: "Tufte sidenotes · reference-list publications · small-multiples metrics",
+    tags: ["academic", "research", "writer", "serif", "light"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("journal", "Journal",
+        tk("0.985 0.006 85", "0.96 0.01 85", "0.2 0.008 60", "0.45 0.012 60", "0.88 0.01 80", "0.57 0.015 70", "0.45 0.14 25", "0.99 0.005 85", "0.48 0.08 230"),
+        tk("0.17 0.006 60", "0.21 0.008 60", "0.92 0.01 85", "0.74 0.012 80", "0.3 0.008 60", "0.56 0.012 70", "0.74 0.12 30", "0.16 0.02 30", "0.76 0.08 230")),
+      pal("lab-notebook", "Lab Notebook",
+        tk("0.965 0.022 95", "0.94 0.028 95", "0.22 0.03 255", "0.44 0.03 255", "0.87 0.03 220", "0.55 0.04 240", "0.42 0.13 260", "0.98 0.015 95", "0.52 0.15 30"),
+        tk("0.19 0.025 255", "0.235 0.03 255", "0.93 0.02 95", "0.76 0.03 230", "0.3 0.03 240", "0.58 0.04 240", "0.8 0.1 240", "0.18 0.03 255", "0.78 0.12 40")),
+      pal("night-reading", "Night Reading",
+        tk("0.975 0.004 250", "0.95 0.006 250", "0.2 0.015 260", "0.45 0.015 260", "0.89 0.006 250", "0.57 0.015 255", "0.45 0.1 290", "0.99 0.003 250", "0.54 0.11 70"),
+        tk("0.15 0.012 265", "0.19 0.015 265", "0.9 0.015 85", "0.72 0.015 80", "0.27 0.014 265", "0.55 0.015 265", "0.78 0.09 75", "0.16 0.02 75", "0.74 0.09 290")),
+    ],
+    fontPairs: [fp("newsreader", "Newsreader", F.news, F.news), fp("fraunces", "Fraunces + Inter", F.fraunces, F.inter), fp("playfair", "Playfair + Newsreader", F.playfair, F.news)],
+  },
 ];
 
 export const TEMPLATE_IDS = TEMPLATES.map((t) => t.id);
