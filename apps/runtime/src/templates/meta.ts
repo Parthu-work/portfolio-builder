@@ -365,6 +365,27 @@ export const TEMPLATES: TemplateMeta[] = [
     ],
     fontPairs: [fp("fraunces", "Fraunces + Manrope", F.fraunces, F.manrope), fp("newsreader", "Newsreader + DM Sans", F.news, F.dm), fp("playfair", "Playfair + Manrope", F.playfair, F.manrope)],
   },
+  {
+    id: "lumen",
+    name: "Lumen",
+    description: "Image first: a full-bleed hero, your work as a masonry wall and a keyboard-friendly lightbox, with type that stays quietly out of the way.",
+    signature: "Masonry wall · keyboard lightbox · image-first quiet type",
+    tags: ["visual", "gallery", "photography", "minimal", "dark"],
+    preferredMode: "dark",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("darkroom", "Darkroom",
+        tk("0.97 0.003 60", "0.94 0.004 60", "0.18 0.004 60", "0.44 0.006 60", "0.88 0.004 60", "0.56 0.006 60", "0.5 0.16 25", "0.99 0.003 60", "0.5 0.08 220"),
+        tk("0.12 0.003 60", "0.17 0.004 60", "0.93 0.004 60", "0.72 0.006 60", "0.26 0.004 60", "0.54 0.006 60", "0.7 0.17 25", "0.13 0.02 25", "0.75 0.08 220")),
+      pal("gallery-white", "Gallery White",
+        tk("0.995 0 0", "0.965 0 0", "0.16 0 0", "0.45 0 0", "0.9 0 0", "0.57 0 0", "0.45 0.11 250", "0.99 0 0", "0.55 0.13 40"),
+        tk("0.16 0 0", "0.2 0 0", "0.96 0 0", "0.74 0 0", "0.29 0 0", "0.56 0 0", "0.78 0.1 250", "0.16 0.02 250", "0.78 0.11 50")),
+      pal("sepia", "Sepia",
+        tk("0.95 0.025 75", "0.92 0.03 75", "0.26 0.03 55", "0.45 0.035 55", "0.85 0.03 70", "0.55 0.04 60", "0.46 0.1 45", "0.98 0.015 75", "0.5 0.07 200"),
+        tk("0.19 0.02 60", "0.235 0.025 60", "0.92 0.03 75", "0.75 0.035 70", "0.32 0.025 60", "0.57 0.035 60", "0.78 0.09 60", "0.18 0.02 55", "0.75 0.07 200")),
+    ],
+    fontPairs: [fp("dm", "DM Sans", F.dm, F.dm), fp("space", "Space Grotesk + Inter", F.space, F.inter), fp("playfair", "Playfair + Inter", F.playfair, F.inter)],
+  },
 ];
 
 export const TEMPLATE_IDS = TEMPLATES.map((t) => t.id);

@@ -1,6 +1,7 @@
 import type { Portfolio } from "../schema/portfolio";
 import { DEFAULT_TEMPLATE_ID, TEMPLATES } from "./meta";
 import type { Template, TemplateComponent } from "./types";
+import Lumen from "./lumen";
 import Terra from "./terra";
 import Vision from "./vision";
 import Archive from "./archive";
@@ -36,6 +37,7 @@ export const TEMPLATE_COMPONENTS: Record<string, TemplateComponent> = {
   archive: Archive,
   vision: Vision,
   terra: Terra,
+  lumen: Lumen,
 };
 
 export const REGISTRY: Template[] = TEMPLATES.filter((t) => TEMPLATE_COMPONENTS[t.id]).map((t) => ({
