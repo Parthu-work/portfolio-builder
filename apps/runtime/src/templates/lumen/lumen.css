@@ -1,0 +1,534 @@
+/* Lumen — image first: a full-bleed hero, a masonry wall, a keyboard lightbox, quiet type. */
+[data-template="lumen"] {
+  --lm-gut: clamp(0.75rem, 2.5vw, 2rem);
+  --lm-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  font-size: 1rem;
+
+  .lm-caps {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .lm-sub {
+    color: var(--mute);
+    font-size: 0.9375rem;
+  }
+  .lm-nums {
+    font-variant-numeric: tabular-nums;
+  }
+  .lm-prose {
+    max-width: 62ch;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+  .lm-narrow {
+    width: 100%;
+    max-width: 36rem;
+  }
+  .lm-narrow-wide {
+    width: 100%;
+    max-width: 52rem;
+  }
+
+  /* ───────── bar ───────── */
+  .lm-bar {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1rem calc(var(--lm-gut) + 0.5rem);
+  }
+  .lm-bar-name {
+    font-family: var(--pf-display);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--ground) 80%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  .lm-bar-nav {
+    display: none;
+  }
+  @media (min-width: 900px) {
+    .lm-bar-nav {
+      display: block;
+    }
+  }
+  .lm-bar-nav ul {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--ground) 80%, transparent);
+    backdrop-filter: blur(8px);
+    font-size: 0.8125rem;
+  }
+  .lm-bar-nav a {
+    display: block;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    color: var(--ink);
+    transition: background-color 0.2s;
+  }
+  .lm-bar-nav a:hover {
+    background: color-mix(in oklch, var(--ink) 10%, transparent);
+  }
+
+  /* ───────── hero: full-bleed image, name overlaid on a ground scrim ───────── */
+  .lm-hero {
+    position: relative;
+    display: grid;
+    min-height: min(92svh, 64rem);
+    padding: var(--lm-gut);
+  }
+  .lm-hero-compact {
+    min-height: 0;
+    padding-top: 5rem;
+  }
+  .lm-hero-art {
+    position: absolute;
+    inset: var(--lm-gut);
+    overflow: hidden;
+    border-radius: calc(var(--r) * 0.8);
+  }
+  .lm-hero-zoom,
+  .lm-hero-zoom .pf-img,
+  .lm-hero-cover {
+    position: absolute !important;
+    inset: 0;
+    width: 100%;
+    height: 100% !important;
+    aspect-ratio: auto !important;
+  }
+  .lm-hero-art::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to top, var(--ground) 0%, color-mix(in oklch, var(--ground) 82%, transparent) 22%, color-mix(in oklch, var(--ground) 30%, transparent) 46%, transparent 68%);
+  }
+  .lm-hero-text {
+    position: relative;
+    z-index: 1;
+    align-self: end;
+    display: grid;
+    gap: 0.75rem;
+    padding: clamp(1rem, 4vw, 3.5rem);
+  }
+  .lm-eyebrow {
+    color: var(--sig);
+  }
+  .lm-name {
+    font-family: var(--pf-display);
+    font-size: clamp(2.75rem, 9vw, 8.5rem);
+    font-weight: 500;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+  }
+  .lm-hero-compact .lm-name {
+    font-size: clamp(2.25rem, 6vw, 4.5rem);
+  }
+  .lm-headline {
+    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    color: var(--mute);
+    max-width: 44ch;
+  }
+  .lm-intro {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+    width: 100%;
+    max-width: 40rem;
+    margin: clamp(2rem, 5vw, 4rem) auto 0;
+    padding-inline: 1.25rem;
+  }
+  .lm-intro-text {
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+    line-height: 1.6;
+  }
+
+  /* ───────── zoomable images ───────── */
+  .lm-zoom {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+    border-radius: calc(var(--r) * 0.6);
+    overflow: hidden;
+  }
+  .lm-media {
+    display: block;
+    background: var(--surface);
+  }
+  .lm-zoom .pf-img img {
+    transition:
+      transform 0.8s var(--lm-ease),
+      filter 0.4s;
+  }
+  .lm-zoom:hover .pf-img img,
+  .lm-zoom:focus-visible .pf-img img {
+    transform: scale(1.025);
+  }
+  .pf-gallery .pf-img[role="button"] {
+    cursor: zoom-in;
+  }
+
+  /* ───────── sections ───────── */
+  .lm-main {
+    display: grid;
+  }
+  .lm-section {
+    display: grid;
+    justify-items: center;
+    gap: clamp(1.75rem, 4vw, 3rem);
+    padding: clamp(4rem, 9vw, 8rem) var(--lm-gut) 0;
+    scroll-margin-top: 1rem;
+  }
+  .lm-section-head {
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+    text-align: center;
+    max-width: 40rem;
+  }
+  .lm-h2 {
+    font-family: var(--pf-display);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .lm-count {
+    color: var(--mute);
+  }
+  .lm-section-body {
+    display: grid;
+    justify-items: center;
+    gap: clamp(2rem, 4vw, 3rem);
+    width: 100%;
+  }
+  .lm-h3 {
+    font-family: var(--pf-display);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .lm-lead {
+    display: grid;
+    gap: 2rem;
+    justify-items: center;
+    width: 100%;
+    max-width: 64rem;
+  }
+  @media (min-width: 900px) {
+    .lm-lead-img {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      justify-items: start;
+    }
+  }
+  .lm-lead-title {
+    font-family: var(--pf-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  .pf-tag {
+    background: transparent;
+    border-color: var(--line);
+    color: var(--mute);
+    border-radius: 999px;
+  }
+  .pf-tail {
+    gap: 0.5rem;
+  }
+
+  /* grid: masonry wall (native masonry where supported, columns otherwise) */
+  .lm-wall {
+    width: 100%;
+    max-width: 120rem;
+    columns: 1;
+    column-gap: var(--lm-gut);
+  }
+  @media (min-width: 700px) {
+    .lm-wall {
+      columns: 2;
+    }
+  }
+  @media (min-width: 1400px) {
+    .lm-wall {
+      columns: 3;
+    }
+  }
+  .lm-tile {
+    break-inside: avoid;
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  @supports (grid-template-rows: masonry) {
+    .lm-wall {
+      columns: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+      grid-template-rows: masonry;
+      gap: clamp(1.5rem, 3vw, 2.5rem) var(--lm-gut);
+    }
+    .lm-tile {
+      margin-bottom: 0;
+    }
+  }
+  .lm-tile > .pf-cover {
+    border-radius: calc(var(--r) * 0.6);
+  }
+  .lm-caption {
+    display: grid;
+    gap: 0.35rem;
+    padding-inline: 0.15rem;
+  }
+  .lm-caption .lm-prose {
+    font-size: 0.9375rem;
+    color: var(--mute);
+  }
+  .lm-metric {
+    color: var(--sig);
+    font-weight: 600;
+  }
+
+  /* timeline: a minimal two-column list */
+  .lm-twocol {
+    display: grid;
+  }
+  .lm-tc-row {
+    display: grid;
+    gap: 0.25rem 2rem;
+    padding-block: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 640px) {
+    .lm-tc-row {
+      grid-template-columns: 11rem minmax(0, 1fr);
+    }
+  }
+
+  /* list: a caption list */
+  .lm-captions {
+    display: grid;
+  }
+  .lm-cap-row {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    padding-block: 1rem;
+    border-top: 1px solid var(--line);
+  }
+  .lm-cap-thumb {
+    width: 4.5rem;
+    flex: none;
+  }
+
+  /* quotes: a centred single quote */
+  .lm-quotes {
+    display: grid;
+    gap: clamp(3rem, 6vw, 5rem);
+    max-width: 44rem;
+  }
+  .lm-quote {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: center;
+    text-align: center;
+  }
+  .lm-quote-text {
+    font-family: var(--pf-display);
+    font-size: clamp(1.25rem, 2.6vw, 1.875rem);
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .lm-quote-by {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .lm-avatar {
+    width: 2.5rem;
+    flex: none;
+    border-radius: 99px;
+  }
+
+  /* metrics: small caps figures */
+  .lm-figures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+    gap: 2rem;
+    text-align: center;
+  }
+  .lm-figure {
+    display: grid;
+    gap: 0.35rem;
+    justify-items: center;
+    align-content: start;
+  }
+  .lm-figure-value {
+    font-family: var(--pf-display);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* tags: an inline list */
+  .lm-taglist {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .lm-tagrow {
+    display: grid;
+    gap: 0.35rem;
+    text-align: center;
+    justify-items: center;
+  }
+  .lm-tagrow dt {
+    color: var(--mute);
+  }
+  .lm-inline {
+    line-height: 1.7;
+  }
+
+  /* ───────── lightbox ───────── */
+  .lm-dialog {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: color-mix(in oklch, var(--ground) 96%, transparent);
+    color: var(--ink);
+    display: none;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+  .lm-dialog[open] {
+    display: grid;
+  }
+  .lm-dialog::backdrop {
+    background: color-mix(in oklch, var(--ground) 70%, transparent);
+    backdrop-filter: blur(6px);
+  }
+  .lm-dialog-bar,
+  .lm-dialog-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+  }
+  .lm-dialog-nav {
+    justify-content: center;
+  }
+  .lm-dialog-figure {
+    display: grid;
+    place-items: center;
+    gap: 0.75rem;
+    min-height: 0;
+    padding: 0 1rem;
+  }
+  .lm-dialog-img {
+    max-width: 100%;
+    max-height: calc(100dvh - 10rem);
+    object-fit: contain;
+    border-radius: calc(var(--r) * 0.4);
+  }
+  .lm-dialog-btn {
+    min-height: 2.75rem;
+    padding: 0.4rem 1.1rem;
+    border-radius: 999px;
+    border: 1px solid var(--edge);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--surface);
+  }
+  .lm-dialog-btn:hover {
+    border-color: var(--ink);
+  }
+
+  /* ───────── footer ───────── */
+  .lm-foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+    margin: clamp(5rem, 10vw, 9rem) var(--lm-gut) 0;
+    padding: 2rem 0.5rem 3rem;
+    border-top: 1px solid var(--line);
+  }
+  .lm-foot-name {
+    font-family: var(--pf-display);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    letter-spacing: -0.02em;
+  }
+  .lm-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+  }
+
+  /* ───────── motion ───────── */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      &:not([data-motion="none"]) .lm-tile,
+      &:not([data-motion="none"]) .lm-lead-zoom {
+        animation: lm-develop linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 55%;
+      }
+      &:not([data-motion="none"]) .lm-hero-art .pf-img img {
+        animation: lm-drift linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 100vh;
+      }
+    }
+    &:not([data-motion="none"]) .lm-dialog[open] .lm-dialog-img {
+      animation: lm-in 0.35s var(--lm-ease);
+    }
+  }
+}
+@keyframes lm-develop {
+  from {
+    opacity: 0;
+    transform: translateY(var(--pf-rise));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes lm-drift {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1) translateY(4%);
+  }
+}
+@keyframes lm-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

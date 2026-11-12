@@ -10,8 +10,8 @@ Statuses: todo · in-progress · done · blocked. Updated by the agent; one row 
 | 5 | kinetic | Kinetic | done | 95143fc | Anybody (wdth 50–150) via @property-animated width/weight on scroll(); h2 stretch on view() ≥768px; split-word reveals on headline + first quote; cursor proximity weight (fine pointers). Width effects fall back to weight-only for Syne/Bricolage pairs. |
 | 6 | archive | Archive | done | cb660de | No. 001… numbering in document order; index table island with section filters (aria-pressed), year sort, live count, pointer-following preview on fine pointers + fixed pane ≥1024px; year-grouped rows, letters, specimen labels, classification index. |
 | 7 | vision | Vision | done | ce54c2b | Spatial room backdrop (lit ceiling + perspective floor, blurred avatar tint), glass windows with specular mask edge + grabber bars, capsule nav condenses via scroll(), ≤4° tilt (fine pointer), Chromium-only feDisplacementMap refraction, solid surfaces under prefers-reduced-transparency. |
-| 8 | terra | Terra | done | (this commit) | Earthy palettes, token-coloured feTurbulence grain (mask), morphing border-radius blobs, wavy hand-drawn underlines that draw on view(), winding dotted SVG path timeline (straight stem on mobile), staggered garden grid (masonry behind @supports), leaf quotes, pebble metrics. Pure CSS, no islands. |
-| 9 | lumen | Lumen | todo | | |
+| 8 | terra | Terra | done | 1b4ed6f | Earthy palettes, token-coloured feTurbulence grain (mask), morphing border-radius blobs, wavy hand-drawn underlines that draw on view(), winding dotted SVG path timeline (straight stem on mobile), staggered garden grid (masonry behind @supports), leaf quotes, pebble metrics. Pure CSS, no islands. |
+| 9 | lumen | Lumen | in-progress | | |
 | 10 | margin | Margin | todo | | |
 | 11 | thread | Thread | todo | | |
 | 12 | sketch | Sketchbook | todo | | |
