@@ -433,6 +433,8 @@
   }
   .cd-media {
     border-radius: var(--cd-r-sm);
+  }
+  .cd-media:not(.pf-cover) {
     background: var(--ground);
   }
   .cd-lead {
