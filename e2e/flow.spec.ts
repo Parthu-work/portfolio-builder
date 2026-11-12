@@ -128,8 +128,9 @@ test("security: CSRF, auth and validation on API boundaries", async ({ request, 
   // Non-admins cannot open the admin API or page.
   await signIn(page, `plain-${uid()}@example.com`);
   expect((await page.request.get("/api/admin/stats")).status()).toBe(403);
-  const res = await page.goto("/admin");
-  expect(res?.status()).toBe(404);
+  await page.goto("/admin");
+  await expect(page.getByRole("heading", { level: 1, name: /different career path/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Admin" })).toHaveCount(0);
   // Other users' portfolios are invisible.
   expect((await page.request.get("/api/portfolios/00000000-0000-4000-8000-000000000000")).status()).toBe(404);
 });

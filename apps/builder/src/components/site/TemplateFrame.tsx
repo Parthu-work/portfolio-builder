@@ -15,6 +15,7 @@ export function TemplateFrame({
   height = 900,
   interactive = false,
   eager = false,
+  idle = false,
   className,
 }: {
   src: string;
@@ -23,12 +24,29 @@ export function TemplateFrame({
   height?: number;
   interactive?: boolean;
   eager?: boolean;
+  /** Wait until the page has finished loading and the browser is idle before fetching the preview. */
+  idle?: boolean;
   className?: string;
 }) {
   const box = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState<number | null>(null);
   const [visible, setVisible] = useState(eager);
   const [loaded, setLoaded] = useState(false);
+  const [ready, setReady] = useState(!idle);
+
+  useEffect(() => {
+    if (!idle) return;
+    let t = 0;
+    const go = () => {
+      t = window.setTimeout(() => setReady(true), 1200);
+    };
+    if (document.readyState === "complete") go();
+    else window.addEventListener("load", go, { once: true });
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("load", go);
+    };
+  }, [idle]);
 
   useEffect(() => {
     const el = box.current;
@@ -46,7 +64,7 @@ export function TemplateFrame({
   return (
     <div ref={box} className={cn("relative w-full overflow-hidden bg-panel2", className)} style={{ aspectRatio: `${width} / ${height}` }}>
       {!loaded ? <div aria-hidden="true" className="skeleton absolute inset-0 rounded-none" /> : null}
-      {visible && scale !== null ? (
+      {visible && ready && scale !== null ? (
         <iframe
           key={src}
           src={src}

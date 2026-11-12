@@ -10,7 +10,7 @@ import { api, ApiError } from "@/lib/client";
 import { RANGES, type Kpi, type Range, type Stats } from "@/lib/stats";
 
 // Recharts is only downloaded when an admin opens this page.
-const skeleton = () => <div className="skeleton h-64" aria-label="Loading chart" />;
+const skeleton = () => <div className="skeleton h-64" role="status" aria-label="Loading chart" />;
 const VisitorsChart = dynamic(() => import("./Charts").then((m) => m.VisitorsChart), { ssr: false, loading: skeleton });
 const DeploysChart = dynamic(() => import("./Charts").then((m) => m.DeploysChart), { ssr: false, loading: skeleton });
 const TemplatesChart = dynamic(() => import("./Charts").then((m) => m.TemplatesChart), { ssr: false, loading: skeleton });

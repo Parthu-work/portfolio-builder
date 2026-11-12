@@ -9,7 +9,7 @@ import { Button, FieldError, Input, Label, Select, Textarea } from "@/components
 import { ImageInput } from "./ImageInput";
 
 // Tiptap is heavy: only loaded when a rich-text field is actually on screen.
-const RichText = dynamic(() => import("./RichText"), { ssr: false, loading: () => <div className="skeleton h-32" aria-label="Loading editor" /> });
+const RichText = dynamic(() => import("./RichText"), { ssr: false, loading: () => <div className="skeleton h-32" role="status" aria-label="Loading editor" /> });
 
 function val<T extends FieldType>(type: T, value: unknown) {
   return read(type, value) ?? emptyValue(type);

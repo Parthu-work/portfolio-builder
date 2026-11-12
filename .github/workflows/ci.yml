@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Lint, typecheck, unit tests, contrast, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Unit tests (schema, renderer, sanitizer, deploy URL, analytics hashing, RLS on PGlite)
+        run: pnpm test
+      - name: Palette contrast (WCAG AA)
+        run: pnpm contrast
+      - name: Build both apps
+        run: pnpm build
+        env:
+          ENABLE_TEMPLATE_PREVIEW: "1"
+
+  runtime-standalone:
+    name: Runtime builds standalone (as the Vercel Deploy Button clones it)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Copy apps/runtime out of the monorepo and build it with npm
+        run: |
+          cp -r apps/runtime "$RUNNER_TEMP/site"
+          cd "$RUNNER_TEMP/site"
+          npm install --no-audit --no-fund
+          npm run build
+
+  e2e:
+    name: End-to-end + accessibility (Playwright, axe)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Build both apps
+        run: pnpm build
+        env:
+          ENABLE_TEMPLATE_PREVIEW: "1"
+          LOCAL_MODE: "1"
+          NEXT_PUBLIC_SITE_URL: http://localhost:3100
+      - name: Run e2e
+        run: pnpm e2e
+        env:
+          CI: "true"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-results
+          path: test-results
