@@ -1,0 +1,703 @@
+/* Casefile — every project reads like a case file; outcomes first. */
+[data-template="casefile"] {
+  --cf-gut: clamp(1.25rem, 4vw, 3.5rem);
+  --cf-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  .cf-shell {
+    min-height: 100dvh;
+  }
+  @media (min-width: 1024px) {
+    .cf-shell {
+      display: grid;
+      grid-template-columns: 17rem minmax(0, 1fr);
+      background: linear-gradient(to right, var(--surface) calc(17rem - 1px), var(--line) calc(17rem - 1px) 17rem, transparent 17rem);
+    }
+  }
+
+  /* ───────── index (scroll-spy) ───────── */
+  .cf-index {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: color-mix(in oklch, var(--ground) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .cf-index-inner {
+    display: grid;
+  }
+  .cf-index-name,
+  .cf-index-summary {
+    display: none;
+  }
+  .cf-index-list {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    padding: 0.5rem var(--cf-gut);
+    scrollbar-width: thin;
+    scroll-padding-inline: 1rem;
+  }
+  .cf-index-link {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    white-space: nowrap;
+    padding: 0.45rem 0.75rem;
+    border-radius: calc(var(--r) * 0.7);
+    font-size: 0.875rem;
+    color: var(--mute);
+    transition: color 0.2s, background-color 0.2s;
+  }
+  .cf-index-link:hover {
+    color: var(--ink);
+    background: var(--surface);
+  }
+  .cf-index-link[aria-current="true"] {
+    color: var(--sig);
+    background: color-mix(in oklch, var(--sig) 9%, transparent);
+  }
+  .cf-index-no {
+    font-family: var(--pf-mono);
+    font-size: 0.75rem;
+    color: inherit;
+    opacity: 0.8;
+  }
+  .cf-index-count {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .cf-index {
+      height: 100dvh;
+      border-bottom: 0;
+      border-right: 1px solid var(--line);
+      background: var(--surface);
+      backdrop-filter: none;
+    }
+    .cf-index-inner {
+      height: 100%;
+      grid-template-rows: auto auto 1fr;
+      padding: 2rem 1.25rem 1.5rem;
+      gap: 0.35rem;
+    }
+    .cf-index-name {
+      display: block;
+      font-family: var(--pf-display);
+      font-weight: 700;
+      font-size: 1.125rem;
+      letter-spacing: -0.01em;
+      padding-inline: 0.75rem;
+    }
+    .cf-index-summary {
+      display: block;
+      padding-inline: 0.75rem;
+      font-family: var(--pf-mono);
+      font-size: 0.75rem;
+      color: var(--mute);
+      margin-bottom: 1.5rem;
+    }
+    .cf-index-list {
+      flex-direction: column;
+      overflow: auto;
+      padding: 0;
+      gap: 0.1rem;
+      border-top: 1px solid var(--line);
+      padding-top: 0.75rem;
+    }
+    .cf-index-link {
+      white-space: normal;
+      position: relative;
+      padding: 0.5rem 0.75rem;
+    }
+    .cf-index-link::before {
+      content: "";
+      position: absolute;
+      left: -1.25rem;
+      top: 0.4rem;
+      bottom: 0.4rem;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--sig);
+      transform: scaleY(0);
+      transition: transform 0.25s var(--cf-ease);
+    }
+    .cf-index-link[aria-current="true"]::before {
+      transform: none;
+    }
+    .cf-index-label {
+      flex: 1;
+    }
+    .cf-index-count {
+      display: inline;
+      font-family: var(--pf-mono);
+      font-size: 0.75rem;
+      color: var(--mute);
+    }
+  }
+
+  /* ───────── main + cover ───────── */
+  .cf-main {
+    container-type: inline-size;
+    min-width: 0;
+    padding: 0 var(--cf-gut) 2rem;
+    max-width: 84rem;
+  }
+  .cf-cover {
+    display: grid;
+    gap: 2rem;
+    padding-block: clamp(2.5rem, 7vw, 6rem) clamp(2.5rem, 5vw, 4.5rem);
+  }
+  @container (min-width: 760px) {
+    .cf-cover {
+      grid-template-columns: minmax(0, 1fr) 19rem;
+      align-items: end;
+    }
+  }
+  .cf-cover-text {
+    display: grid;
+    gap: 1.25rem;
+    align-content: end;
+  }
+  .cf-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--pf-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sig);
+  }
+  .cf-eyebrow::before {
+    content: "";
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 2px;
+    background: var(--sig);
+  }
+  .cf-name {
+    font-family: var(--pf-display);
+    font-weight: 750;
+    font-size: clamp(2.75rem, 9cqw, 6.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+  }
+  .cf-cover-compact .cf-name {
+    font-size: clamp(2.25rem, 6cqw, 4rem);
+  }
+  .cf-headline {
+    font-family: var(--pf-display);
+    font-size: clamp(1.25rem, 2.6cqw, 1.75rem);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    max-width: 34ch;
+    text-wrap: balance;
+  }
+  .cf-tagline {
+    max-width: 60ch;
+    color: var(--mute);
+    font-size: 1.0625rem;
+  }
+  .cf-file {
+    position: relative;
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    border-top-left-radius: 0;
+  }
+  .cf-file::before {
+    content: "";
+    position: absolute;
+    left: -1px;
+    top: -0.9rem;
+    width: 42%;
+    height: 0.9rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-bottom: 0;
+    border-radius: calc(var(--r) * 0.6) calc(var(--r) * 0.6) 0 0;
+  }
+  .cf-portrait {
+    width: 4.5rem;
+    border-radius: calc(var(--r) * 0.7);
+  }
+  .cf-file-dl {
+    display: grid;
+    gap: 0.75rem;
+    font-size: 0.9375rem;
+  }
+  .cf-file-dl dt,
+  .cf-kicker {
+    font-family: var(--pf-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .cf-file-dl dd {
+    margin-top: 0.15rem;
+    overflow-wrap: anywhere;
+  }
+
+  /* ───────── sections: a folder tab on a heavy rule ───────── */
+  .cf-section {
+    padding-block: clamp(3rem, 6vw, 5rem) 0;
+    scroll-margin-top: 4rem;
+  }
+  .cf-section-head {
+    position: relative;
+    display: grid;
+    gap: 0.4rem;
+    border-top: 3px solid var(--ink);
+    padding-top: 1.1rem;
+    margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+  }
+  @container (min-width: 760px) {
+    .cf-section-head {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+      align-items: baseline;
+      column-gap: 2rem;
+    }
+  }
+  .cf-tab {
+    position: absolute;
+    left: 0;
+    bottom: 100%;
+    padding: 0.3rem 0.85rem 0.2rem;
+    font-family: var(--pf-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    background: var(--ink);
+    color: var(--ground);
+    border-radius: calc(var(--r) * 0.6) calc(var(--r) * 0.6) 0 0;
+  }
+  .cf-h2 {
+    font-family: var(--pf-display);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 4cqw, 2.75rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+  .cf-section-sub {
+    color: var(--mute);
+    font-size: 0.9375rem;
+  }
+  .cf-section-body {
+    display: grid;
+    gap: clamp(1.75rem, 3vw, 2.5rem);
+  }
+
+  /* ───────── shared ───────── */
+  .cf-prose {
+    max-width: 68ch;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+  .cf-prose-lead {
+    font-size: clamp(1.0625rem, 1.6cqw, 1.25rem);
+    line-height: 1.6;
+  }
+  .cf-lead {
+    display: grid;
+    gap: 2rem;
+  }
+  @container (min-width: 760px) {
+    .cf-lead-img {
+      grid-template-columns: minmax(0, 1fr) 15rem;
+    }
+  }
+  .cf-lead-title {
+    font-family: var(--pf-display);
+    font-size: 1.25rem;
+    font-weight: 650;
+  }
+  .cf-lead-media {
+    max-width: 15rem;
+  }
+  .cf-media {
+    border-radius: calc(var(--r) * 0.8);
+    background: var(--surface);
+  }
+  .cf-entry-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.25rem 0.85rem;
+    align-items: baseline;
+  }
+  .cf-entry-head .cf-date {
+    grid-column: 2;
+  }
+  @container (min-width: 600px) {
+    .cf-entry-head {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+    .cf-entry-head .cf-date {
+      grid-column: 3;
+      text-align: right;
+    }
+  }
+  .cf-no {
+    font-family: var(--pf-mono);
+    font-size: 0.75rem;
+    color: var(--sig);
+    font-variant-numeric: tabular-nums;
+    padding-top: 0.2rem;
+  }
+  .cf-h3 {
+    font-family: var(--pf-display);
+    font-weight: 650;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  .cf-h3-sm {
+    font-size: 1.0625rem;
+  }
+  .cf-sub {
+    color: var(--mute);
+    font-size: 0.9375rem;
+    margin-top: 0.15rem;
+  }
+  .cf-date {
+    font-family: var(--pf-mono);
+    font-size: 0.8125rem;
+    color: var(--mute);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .cf-evidence {
+    display: grid;
+    gap: 0.6rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--edge);
+  }
+  .pf-tag {
+    background: var(--ground);
+    border-color: var(--line);
+    color: var(--ink);
+  }
+
+  /* outcome: the first metric, in huge numerals */
+  .cf-outcome {
+    display: grid;
+    gap: 0.25rem;
+  }
+  .cf-outcome-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2rem 0.75rem;
+  }
+  .cf-outcome-value {
+    font-family: var(--pf-display);
+    font-weight: 750;
+    font-size: clamp(2.75rem, 7cqw, 4.25rem);
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+    color: var(--sig);
+    font-variant-numeric: tabular-nums;
+  }
+  .cf-outcome-md .cf-outcome-value {
+    font-size: clamp(2.25rem, 5cqw, 3.25rem);
+  }
+  .cf-outcome-label {
+    font-weight: 600;
+    font-size: 1rem;
+    max-width: 20ch;
+  }
+  .cf-count {
+    display: inline-grid;
+  }
+  .cf-count > span {
+    grid-area: 1 / 1;
+  }
+  .cf-count-ghost {
+    visibility: hidden;
+  }
+
+  /* grid: two-up case cards */
+  .cf-cases {
+    display: grid;
+    gap: clamp(1.25rem, 2.5vw, 2rem);
+  }
+  @container (min-width: 760px) {
+    .cf-cases {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .cf-case {
+    display: grid;
+    gap: 1.1rem;
+    align-content: start;
+    padding: clamp(1rem, 2vw, 1.5rem);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    transition: border-color 0.2s, transform 0.3s var(--cf-ease);
+  }
+  .cf-case:hover {
+    border-color: var(--edge);
+  }
+  .cf-case:has(.cf-outcome) {
+    border-top: 3px solid var(--sig);
+  }
+
+  /* timeline: career log with duration bars */
+  .cf-log {
+    display: grid;
+  }
+  .cf-log-row {
+    display: grid;
+    gap: 0.8rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .cf-log-row:first-child {
+    padding-top: 0;
+  }
+  .cf-log-body {
+    display: grid;
+    gap: 0.85rem;
+  }
+  @container (min-width: 600px) {
+    .cf-log-body,
+    .cf-bar {
+      margin-left: calc(2.4rem + 0.85rem);
+    }
+  }
+  .cf-bar {
+    position: relative;
+    height: 1.25rem;
+    background: linear-gradient(var(--line), var(--line)) 0 50% / 100% 1px no-repeat;
+  }
+  .cf-bar-fill {
+    position: absolute;
+    top: 50%;
+    height: 0.5rem;
+    translate: 0 -50%;
+    border-radius: 99px;
+    background: var(--sig);
+    transform-origin: left;
+  }
+  .cf-bar-label {
+    position: absolute;
+    right: 0;
+    top: -1.1rem;
+    font-family: var(--pf-mono);
+    font-size: 0.75rem;
+    color: var(--mute);
+  }
+
+  /* list: an evidence table */
+  .cf-table {
+    border-top: 1px solid var(--ink);
+  }
+  .cf-trow {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr);
+    gap: 0.35rem 1rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .cf-tcell,
+  .cf-trow .cf-h3,
+  .cf-tdetail {
+    grid-column: 2;
+  }
+  .cf-tcell {
+    font-size: 0.9375rem;
+    color: var(--mute);
+  }
+  .cf-tdetail {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.35rem;
+  }
+  .cf-tcell:empty {
+    display: none;
+  }
+  @container (min-width: 760px) {
+    .cf-trow {
+      grid-template-columns: 2.6rem minmax(0, 1fr) minmax(0, 14rem) 9rem;
+    }
+    .cf-tcell,
+    .cf-trow .cf-h3 {
+      grid-column: auto;
+      display: block;
+    }
+    .cf-tdetail {
+      grid-column: 2 / -1;
+      max-width: 68ch;
+    }
+    .cf-tcell:empty {
+      display: block;
+    }
+    .cf-tcell.cf-date {
+      text-align: right;
+    }
+  }
+  .cf-trow:hover {
+    background: linear-gradient(90deg, color-mix(in oklch, var(--sig) 6%, transparent), transparent 70%);
+  }
+
+  /* quotes: large testimonial cards */
+  .cf-quotes {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @container (min-width: 760px) {
+    .cf-quotes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .cf-quote {
+    position: relative;
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    padding-top: clamp(2.25rem, 4vw, 3rem);
+    background: var(--surface);
+    border-radius: var(--r);
+    border: 1px solid var(--line);
+  }
+  .cf-quote-mark {
+    position: absolute;
+    top: 0.1rem;
+    left: clamp(1rem, 2.5vw, 1.75rem);
+    font-family: var(--pf-display);
+    font-size: 4.5rem;
+    line-height: 1;
+    color: var(--sig);
+  }
+  .cf-quote-text {
+    font-family: var(--pf-display);
+    font-size: clamp(1.125rem, 2cqw, 1.375rem);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+  .cf-quote-by {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9375rem;
+  }
+  .cf-avatar {
+    width: 2.75rem;
+    flex: none;
+    border-radius: 99px;
+  }
+  .cf-quote-rule {
+    width: 1.75rem;
+    height: 2px;
+    background: var(--comp);
+    flex: none;
+  }
+
+  /* metrics: a KPI tile row */
+  .cf-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    overflow: hidden;
+  }
+  .cf-kpi {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+    padding: clamp(1.1rem, 2.4vw, 1.6rem);
+    background: var(--ground);
+  }
+  .cf-kpi-value {
+    font-family: var(--pf-display);
+    font-size: clamp(2.25rem, 4.6cqw, 3.25rem);
+    font-weight: 750;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .cf-kpi-label {
+    font-weight: 600;
+  }
+  .cf-kpi-note {
+    font-size: 0.875rem;
+    color: var(--mute);
+  }
+
+  /* tags: grouped skill chips */
+  .cf-skills {
+    display: grid;
+    gap: 1rem;
+  }
+  @container (min-width: 760px) {
+    .cf-skills {
+      grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    }
+  }
+  .cf-skill {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+  }
+  .cf-skill-title {
+    font-family: var(--pf-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .cf-chips .pf-tag {
+    font-size: 0.9375rem;
+    padding: 0.4em 0.8em;
+    background: var(--surface);
+    border-color: transparent;
+  }
+
+  .cf-foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding-top: 1.5rem;
+    border-top: 3px solid var(--ink);
+    font-size: 0.875rem;
+    color: var(--mute);
+  }
+  .cf-foot-top:hover {
+    color: var(--ink);
+  }
+
+  /* motion: duration bars grow along the timeline as they scroll in */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      &:not([data-motion="none"]) .cf-bar-fill {
+        animation: cf-grow linear both;
+        animation-timeline: view();
+        animation-range: entry 10% cover 35%;
+      }
+    }
+  }
+}
+@keyframes cf-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: none;
+  }
+}
