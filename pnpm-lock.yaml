@@ -29,6 +29,9 @@ importers:
       '@dnd-kit/utilities':
         specifier: ^3.2.2
         version: 3.2.2(react@19.3.1)
+      '@fontsource-variable/anybody':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@fontsource-variable/archivo':
         specifier: ^5.3.0
         version: 5.3.0
@@ -171,6 +174,9 @@ importers:
 
   apps/runtime:
     dependencies:
+      '@fontsource-variable/anybody':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@fontsource-variable/archivo':
         specifier: ^5.3.0
         version: 5.3.0
@@ -514,6 +520,9 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
+
+  '@fontsource-variable/anybody@5.3.0':
+    resolution: {integrity: sha512-3u/FSV3mGv9xW3x+CdK9lAZYT1Y3NaRA1bexeoIuk9s5QE8sD8OOTcofvpPx0Z6M0Fq1WAJ06ZAw8hivdRQWHQ==}
 
   '@fontsource-variable/archivo@5.3.0':
     resolution: {integrity: sha512-HogK8FJelrD1o7TlZlkIVtHgc20bO5PZRWE7mUeUTdMN055alznQV6/00J00IBeu8FQAH4s3zW9UJNvKExXf+g==}
@@ -4082,6 +4091,8 @@ snapshots:
       react-dom: 19.3.1(react@19.3.1)
 
   '@floating-ui/utils@0.2.12': {}
+
+  '@fontsource-variable/anybody@5.3.0': {}
 
   '@fontsource-variable/archivo@5.3.0': {}
 
