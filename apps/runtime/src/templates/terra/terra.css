@@ -189,12 +189,12 @@
   }
   @media (min-width: 1100px) {
     .tr-section {
-      grid-template-columns: minmax(0, 0.8fr) minmax(0, 2.2fr);
+      grid-template-columns: minmax(16rem, 0.8fr) minmax(0, 2.2fr);
       gap: 4rem;
     }
     .tr-section-alt {
       padding-left: calc(var(--tr-gut) + 5vw);
-      grid-template-columns: minmax(0, 0.7fr) minmax(0, 2.2fr);
+      grid-template-columns: minmax(16rem, 0.7fr) minmax(0, 2.2fr);
     }
     .tr-section-head {
       position: sticky;
@@ -208,8 +208,10 @@
     align-content: start;
   }
   .tr-h2 {
+    overflow-wrap: normal;
+    hyphens: auto;
     font-family: var(--pf-display);
-    font-size: clamp(2rem, 4.2vw, 3.25rem);
+    font-size: clamp(2rem, 3.6vw, 2.75rem);
     font-weight: 500;
     line-height: 1.02;
     letter-spacing: -0.03em;
