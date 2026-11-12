@@ -27,7 +27,10 @@ export function Capsule({ items, name }: { items: { href: string; label: string 
     const seen = new Set<string>();
     const io = new IntersectionObserver(
       (recs) => {
-        for (const r of recs) (r.isIntersecting ? seen.add : seen.delete).call(seen, r.target.id);
+        for (const r of recs) {
+          if (r.isIntersecting) seen.add(r.target.id);
+          else seen.delete(r.target.id);
+        }
         const first = ids.find((id) => seen.has(id));
         setActive(first ?? null);
       },
