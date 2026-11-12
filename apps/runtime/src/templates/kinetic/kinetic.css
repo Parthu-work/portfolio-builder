@@ -257,6 +257,9 @@
       align-items: start;
     }
   }
+  .kn-lead > .kn-media {
+    max-width: 26rem;
+  }
   .kn-lead-title {
     font-family: var(--pf-display);
     font-weight: 700;
@@ -435,7 +438,7 @@
   /* metrics: giant numerals */
   .kn-metrics {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
     gap: 2.5rem 3rem;
   }
   .kn-metric {

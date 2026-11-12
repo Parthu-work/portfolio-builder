@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { Fragment, type CSSProperties } from "react";
 import { TemplateRoot } from "../../render/Root";
 import { Links, Prose, Rest, Socials, Tail } from "../../render/FieldValue";
 import { Img } from "../../render/Img";
@@ -15,12 +15,14 @@ function SplitWords({ text, className = "" }: { text: string; className?: string
   return (
     <span className={`kn-split ${className}`}>
       {words.map((w, i) => (
-        <span key={i} className="kn-word-wrap">
-          <span className="kn-word" style={{ "--i": i } as CSSProperties}>
-            {w}
+        <Fragment key={i}>
+          <span className="kn-word-wrap">
+            <span className="kn-word" style={{ "--i": i } as CSSProperties}>
+              {w}
+            </span>
           </span>
           {i < words.length - 1 ? " " : null}
-        </span>
+        </Fragment>
       ))}
     </span>
   );
