@@ -196,6 +196,27 @@ export const TEMPLATES: TemplateMeta[] = [
     ],
     fontPairs: [fp("space", "Space Grotesk + Inter", F.space, F.inter), fp("mono", "JetBrains Mono", F.jet, F.jet), fp("bricolage", "Bricolage + DM Sans", F.bric, F.dm)],
   },
+  {
+    id: "paper",
+    name: "Paper",
+    description: "An exquisitely typeset résumé sheet resting on a quiet desk, built to become a clean one- or two-page PDF.",
+    signature: "Print-perfect sheet · one-click Save as PDF · page-break guides",
+    tags: ["recruiter-safe", "resume", "print", "minimal", "light"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("ivory", "Ivory",
+        tk("0.925 0.014 80", "0.988 0.008 85", "0.25 0.06 262", "0.45 0.035 262", "0.87 0.014 80", "0.57 0.025 75", "0.43 0.13 22", "0.985 0.008 85", "0.5 0.07 200"),
+        tk("0.165 0.014 262", "0.22 0.016 262", "0.95 0.012 85", "0.77 0.02 85", "0.32 0.016 262", "0.57 0.022 262", "0.77 0.11 25", "0.17 0.02 25", "0.8 0.08 200")),
+      pal("slate", "Slate",
+        tk("0.915 0.007 240", "0.99 0.003 240", "0.22 0.015 245", "0.45 0.016 245", "0.86 0.007 240", "0.56 0.014 240", "0.47 0.09 195", "0.99 0.003 200", "0.52 0.14 35"),
+        tk("0.165 0.009 240", "0.22 0.011 240", "0.95 0.005 240", "0.76 0.012 240", "0.32 0.011 240", "0.57 0.013 240", "0.8 0.1 190", "0.17 0.02 200", "0.8 0.11 45")),
+      pal("graphite", "Graphite",
+        tk("0.9 0.004 90", "0.99 0.002 90", "0.2 0.005 90", "0.44 0.006 90", "0.85 0.004 90", "0.55 0.006 90", "0.45 0.14 275", "0.99 0.002 90", "0.53 0.12 70"),
+        tk("0.13 0.003 90", "0.205 0.004 90", "0.94 0.004 90", "0.75 0.006 90", "0.3 0.004 90", "0.55 0.006 90", "0.8 0.1 275", "0.16 0.02 275", "0.8 0.12 75")),
+    ],
+    fontPairs: [fp("newsreader", "Newsreader + Inter", F.news, F.inter), fp("archivo", "Archivo + Inter", F.archivo, F.inter), fp("fraunces", "Fraunces + DM Sans", F.fraunces, F.dm)],
+  },
 ];
 
 export const TEMPLATE_IDS = TEMPLATES.map((t) => t.id);

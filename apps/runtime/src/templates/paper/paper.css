@@ -1,0 +1,677 @@
+/* Paper — the portfolio as a typeset résumé sheet resting on a desk. */
+[data-template="paper"] {
+  --pp-shadow: color-mix(in oklch, var(--ink) 22%, transparent);
+  --pp-pad: clamp(1.25rem, 5.5vw, 3.75rem);
+
+  /* ───────── desk + sheet ───────── */
+  .pp-desk {
+    min-height: 100dvh;
+    padding: 0;
+    background:
+      radial-gradient(120% 70% at 50% 0%, color-mix(in oklch, var(--surface) 35%, transparent), transparent 70%),
+      var(--ground);
+  }
+  .pp-sheet {
+    container-type: inline-size;
+    position: relative;
+    width: 100%;
+    margin-inline: auto;
+    background: var(--surface);
+    aspect-ratio: auto;
+  }
+  @media (min-width: 768px) {
+    .pp-desk {
+      padding: clamp(2.5rem, 6vw, 5rem) 1.5rem clamp(5rem, 8vw, 7rem);
+    }
+    .pp-sheet {
+      width: min(100%, 52rem);
+      aspect-ratio: 210 / 297;
+      border: 1px solid color-mix(in oklch, var(--line) 70%, transparent);
+      box-shadow:
+        0 1px 1px color-mix(in oklch, var(--ink) 6%, transparent),
+        0 2px 6px -2px color-mix(in oklch, var(--ink) 10%, transparent),
+        0 30px 70px -30px var(--pp-shadow);
+    }
+  }
+  @media (min-width: 1800px) {
+    .pp-sheet {
+      width: 58rem;
+    }
+  }
+  .pp-page {
+    position: relative;
+    padding: var(--pp-pad);
+    padding-top: calc(var(--pp-pad) * 1.15);
+    display: grid;
+    gap: clamp(1.75rem, 4.5cqw, 2.5rem);
+  }
+
+  /* Page-break guides: one dashed rule per A4 page height (141.42% of the sheet width).
+     Off: only small crop ticks in the desk margin. On: dashed rules across the sheet. */
+  .pp-guides {
+    display: none;
+    position: absolute;
+    inset: 0 -1.25rem;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(141.42cqw - 1px),
+      var(--edge) calc(141.42cqw - 1px) 141.42cqw
+    );
+    background-position: 0 0;
+    -webkit-mask: linear-gradient(to right, #000 0 0.75rem, transparent 0.75rem calc(100% - 0.75rem), #000 calc(100% - 0.75rem));
+    mask: linear-gradient(to right, #000 0 0.75rem, transparent 0.75rem calc(100% - 0.75rem), #000 calc(100% - 0.75rem));
+    transition: opacity 0.25s;
+  }
+  @media (min-width: 768px) {
+    .pp-guides {
+      display: block;
+    }
+  }
+  &[data-guides="on"] .pp-guides {
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(141.42cqw - 1px),
+      color-mix(in oklch, var(--sig) 70%, var(--edge)) calc(141.42cqw - 1px) 141.42cqw
+    );
+    -webkit-mask: repeating-linear-gradient(to right, #000 0 7px, transparent 7px 12px);
+    mask: repeating-linear-gradient(to right, #000 0 7px, transparent 7px 12px);
+  }
+  &[data-guides="on"] .pp-sheet {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(141.42cqw - 2.5rem),
+      color-mix(in oklch, var(--sig) 5%, transparent) calc(141.42cqw - 2.5rem) calc(141.42cqw + 2.5rem),
+      transparent calc(141.42cqw + 2.5rem) 141.42cqw
+    );
+  }
+
+  /* ───────── masthead ───────── */
+  .pp-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 1.5rem;
+    row-gap: 0.9rem;
+    padding-bottom: clamp(1.25rem, 3.5cqw, 2rem);
+    border-bottom: 2px solid var(--ink);
+  }
+  .pp-head > :not(.pp-head-main, .pp-portrait) {
+    grid-column: 1 / -1;
+  }
+  .pp-kicker {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sig);
+    margin-bottom: 0.6rem;
+  }
+  .pp-name {
+    font-family: var(--pf-display);
+    font-size: clamp(2.25rem, 7.4cqw, 3.75rem);
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .pp-head-compact .pp-name {
+    font-size: clamp(1.875rem, 5cqw, 2.75rem);
+  }
+  .pp-headline {
+    margin-top: 0.65rem;
+    font-family: var(--pf-display);
+    font-size: clamp(1.125rem, 2.6cqw, 1.375rem);
+    line-height: 1.3;
+    color: var(--mute);
+    text-wrap: balance;
+    max-width: 44ch;
+  }
+  .pp-portrait {
+    width: clamp(4.5rem, 13cqw, 7rem);
+    align-self: start;
+    border-radius: calc(var(--r) * 0.5);
+    filter: grayscale(0.15) contrast(1.02);
+    outline: 1px solid var(--line);
+    outline-offset: 3px;
+  }
+  .pp-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0;
+    font-size: 0.9375rem;
+    color: var(--mute);
+    font-variant-numeric: tabular-nums;
+  }
+  .pp-contact li + li::before {
+    content: "·";
+    padding-inline: 0.55rem;
+    color: var(--edge);
+  }
+  .pp-a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklch, var(--sig) 55%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+  }
+  .pp-a:hover {
+    color: var(--sig);
+    text-decoration-color: currentColor;
+  }
+  .pp-tagline {
+    max-width: 68ch;
+  }
+  .pp-hero-links .pf-link {
+    font-size: 0.9375rem;
+  }
+
+  /* ───────── sections ───────── */
+  .pp-section {
+    display: grid;
+    gap: 0.9rem 2rem;
+  }
+  @container (min-width: 600px) {
+    .pp-section {
+      grid-template-columns: 9.5rem minmax(0, 1fr);
+    }
+  }
+  .pp-section-head {
+    border-top: 1px solid var(--line);
+    padding-top: 0.7rem;
+  }
+  @container (min-width: 600px) {
+    .pp-section-head {
+      border-top: 0;
+      padding-top: 0.1rem;
+    }
+    .pp-section-body {
+      border-left: 1px solid color-mix(in oklch, var(--line) 80%, transparent);
+      padding-left: 2rem;
+    }
+  }
+  .pp-h2 {
+    font-family: var(--pf-display);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sig);
+    line-height: 1.35;
+  }
+  .pp-section-sub {
+    margin-top: 0.35rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--mute);
+  }
+  .pp-section-body {
+    display: grid;
+    gap: 1.25rem;
+    min-width: 0;
+  }
+
+  /* ───────── shared entry type ───────── */
+  .pp-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.1rem 1.25rem;
+  }
+  .pp-h3 {
+    font-family: var(--pf-display);
+    font-size: 1.0625rem;
+    font-weight: 650;
+    line-height: 1.3;
+    color: var(--ink);
+    min-width: 0;
+  }
+  .pp-h3-sub {
+    font-weight: 400;
+    color: var(--mute);
+  }
+  .pp-date {
+    font-size: 0.875rem;
+    color: var(--mute);
+    font-variant-numeric: tabular-nums lining-nums;
+    white-space: nowrap;
+  }
+  .pp-sub {
+    font-size: 0.9375rem;
+    font-style: italic;
+    color: var(--mute);
+  }
+  .pp-body {
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 70ch;
+    text-wrap: pretty;
+  }
+  .pp-body-lead {
+    font-size: 1.0625rem;
+  }
+  .pp-lead {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @container (min-width: 600px) {
+    .pp-lead-img {
+      grid-template-columns: minmax(0, 1fr) 8.5rem;
+    }
+  }
+  .pp-lead-title {
+    font-family: var(--pf-display);
+    font-weight: 650;
+    font-size: 1.125rem;
+  }
+  .pp-entry {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+  }
+  .pp-entry .pf-tail {
+    margin-top: 0.25rem;
+  }
+  .pp-fig {
+    margin: 0.25rem 0;
+  }
+  .pp-media {
+    border-radius: calc(var(--r) * 0.4);
+    background: var(--ground);
+    outline: 1px solid var(--line);
+  }
+  .pp-thumb {
+    max-width: 15rem;
+  }
+  .pp-lead-figure {
+    max-width: 10rem;
+  }
+  .pp-print-only {
+    display: none;
+  }
+  .pf-tag {
+    border-color: var(--line);
+    background: transparent;
+    font-size: 0.8125rem;
+  }
+  .pf-dl {
+    font-size: 0.9375rem;
+  }
+  .pf-btn {
+    min-height: 2.5rem;
+    font-size: 0.9375rem;
+  }
+
+  /* timeline: rows with dates flush right */
+  .pp-timeline {
+    display: grid;
+    gap: 1.35rem;
+  }
+
+  /* grid: compact two-up blocks, no shadows */
+  .pp-blocks {
+    display: grid;
+    gap: 1.5rem 2rem;
+  }
+  @container (min-width: 560px) {
+    .pp-blocks {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .pp-block {
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--line);
+  }
+  .pp-block-figure {
+    margin-top: 0;
+  }
+
+  /* list: dense rows */
+  .pp-dense {
+    display: grid;
+  }
+  .pp-dense-row {
+    padding-block: 0.6rem;
+    gap: 0.25rem;
+    border-bottom: 1px dotted var(--line);
+  }
+  .pp-dense-row:first-child {
+    padding-top: 0;
+  }
+  .pp-dense-row:last-child {
+    border-bottom: 0;
+  }
+  .pp-dense-row .pp-body {
+    font-size: 0.9375rem;
+    color: var(--mute);
+  }
+
+  /* quotes: single italic lines with attribution */
+  .pp-quotes {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .pp-quote {
+    padding-left: 1rem;
+    border-left: 2px solid var(--sig);
+  }
+  .pp-quote-text {
+    font-family: var(--pf-display);
+    font-style: italic;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+    max-width: 66ch;
+  }
+  .pp-quote-by {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.875rem;
+  }
+  .pp-quote-name {
+    font-weight: 600;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+  }
+  .pp-avatar {
+    width: 1.75rem;
+    flex: none;
+    border-radius: 999px;
+  }
+
+  /* metrics: an inline row of figures */
+  .pp-figures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+    gap: 1rem 0;
+  }
+  .pp-figure {
+    gap: 0.15rem;
+    padding-inline: 0 1.25rem;
+  }
+  .pp-figure + .pp-figure {
+    border-left: 1px solid var(--line);
+    padding-left: 1.25rem;
+  }
+  .pp-fig-value {
+    font-family: var(--pf-display);
+    font-size: 1.875rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums lining-nums;
+    color: var(--ink);
+  }
+  .pp-fig-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .pp-fig-note {
+    font-size: 0.8125rem;
+    color: var(--mute);
+  }
+  .pp-fig-inline {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .pp-fig-inline .pp-fig-value {
+    font-size: 1.375rem;
+    color: var(--sig);
+  }
+
+  /* tags: grouped inline runs separated by middots */
+  .pp-groups {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .pp-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.2rem 1.25rem;
+  }
+  @container (min-width: 640px) {
+    .pp-group {
+      grid-template-columns: 9rem minmax(0, 1fr);
+    }
+  }
+  .pp-group-title {
+    font-weight: 650;
+    font-size: 0.9375rem;
+  }
+  .pp-run {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .pp-dot {
+    color: var(--sig);
+    font-weight: 700;
+  }
+
+  .pp-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.8125rem;
+    color: var(--mute);
+  }
+
+  /* ───────── floating tools ───────── */
+  .pp-tools {
+    position: fixed;
+    z-index: 50;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .pp-tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.95rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--edge);
+    border-radius: 999px;
+    box-shadow: 0 10px 30px -14px var(--pp-shadow);
+    transition: transform 0.15s, background-color 0.15s, box-shadow 0.2s;
+  }
+  .pp-tool:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 34px -14px var(--pp-shadow);
+  }
+  .pp-tool:active {
+    transform: translateY(1px);
+  }
+  .pp-tool[aria-pressed="true"] {
+    border-color: var(--sig);
+    color: var(--sig);
+  }
+  .pp-tool-primary {
+    background: var(--sig);
+    color: var(--sigink);
+    border-color: transparent;
+  }
+  .pp-tool-count {
+    font-weight: 500;
+    color: var(--mute);
+    font-variant-numeric: tabular-nums;
+  }
+  .pp-tool[aria-pressed="true"] .pp-tool-count {
+    color: inherit;
+  }
+  .pp-tool-icon {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    border: 1.5px solid currentColor;
+    border-radius: 2px;
+  }
+  .pp-tool-icon-guides {
+    background: repeating-linear-gradient(to right, currentColor 0 2px, transparent 2px 4px) center / 100% 1.5px no-repeat;
+  }
+  .pp-tool-icon-pdf {
+    border-width: 0 0 1.5px;
+    border-radius: 0;
+    background:
+      linear-gradient(currentColor, currentColor) center 0 / 1.5px 70% no-repeat,
+      conic-gradient(from 135deg at 50% 78%, currentColor 90deg, transparent 0) center 32% / 0.6rem 0.35rem no-repeat;
+  }
+  @media (max-width: 767px) {
+    .pp-tool:not(.pp-tool-primary) {
+      display: none;
+    }
+    .pp-desk {
+      padding-bottom: 5rem;
+    }
+  }
+
+  /* ───────── motion: the sheet settles onto the desk ───────── */
+  @media (prefers-reduced-motion: no-preference) {
+    &:not([data-motion="none"]) .pp-sheet {
+      transition:
+        opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+        transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+      @starting-style {
+        opacity: 0;
+        transform: translateY(var(--pf-rise)) rotate(-0.4deg);
+      }
+    }
+  }
+}
+
+/* ───────── print: a clean, ATS-friendly résumé ───────── */
+@page paper {
+  size: A4;
+  margin: 14mm;
+}
+@media print {
+  :root:has([data-template="paper"]) {
+    background: none;
+  }
+  [data-template="paper"] {
+    page: paper;
+    color-scheme: light;
+    background: none;
+    color: CanvasText;
+    min-height: 0;
+    font-size: 10.5pt;
+
+    *,
+    *::before,
+    *::after {
+      color: CanvasText !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      text-shadow: none !important;
+    }
+    .text-mute,
+    .pp-headline,
+    .pp-sub,
+    .pp-date,
+    .pp-contact,
+    .pp-fig-note,
+    .pp-section-sub,
+    .pp-h3-sub,
+    .pf-dl dt {
+      color: color-mix(in srgb, CanvasText 72%, Canvas) !important;
+    }
+    .pf-skip,
+    .pp-tools,
+    .pp-guides,
+    .pp-portrait,
+    .pp-avatar,
+    .pp-fig .pf-img,
+    video {
+      display: none !important;
+    }
+    .pp-print-only {
+      display: block;
+      font-size: 8.5pt;
+      font-style: italic;
+    }
+    .pp-desk {
+      padding: 0;
+      min-height: 0;
+    }
+    .pp-sheet {
+      width: auto;
+      aspect-ratio: auto;
+      border: 0;
+      transform: none !important;
+      opacity: 1 !important;
+    }
+    .pp-page {
+      padding: 0;
+      gap: 5mm;
+    }
+    .pp-head {
+      border-bottom-width: 1.5pt;
+      border-color: CanvasText;
+    }
+    .pp-name {
+      font-size: 24pt;
+    }
+    .pp-headline {
+      font-size: 12pt;
+    }
+    .pp-section-body {
+      border-color: color-mix(in srgb, CanvasText 25%, Canvas);
+    }
+    .pp-h2 {
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+    .pp-section-head {
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+    .pp-entry,
+    .pp-lead,
+    .pp-head,
+    figure,
+    .pf-dl-row,
+    .pf-code {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .pp-h3 {
+      break-after: avoid;
+    }
+    .pf-gallery {
+      grid-template-columns: repeat(6, 18mm);
+    }
+    .pf-code {
+      white-space: pre-wrap;
+      font-size: 8pt;
+      border-color: color-mix(in srgb, CanvasText 30%, Canvas);
+    }
+    .pf-btn {
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      font-weight: 400;
+      text-decoration: underline;
+    }
+    /* URLs are printed after their links; decorative arrows are dropped. */
+    a[href^="http"]::after {
+      content: " (" attr(href) ")";
+      font-size: 0.85em;
+      word-break: break-all;
+    }
+    a > span[aria-hidden="true"] {
+      display: none;
+    }
+    .pp-foot {
+      display: none;
+    }
+  }
+}

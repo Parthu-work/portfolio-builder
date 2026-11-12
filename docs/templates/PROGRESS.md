@@ -3,7 +3,7 @@ Statuses: todo · in-progress · done · blocked. Updated by the agent; one row 
 
 | # | id | name | status | commit | notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | paper | Paper | todo | | |
+| 1 | paper | Paper | in-progress | | |
 | 2 | casefile | Casefile | todo | | |
 | 3 | card | Card | todo | | |
 | 4 | quiet | Quiet | todo | | |
