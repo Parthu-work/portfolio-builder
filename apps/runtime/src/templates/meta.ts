@@ -344,6 +344,27 @@ export const TEMPLATES: TemplateMeta[] = [
     ],
     fontPairs: [fp("sora", "Sora + Inter", F.sora, F.inter), fp("inter", "Inter", F.inter, F.inter), fp("manrope", "Manrope + Inter", F.manrope, F.inter)],
   },
+  {
+    id: "terra",
+    name: "Terra",
+    description: "Earthy and tactile: moss, terracotta and sand, work held in organic shapes on grained paper, growing slowly into view.",
+    signature: "Organic blob masks · paper grain · slow growing reveals",
+    tags: ["organic", "warm", "nature", "texture", "light"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("moss", "Moss",
+        tk("0.955 0.02 95", "0.925 0.03 100", "0.24 0.03 130", "0.42 0.035 125", "0.86 0.03 100", "0.53 0.04 115", "0.45 0.09 140", "0.98 0.015 95", "0.55 0.13 45"),
+        tk("0.19 0.02 135", "0.235 0.025 135", "0.94 0.02 95", "0.77 0.03 100", "0.32 0.025 135", "0.58 0.035 125", "0.8 0.11 135", "0.18 0.03 135", "0.75 0.12 45")),
+      pal("terracotta", "Terracotta",
+        tk("0.95 0.02 70", "0.92 0.03 65", "0.25 0.04 40", "0.44 0.05 40", "0.85 0.03 60", "0.54 0.05 45", "0.47 0.14 40", "0.98 0.012 70", "0.5 0.08 150"),
+        tk("0.2 0.025 45", "0.245 0.03 45", "0.94 0.02 70", "0.77 0.03 65", "0.33 0.03 45", "0.58 0.04 45", "0.76 0.12 45", "0.18 0.03 40", "0.78 0.09 150")),
+      pal("night-forest", "Night Forest",
+        tk("0.95 0.015 150", "0.92 0.02 150", "0.22 0.03 165", "0.43 0.035 160", "0.86 0.02 150", "0.54 0.035 160", "0.45 0.08 170", "0.98 0.01 150", "0.55 0.12 60"),
+        tk("0.165 0.02 165", "0.21 0.025 165", "0.93 0.02 120", "0.75 0.03 130", "0.3 0.025 165", "0.56 0.035 160", "0.8 0.1 150", "0.17 0.03 165", "0.8 0.11 75")),
+    ],
+    fontPairs: [fp("fraunces", "Fraunces + Manrope", F.fraunces, F.manrope), fp("newsreader", "Newsreader + DM Sans", F.news, F.dm), fp("playfair", "Playfair + Manrope", F.playfair, F.manrope)],
+  },
 ];
 
 export const TEMPLATE_IDS = TEMPLATES.map((t) => t.id);
