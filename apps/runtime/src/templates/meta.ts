@@ -323,6 +323,27 @@ export const TEMPLATES: TemplateMeta[] = [
     ],
     fontPairs: [fp("archivo", "Archivo + JetBrains Mono", F.archivo, F.archivo), fp("space", "Space Grotesk + JetBrains Mono", F.space, F.space), fp("newsreader", "Newsreader + JetBrains Mono", F.news, F.news)],
   },
+  {
+    id: "vision",
+    name: "Vision",
+    description: "Spatial liquid glass: your work in floating windows inside a softly lit room, with a capsule tab bar that condenses as you scroll.",
+    signature: "Floating glass panes · condensing capsule nav · gentle spatial tilt",
+    tags: ["glass", "spatial", "product", "modern"],
+    preferredMode: "dark",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("daylight", "Daylight",
+        tk("0.96 0.012 230", "0.99 0.004 230", "0.2 0.02 250", "0.44 0.02 250", "0.88 0.01 230", "0.56 0.02 245", "0.5 0.17 255", "0.99 0.004 250", "0.6 0.14 30"),
+        tk("0.19 0.02 250", "0.25 0.025 250", "0.97 0.006 240", "0.78 0.02 245", "0.34 0.025 250", "0.6 0.03 245", "0.78 0.12 245", "0.18 0.03 250", "0.8 0.12 40")),
+      pal("dusk", "Dusk",
+        tk("0.95 0.02 320", "0.985 0.008 320", "0.23 0.04 300", "0.45 0.04 300", "0.88 0.02 315", "0.57 0.04 305", "0.5 0.18 330", "0.99 0.005 320", "0.58 0.14 60"),
+        tk("0.18 0.04 300", "0.24 0.045 300", "0.96 0.012 320", "0.78 0.035 315", "0.33 0.045 300", "0.6 0.05 305", "0.8 0.13 340", "0.18 0.04 320", "0.82 0.12 65")),
+      pal("deep-space", "Deep Space",
+        tk("0.955 0.01 250", "0.985 0.005 250", "0.18 0.03 265", "0.44 0.03 262", "0.88 0.012 255", "0.56 0.03 260", "0.48 0.11 215", "0.99 0.005 250", "0.55 0.18 300"),
+        tk("0.13 0.03 268", "0.19 0.035 268", "0.96 0.01 250", "0.76 0.03 255", "0.28 0.035 268", "0.56 0.04 262", "0.84 0.12 205", "0.15 0.03 230", "0.75 0.16 300")),
+    ],
+    fontPairs: [fp("sora", "Sora + Inter", F.sora, F.inter), fp("inter", "Inter", F.inter, F.inter), fp("manrope", "Manrope + Inter", F.manrope, F.inter)],
+  },
 ];
 
 export const TEMPLATE_IDS = TEMPLATES.map((t) => t.id);
