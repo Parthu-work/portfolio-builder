@@ -205,7 +205,7 @@
   }
   .vv-opener {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     align-items: end;
     gap: 0 clamp(1rem, 3vw, 2.5rem);
     padding-bottom: 1.25rem;
@@ -223,13 +223,20 @@
     text-shadow: 0 0 40px var(--vv-glow-sig);
     font-variant-numeric: tabular-nums;
   }
+  @media (min-width: 700px) {
+    .vv-opener {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+  }
   .vv-alt .vv-opener-no {
     -webkit-text-stroke-color: var(--comp);
     text-shadow: 0 0 40px var(--vv-glow-comp);
   }
   .vv-h2 {
+    overflow-wrap: normal;
+    hyphens: auto;
     font-family: var(--pf-display);
-    font-size: clamp(2rem, 5vw, 4.25rem);
+    font-size: clamp(1.75rem, 5vw, 4.25rem);
     font-weight: 800;
     line-height: 0.95;
     letter-spacing: -0.035em;
@@ -300,7 +307,8 @@
   }
   .vv-poster-year {
     font-family: var(--pf-display);
-    font-size: clamp(3.5rem, 9vw, 8rem);
+    white-space: nowrap;
+    font-size: clamp(3rem, 6.5vw, 6rem);
     font-weight: 800;
     line-height: 0.8;
     letter-spacing: -0.05em;
@@ -422,7 +430,7 @@
     letter-spacing: -0.035em;
     max-width: 22ch;
     color: var(--ink);
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: color-mix(in oklch, var(--ink) 14%, transparent);
     -webkit-text-stroke: max(1.25px, 0.016em) var(--ink);
     background: linear-gradient(100deg, var(--sig), var(--comp)) 0 0 / 0% 100% no-repeat;
     -webkit-background-clip: text;
@@ -454,7 +462,7 @@
   /* metrics: neon numerals */
   .vv-metrics {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 1fr));
     gap: 2.5rem 2rem;
   }
   .vv-metric {
@@ -468,7 +476,8 @@
   }
   .vv-neon {
     font-family: var(--pf-display);
-    font-size: clamp(2.75rem, 5.5vw, 5rem);
+    white-space: nowrap;
+    font-size: clamp(2.25rem, 4.4vw, 4.25rem);
     font-weight: 800;
     line-height: 0.9;
     letter-spacing: -0.04em;
