@@ -247,6 +247,9 @@
   .ar-col-tags {
     color: var(--mute);
   }
+  td.ar-col-section {
+    min-width: 9.5rem;
+  }
   @media (max-width: 767px) {
     .ar-col-section,
     .ar-col-tags {
@@ -274,6 +277,23 @@
     padding: 0.75rem;
     border: 1px solid var(--line);
     background: var(--surface);
+  }
+  .ar-blank {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    background: repeating-linear-gradient(45deg, transparent 0 10px, color-mix(in oklch, var(--ink) 6%, transparent) 10px 11px), var(--surface);
+    outline: 1px solid var(--line);
+    outline-offset: -1px;
+  }
+  .ar-blank span {
+    font-family: var(--pf-mono);
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+    letter-spacing: 0.04em;
+    color: var(--mute);
+    padding: 0.35rem 0.75rem;
+    background: var(--ground);
+    border: 1px solid var(--line);
   }
   .ar-pane-empty {
     display: grid;
@@ -416,6 +436,9 @@
   }
   .ar-card-plate {
     position: relative;
+  }
+  .ar-card-plate:has(.ar-blank) .ar-card-no {
+    display: none;
   }
   .ar-card-no {
     position: absolute;

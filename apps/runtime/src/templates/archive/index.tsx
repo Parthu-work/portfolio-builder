@@ -1,4 +1,4 @@
-import { Cover, TemplateRoot } from "../../render/Root";
+import { TemplateRoot } from "../../render/Root";
 import { Links, Prose, Rest, Socials, Tail } from "../../render/FieldValue";
 import { Img } from "../../render/Img";
 import { viewPortfolio, type Entry, type SectionView } from "../../render/view";
@@ -154,7 +154,9 @@ function Items({ s, items, lang }: { s: SectionView; items: Numbered[]; lang: st
                 {e.image ? (
                   <Img image={e.image} aspect="4 / 3" sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw" className="ar-media" />
                 ) : (
-                  <Cover seed={e.id + (e.title ?? "")} label={e.title} className="ar-media aspect-[4/3]" />
+                  <span aria-hidden="true" className="ar-media ar-blank">
+                    <span>{cat(n)}</span>
+                  </span>
                 )}
                 <span className="ar-no ar-card-no">{cat(n)}</span>
               </div>
@@ -229,7 +231,7 @@ export default function Archive({ portfolio }: TemplateProps) {
       id: entryId(e),
       no: cat(no),
       order: no,
-      title: e.title ?? e.subtitle ?? cat(no),
+      title: (s.layout === "metrics" && e.metric ? [e.metric.value, e.metric.label].filter(Boolean).join(" ") : e.title) ?? e.subtitle ?? cat(no),
       section: s.title,
       sectionId: s.anchor,
       year: yearOf(e.date) ?? "",
