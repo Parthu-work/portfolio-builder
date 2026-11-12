@@ -164,6 +164,9 @@
     border-radius: calc(var(--r) * 0.3);
     background: var(--surface);
   }
+  .qt-lead .qt-media {
+    max-width: 11em;
+  }
   .qt-avatar {
     width: 2em;
     border-radius: 99px;
@@ -255,7 +258,7 @@
   }
   @media (min-width: 640px) {
     .qt-tl {
-      grid-template-columns: 9em minmax(0, 1fr);
+      grid-template-columns: 10.5em minmax(0, 1fr);
     }
   }
   .qt-when {
@@ -348,7 +351,7 @@
   }
   @media (min-width: 640px) {
     .qt-tagrow {
-      grid-template-columns: 9em minmax(0, 1fr);
+      grid-template-columns: 10.5em minmax(0, 1fr);
     }
   }
 
