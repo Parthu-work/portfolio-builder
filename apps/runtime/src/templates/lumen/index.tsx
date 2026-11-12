@@ -223,11 +223,6 @@ export default function Lumen({ portfolio }: TemplateProps) {
                 {s.title}
               </h2>
               {s.subtitle ? <p className="lm-sub">{s.subtitle}</p> : null}
-              {s.entries.length > 1 ? (
-                <p className="lm-caps lm-count" aria-hidden="true">
-                  {s.entries.length}
-                </p>
-              ) : null}
             </header>
             <div className="lm-section-body">
               <Lead s={s} lang={v.lang} />
