@@ -238,6 +238,27 @@ export const TEMPLATES: TemplateMeta[] = [
     ],
     fontPairs: [fp("bricolage", "Bricolage + Inter", F.bric, F.inter), fp("manrope", "Manrope + Inter", F.manrope, F.inter), fp("space", "Space Grotesk + Inter", F.space, F.inter)],
   },
+  {
+    id: "card",
+    name: "Card",
+    description: "One beautiful profile card that fits a phone screen: big tactile link buttons up top, every section folded into a mini-card below.",
+    signature: "One-screen profile card · tactile link buttons · sections fold into mini-cards",
+    tags: ["link-in-bio", "mobile", "compact", "creator"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("mint", "Mint",
+        tk("0.955 0.03 165", "0.995 0.006 165", "0.24 0.035 170", "0.44 0.035 170", "0.89 0.02 165", "0.56 0.04 170", "0.45 0.1 168", "0.99 0.01 165", "0.58 0.16 20"),
+        tk("0.17 0.02 170", "0.215 0.024 170", "0.95 0.015 165", "0.77 0.03 165", "0.31 0.025 170", "0.57 0.035 170", "0.83 0.13 165", "0.18 0.03 170", "0.78 0.13 25")),
+      pal("peach", "Peach",
+        tk("0.955 0.03 55", "0.995 0.006 60", "0.25 0.04 40", "0.45 0.045 40", "0.89 0.025 55", "0.57 0.05 45", "0.5 0.16 35", "0.99 0.01 60", "0.5 0.11 250"),
+        tk("0.18 0.02 45", "0.225 0.025 45", "0.95 0.015 60", "0.77 0.03 55", "0.32 0.025 45", "0.58 0.04 45", "0.8 0.12 45", "0.18 0.03 40", "0.78 0.1 250")),
+      pal("ink", "Ink",
+        tk("0.95 0.006 280", "0.995 0.002 280", "0.2 0.02 280", "0.45 0.02 280", "0.89 0.008 280", "0.56 0.02 280", "0.42 0.2 285", "0.99 0.005 280", "0.56 0.13 150"),
+        tk("0.14 0.015 280", "0.19 0.02 280", "0.96 0.008 280", "0.76 0.02 280", "0.29 0.02 280", "0.56 0.025 280", "0.78 0.14 290", "0.16 0.03 285", "0.82 0.14 150")),
+    ],
+    fontPairs: [fp("manrope", "Manrope + Inter", F.manrope, F.inter), fp("sora", "Sora + Inter", F.sora, F.inter), fp("bricolage", "Bricolage + DM Sans", F.bric, F.dm)],
+  },
 ];
 
 export const TEMPLATE_IDS = TEMPLATES.map((t) => t.id);
