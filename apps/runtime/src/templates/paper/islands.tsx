@@ -40,7 +40,9 @@ export function PaperTools() {
         {pages ? <span className="pp-tool-count">{pages === 1 ? "1 page" : `${pages} pages`}</span> : null}
       </button>
       <button type="button" className="pp-tool pp-tool-primary" onClick={() => window.print()}>
-        <span aria-hidden="true" className="pp-tool-icon pp-tool-icon-pdf" />
+        <span aria-hidden="true" className="pp-tool-icon">
+          ↓
+        </span>
         <span>Save as PDF</span>
       </button>
     </div>
