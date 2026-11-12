@@ -10,7 +10,7 @@ import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const TEMPLATES = ["signal", "editorial", "bento", "aurora", "brutal", "cinematic", "swiss", "os"];
+const TEMPLATES = ["signal", "editorial", "bento", "aurora", "brutal", "cinematic", "swiss", "os", "paper"];
 const targets = [
   ["Builder: landing", "http://localhost:3100/"],
   ["Builder: templates gallery", "http://localhost:3100/templates"],

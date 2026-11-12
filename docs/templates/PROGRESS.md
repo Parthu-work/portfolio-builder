@@ -3,7 +3,7 @@ Statuses: todo · in-progress · done · blocked. Updated by the agent; one row 
 
 | # | id | name | status | commit | notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | paper | Paper | todo | | |
+| 1 | paper | Paper | done | (this commit) | Print-perfect A4 sheet on a desk, Save as PDF + page-break guides island. Kitchen-sink fixture prints to 4 pages; typical résumés fit 1–2. Code fields print as wrapped text. |
 | 2 | casefile | Casefile | todo | | |
 | 3 | card | Card | todo | | |
 | 4 | quiet | Quiet | todo | | |

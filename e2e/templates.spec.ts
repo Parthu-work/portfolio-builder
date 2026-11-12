@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const RUNTIME = "http://localhost:3200";
-const TEMPLATES = ["signal", "editorial", "bento", "aurora", "brutal", "cinematic", "swiss", "os"];
+const TEMPLATES = ["signal", "editorial", "bento", "aurora", "brutal", "cinematic", "swiss", "os", "paper"];
 
 // Mirrors apps/runtime/src/schema/seeds/fixture.ts
 const EXPECTED_TITLES = ["About", "By the numbers", "Selected work", "Experience", "Skills", "Education", "Kind words", "Certifications", "Talks", "Writing", "Recognition", "Volunteering", "Field lab", "Patents", "Get in touch"];
