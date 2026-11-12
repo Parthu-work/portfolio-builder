@@ -259,6 +259,27 @@ export const TEMPLATES: TemplateMeta[] = [
     ],
     fontPairs: [fp("manrope", "Manrope + Inter", F.manrope, F.inter), fp("sora", "Sora + Inter", F.sora, F.inter), fp("bricolage", "Bricolage + DM Sans", F.bric, F.dm)],
   },
+  {
+    id: "quiet",
+    name: "Quiet",
+    description: "Barely-there: one typeface, two colours, hairlines and room to breathe. A plain index up top, your work as typographic rows below.",
+    signature: "One typeface · hairline index · j/k keyboard navigation",
+    tags: ["minimal", "typographic", "barely-there", "recruiter-safe"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("paper", "Paper",
+        tk("0.985 0.004 85", "0.965 0.006 85", "0.21 0.006 85", "0.47 0.008 85", "0.9 0.005 85", "0.6 0.008 85", "0.47 0.11 255", "0.99 0.004 85", "0.55 0.1 50"),
+        tk("0.17 0.004 85", "0.205 0.005 85", "0.93 0.005 85", "0.73 0.008 85", "0.3 0.005 85", "0.56 0.008 85", "0.78 0.09 250", "0.17 0.02 250", "0.78 0.09 55")),
+      pal("fog", "Fog",
+        tk("0.955 0.004 230", "0.935 0.005 230", "0.25 0.01 235", "0.46 0.012 235", "0.88 0.006 230", "0.57 0.012 235", "0.45 0.06 180", "0.99 0.003 230", "0.55 0.1 30"),
+        tk("0.2 0.006 235", "0.235 0.008 235", "0.92 0.006 230", "0.74 0.01 232", "0.32 0.008 235", "0.58 0.012 235", "0.8 0.07 180", "0.18 0.02 190", "0.8 0.08 40")),
+      pal("midnight", "Midnight",
+        tk("0.975 0.006 270", "0.955 0.008 270", "0.22 0.03 270", "0.46 0.025 270", "0.89 0.01 270", "0.58 0.025 270", "0.48 0.13 285", "0.99 0.004 270", "0.56 0.1 70"),
+        tk("0.145 0.02 270", "0.18 0.024 270", "0.92 0.01 270", "0.72 0.02 270", "0.27 0.022 270", "0.55 0.025 270", "0.8 0.08 285", "0.17 0.03 280", "0.8 0.09 75")),
+    ],
+    fontPairs: [fp("inter", "Inter", F.inter, F.inter, F.inter), fp("newsreader", "Newsreader", F.news, F.news, F.news), fp("manrope", "Manrope", F.manrope, F.manrope, F.manrope)],
+  },
 ];
 
 export const TEMPLATE_IDS = TEMPLATES.map((t) => t.id);
