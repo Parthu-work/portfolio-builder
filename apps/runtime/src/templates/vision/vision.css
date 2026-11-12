@@ -1,0 +1,666 @@
+/* Vision — spatial "liquid glass": floating windows in a lit room, a capsule tab bar. */
+@property --vs-drift {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+
+[data-template="vision"] {
+  /* Specular highlights are always light, whatever the mode. */
+  --vs-spec: light-dark(var(--ground), var(--ink));
+  --vs-glass: color-mix(in oklch, var(--surface) 80%, transparent);
+  --vs-glass-2: color-mix(in oklch, var(--surface) 55%, transparent);
+  --vs-edge: color-mix(in oklch, var(--ink) 14%, transparent);
+  --vs-shadow: color-mix(in oklch, var(--ink) 22%, transparent);
+  --vs-r: calc(var(--r) * 2.4 + 6px);
+  --vs-r-sm: calc(var(--r) * 1.4 + 4px);
+  --vs-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  isolation: isolate;
+
+  /* ───────── environment ───────── */
+  .vs-env {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: linear-gradient(to bottom, var(--ground) 0%, color-mix(in oklch, var(--surface) 70%, var(--ground)) 62%, var(--ground) 100%);
+  }
+  .vs-light {
+    position: absolute;
+    left: 50%;
+    top: -35vh;
+    width: 140vmax;
+    height: 95vh;
+    translate: -50% 0;
+    border-radius: 50%;
+    background:
+      radial-gradient(closest-side at var(--vs-drift) 60%, color-mix(in oklch, var(--sig) 42%, transparent), transparent 70%),
+      radial-gradient(closest-side at calc(100% - var(--vs-drift)) 70%, color-mix(in oklch, var(--comp) 30%, transparent), transparent 75%);
+    filter: blur(20px);
+  }
+  .vs-tint {
+    position: absolute;
+    left: 50%;
+    top: 8vh;
+    width: min(70vw, 52rem);
+    translate: -50% 0;
+    opacity: 0.32;
+    filter: blur(70px) saturate(1.4);
+  }
+  .vs-tint .pf-img {
+    border-radius: 50%;
+  }
+  .vs-floor {
+    position: absolute;
+    left: -50%;
+    right: -50%;
+    bottom: -10vh;
+    height: 55vh;
+    transform: perspective(600px) rotateX(72deg);
+    transform-origin: bottom;
+    background:
+      repeating-linear-gradient(to right, color-mix(in oklch, var(--ink) 9%, transparent) 0 1px, transparent 1px 90px),
+      repeating-linear-gradient(to bottom, color-mix(in oklch, var(--ink) 9%, transparent) 0 1px, transparent 1px 90px);
+    -webkit-mask: linear-gradient(to top, #000 10%, transparent 85%);
+    mask: linear-gradient(to top, #000 10%, transparent 85%);
+  }
+  .vs-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+
+  /* ───────── glass ───────── */
+  .vs-pane {
+    position: relative;
+    background: var(--vs-glass);
+    backdrop-filter: blur(26px) saturate(1.5);
+    -webkit-backdrop-filter: blur(26px) saturate(1.5);
+    border: 1px solid var(--vs-edge);
+    border-radius: var(--vs-r);
+    box-shadow:
+      0 1px 0 0 color-mix(in oklch, var(--vs-spec) 40%, transparent) inset,
+      0 30px 60px -30px var(--vs-shadow),
+      0 8px 20px -12px var(--vs-shadow);
+    transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition:
+      transform 0.6s var(--vs-ease),
+      box-shadow 0.4s;
+  }
+  /* Specular edge: a gradient border drawn with a mask. */
+  .vs-pane::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklch, var(--vs-spec) 75%, transparent),
+      transparent 32%,
+      transparent 68%,
+      color-mix(in oklch, var(--vs-spec) 30%, transparent)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+  }
+  .vs-pane[data-tilting] {
+    transition:
+      transform 0.12s linear,
+      box-shadow 0.4s;
+    box-shadow:
+      0 1px 0 0 color-mix(in oklch, var(--vs-spec) 40%, transparent) inset,
+      0 40px 70px -30px var(--vs-shadow),
+      0 10px 24px -12px var(--vs-shadow);
+  }
+  .vs-pane[data-tilting]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(28rem circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklch, var(--vs-spec) 10%, transparent), transparent 60%);
+  }
+  .vs-window {
+    padding: clamp(1.25rem, 3.5vw, 2.75rem);
+  }
+
+  /* Solid surfaces when the visitor asks for less transparency. */
+  @media (prefers-reduced-transparency: reduce) {
+    .vs-pane,
+    .vs-chip,
+    .vs-capsule {
+      background: var(--surface) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    .vs-env .vs-light,
+    .vs-tint {
+      display: none;
+    }
+  }
+
+  /* ───────── capsule tab bar ───────── */
+  .vs-capsule {
+    position: fixed;
+    z-index: 50;
+    left: 50%;
+    bottom: max(0.85rem, env(safe-area-inset-bottom));
+    translate: -50% 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    max-width: calc(100vw - 1.5rem);
+    padding: 0.35rem;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--surface) 72%, transparent);
+    backdrop-filter: blur(22px) saturate(1.6);
+    -webkit-backdrop-filter: blur(22px) saturate(1.6);
+    border: 1px solid var(--vs-edge);
+    box-shadow:
+      0 1px 0 0 color-mix(in oklch, var(--vs-spec) 45%, transparent) inset,
+      0 18px 40px -18px var(--vs-shadow);
+    --vs-cap-pad: 0.95rem;
+    --vs-cap-font: 0.875rem;
+  }
+  .vs-capsule[data-refract] {
+    backdrop-filter: url(#vs-refract) blur(18px) saturate(1.6);
+  }
+  @media (min-width: 900px) {
+    .vs-capsule {
+      top: 1rem;
+      bottom: auto;
+      max-width: min(64rem, calc(100vw - 2rem));
+    }
+  }
+  .vs-capsule-home {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    min-height: 2.5rem;
+    padding: 0 var(--vs-cap-pad);
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--ground);
+    font-family: var(--pf-display);
+    font-weight: 700;
+    font-size: var(--vs-cap-font);
+  }
+  .vs-capsule-list {
+    display: flex;
+    gap: 0.15rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    min-width: 0;
+  }
+  .vs-capsule-list::-webkit-scrollbar {
+    display: none;
+  }
+  .vs-capsule-link {
+    display: inline-grid;
+    place-items: center;
+    min-height: 2.5rem;
+    padding: 0 var(--vs-cap-pad);
+    border-radius: 999px;
+    font-size: var(--vs-cap-font);
+    font-weight: 550;
+    white-space: nowrap;
+    color: var(--ink);
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .vs-capsule-link:hover {
+    background: color-mix(in oklch, var(--ink) 8%, transparent);
+  }
+  .vs-capsule-link[aria-current="true"] {
+    background: var(--sig);
+    color: var(--sigink);
+  }
+
+  /* ───────── layout ───────── */
+  .vs-main {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 4.5rem);
+    width: 100%;
+    max-width: 74rem;
+    margin-inline: auto;
+    padding: clamp(1.5rem, 5vw, 3rem) clamp(0.75rem, 3vw, 2rem) 7rem;
+  }
+  @media (min-width: 900px) {
+    .vs-main {
+      padding-top: 6.5rem;
+    }
+  }
+  .vs-grabber {
+    display: block;
+    width: 4.5rem;
+    height: 0.35rem;
+    margin: 0.9rem auto 0;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--ink) 22%, transparent);
+  }
+  .vs-hero {
+    display: grid;
+    justify-items: center;
+    padding-top: clamp(1rem, 6vh, 4rem);
+  }
+  .vs-hero-pane {
+    width: min(100%, 50rem);
+    display: grid;
+    gap: 1.25rem;
+    padding: clamp(1.5rem, 5vw, 3.25rem);
+  }
+  .vs-hero-id {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 1.75rem);
+  }
+  .vs-portrait {
+    width: clamp(4.5rem, 12vw, 7rem);
+    flex: none;
+    border-radius: 999px;
+    box-shadow: 0 0 0 1px var(--vs-edge), 0 14px 30px -14px var(--vs-shadow);
+  }
+  .vs-avatar-ini {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    background: color-mix(in oklch, var(--sig) 18%, var(--surface));
+    color: var(--ink);
+    font-family: var(--pf-display);
+    font-weight: 700;
+  }
+  .vs-name {
+    font-family: var(--pf-display);
+    font-size: clamp(2.25rem, 6.5vw, 4.75rem);
+    font-weight: 650;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+  }
+  .vs-headline {
+    font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    max-width: 30ch;
+    text-wrap: balance;
+  }
+  .vs-tagline {
+    color: var(--mute);
+  }
+  .vs-ornaments {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+
+  /* chips (glass capsules) */
+  .vs-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.25rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    background: var(--vs-glass);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border: 1px solid var(--vs-edge);
+    font-size: 0.875rem;
+    color: var(--ink);
+  }
+  .vs-chip-link {
+    transition: background-color 0.2s, transform 0.2s var(--vs-ease);
+  }
+  .vs-chip-link:hover {
+    background: color-mix(in oklch, var(--surface) 95%, transparent);
+    transform: translateY(-1px);
+  }
+  .vs-chip-status {
+    justify-self: start;
+    min-height: 1.75rem;
+    padding: 0.15rem 0.7rem;
+    font-size: 0.8125rem;
+  }
+  .vs-chip-status::before {
+    content: "";
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 99px;
+    background: var(--sig);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--sig) 25%, transparent);
+  }
+  .vs-chip-date {
+    min-height: 1.75rem;
+    padding: 0.1rem 0.7rem;
+    font-size: 0.8125rem;
+    color: var(--mute);
+  }
+
+  /* sections */
+  .vs-section {
+    scroll-margin-top: 5.5rem;
+  }
+  .vs-section-head {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: clamp(1.25rem, 3vw, 2rem);
+  }
+  .vs-h2 {
+    font-family: var(--pf-display);
+    font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+    font-weight: 650;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+  .vs-section-body {
+    display: grid;
+    gap: clamp(1.25rem, 3vw, 2rem);
+  }
+  .vs-h3 {
+    font-family: var(--pf-display);
+    font-size: 1.25rem;
+    font-weight: 650;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  .vs-h3-sm {
+    font-size: 1.0625rem;
+  }
+  .vs-sub {
+    color: var(--mute);
+    font-size: 0.9375rem;
+  }
+  .vs-nums {
+    font-variant-numeric: tabular-nums;
+  }
+  .vs-prose {
+    max-width: 66ch;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+  .vs-prose-lead {
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  }
+  .vs-media {
+    border-radius: var(--vs-r-sm);
+    background: var(--surface);
+  }
+  .vs-lead {
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 900px) {
+    .vs-lead-img {
+      grid-template-columns: minmax(0, 1fr) 15rem;
+    }
+  }
+  .vs-lead-title {
+    font-family: var(--pf-display);
+    font-weight: 650;
+    font-size: 1.25rem;
+  }
+  .vs-lead-media {
+    max-width: 15rem;
+  }
+  .pf-tag {
+    border-radius: 999px;
+    background: var(--vs-glass-2);
+    border-color: var(--vs-edge);
+    color: var(--ink);
+  }
+
+  /* timeline: panes on a light rail */
+  .vs-rail {
+    position: relative;
+    display: grid;
+    gap: 1rem;
+    padding-left: 1.75rem;
+  }
+  .vs-rail::before {
+    content: "";
+    position: absolute;
+    left: 0.4rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(to bottom, var(--sig), color-mix(in oklch, var(--sig) 10%, transparent));
+  }
+  .vs-rail-item {
+    position: relative;
+  }
+  .vs-rail-dot {
+    position: absolute;
+    left: -1.75rem;
+    top: 1.35rem;
+    width: 0.85rem;
+    height: 0.85rem;
+    margin-left: 0.0625rem;
+    border-radius: 99px;
+    background: var(--sig);
+    box-shadow: 0 0 0 4px color-mix(in oklch, var(--sig) 22%, transparent);
+  }
+  .vs-rail-pane,
+  .vs-card,
+  .vs-quote {
+    display: grid;
+    gap: 0.85rem;
+    align-content: start;
+    padding: clamp(1rem, 2.5vw, 1.5rem);
+    background: var(--vs-glass-2);
+    border-radius: var(--vs-r-sm);
+  }
+  .vs-list-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem 1rem;
+  }
+
+  /* grid: panes with depth */
+  .vs-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 760px) {
+    .vs-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .vs-card-glow {
+    display: block;
+    height: 0.4rem;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--sig), var(--comp));
+    opacity: 0.8;
+  }
+  .vs-chip-inline {
+    justify-self: start;
+  }
+
+  /* list: a pane list */
+  .vs-list {
+    display: grid;
+    padding: 0.35rem clamp(1rem, 2.5vw, 1.5rem);
+    background: var(--vs-glass-2);
+    border-radius: var(--vs-r-sm);
+  }
+  .vs-list-row {
+    display: grid;
+    gap: 0.4rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--vs-edge);
+  }
+  .vs-list-row:last-child {
+    border-bottom: 0;
+  }
+
+  /* quotes: floating quote panes */
+  .vs-quotes {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 900px) {
+    .vs-quotes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .vs-quote-text {
+    font-family: var(--pf-display);
+    font-size: clamp(1.125rem, 2vw, 1.375rem);
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+  .vs-quote-by {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .vs-avatar {
+    width: 2.75rem;
+    flex: none;
+    border-radius: 99px;
+    font-size: 0.875rem;
+  }
+
+  /* metrics: glass KPI chips */
+  .vs-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 0.85rem;
+  }
+  .vs-chip-kpi {
+    display: grid;
+    gap: 0.15rem;
+    align-content: start;
+    justify-items: start;
+    padding: 1.1rem 1.4rem;
+    border-radius: var(--vs-r-sm);
+  }
+  .vs-kpi-value {
+    font-family: var(--pf-display);
+    font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+    font-weight: 650;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .vs-kpi-sm {
+    font-size: 1.375rem;
+    color: var(--sig);
+  }
+  .vs-kpi-label {
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  /* tags: capsule chips */
+  .vs-taggroups {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 900px) {
+    .vs-taggroups {
+      grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    }
+  }
+  .vs-taggroup {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+  }
+  .vs-capsules .pf-tag {
+    font-size: 0.9375rem;
+    padding: 0.45em 0.95em;
+  }
+
+  .vs-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 74rem;
+    margin: -3rem auto 0;
+    padding: 0 clamp(1rem, 3vw, 2rem) 6.5rem;
+    color: var(--mute);
+    font-size: 0.875rem;
+  }
+  @media (min-width: 900px) {
+    .vs-foot {
+      padding-bottom: 2.5rem;
+    }
+  }
+
+  /* ───────── motion ───────── */
+  @media (prefers-reduced-motion: no-preference) {
+    &:not([data-motion="none"]) .vs-light {
+      animation: vs-drift 36s ease-in-out infinite alternate;
+    }
+    @supports (animation-timeline: scroll()) {
+      /* The capsule condenses as you scroll. */
+      &:not([data-motion="none"]) .vs-capsule {
+        animation: vs-condense linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 320px;
+      }
+      &:not([data-motion="none"]) .vs-section .vs-window {
+        animation: vs-arrive linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 45%;
+      }
+    }
+  }
+  @media (pointer: coarse) {
+    .vs-pane {
+      transform: none;
+    }
+  }
+}
+@property --vs-cap-pad {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0.95rem;
+}
+@property --vs-cap-font {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0.875rem;
+}
+@keyframes vs-drift {
+  from {
+    --vs-drift: 30%;
+  }
+  to {
+    --vs-drift: 70%;
+  }
+}
+@keyframes vs-condense {
+  from {
+    --vs-cap-pad: 0.95rem;
+    --vs-cap-font: 0.875rem;
+  }
+  to {
+    --vs-cap-pad: 0.65rem;
+    --vs-cap-font: 0.8125rem;
+  }
+}
+@keyframes vs-arrive {
+  from {
+    opacity: 0.4;
+    transform: perspective(1100px) translateY(var(--pf-rise)) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  }
+}
