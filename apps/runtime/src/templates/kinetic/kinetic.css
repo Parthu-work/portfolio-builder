@@ -1,0 +1,619 @@
+/* Kinetic — typography is the architecture: width and weight respond to scroll. */
+@property --kn-bw {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 800;
+}
+@property --kn-bs {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 100%;
+}
+@property --kn-hw {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 800;
+}
+@property --kn-hs {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 100%;
+}
+
+[data-template="kinetic"] {
+  --kn-gut: clamp(1.25rem, 4vw, 4rem);
+  --kn-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ───────── top bar ───────── */
+  .kn-bar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    height: 3.5rem;
+    padding-inline: var(--kn-gut);
+    background: color-mix(in oklch, var(--ground) 86%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .kn-bar-name {
+    font-family: var(--pf-display);
+    font-weight: 800;
+    font-stretch: 125%;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .kn-bar-nav {
+    display: none;
+    min-width: 0;
+  }
+  @media (min-width: 900px) {
+    .kn-bar-nav {
+      display: block;
+    }
+  }
+  .kn-bar-nav ul {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.875rem;
+  }
+  .kn-bar-nav a {
+    color: var(--mute);
+    white-space: nowrap;
+    transition: color 0.15s, font-stretch 0.3s var(--kn-ease), font-weight 0.3s var(--kn-ease);
+  }
+  .kn-bar-nav a:hover,
+  .kn-bar-nav a:focus-visible {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  /* ───────── hero: the name at viewport scale ───────── */
+  .kn-main {
+    overflow-x: clip;
+  }
+  .kn-hero {
+    display: grid;
+    align-content: space-between;
+    gap: clamp(2rem, 6vh, 4rem);
+    min-height: calc(100svh - 3.5rem);
+    padding: clamp(1.5rem, 5vh, 3.5rem) var(--kn-gut) clamp(2rem, 6vh, 4rem);
+    overflow-x: clip;
+  }
+  .kn-hero-compact {
+    min-height: 0;
+  }
+  .kn-eyebrow {
+    color: var(--sig);
+  }
+  .kn-name {
+    font-family: var(--pf-display);
+    font-size: var(--kn-size, 18vw);
+    line-height: 0.84;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    overflow-wrap: normal;
+  }
+  .kn-hero-compact .kn-name {
+    font-size: min(var(--kn-size, 18vw), 9rem);
+  }
+  .kn-name-word {
+    display: block;
+    white-space: nowrap;
+    font-weight: var(--kn-bw);
+    font-stretch: var(--kn-bs);
+  }
+  .kn-even {
+    --kn-bw: 850;
+    --kn-bs: 140%;
+  }
+  .kn-odd {
+    --kn-bw: 260;
+    --kn-bs: 62%;
+    color: var(--sig);
+    padding-left: 0.04em;
+  }
+  .kn-ch {
+    font-weight: calc(var(--kn-bw) + var(--p, 0) * (900 - var(--kn-bw)));
+    transition: font-weight 0.18s linear;
+  }
+  .kn-hero-foot {
+    display: grid;
+    gap: 2rem;
+    align-items: end;
+  }
+  @media (min-width: 900px) {
+    .kn-hero-foot {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 4rem;
+    }
+  }
+  .kn-headline {
+    font-family: var(--pf-display);
+    font-size: clamp(1.5rem, 3.4vw, 3rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+  .kn-hero-side {
+    display: grid;
+    gap: 1.1rem;
+    align-content: end;
+    max-width: 34rem;
+  }
+  .kn-portrait {
+    width: 4.5rem;
+    border-radius: 999px;
+  }
+  .kn-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.1rem;
+    font-size: 0.9375rem;
+  }
+
+  /* split-word reveal (headline on load, first quote on scroll) */
+  .kn-word-wrap {
+    display: inline-block;
+    overflow: clip;
+    overflow-clip-margin: 0.12em;
+    vertical-align: bottom;
+  }
+  .kn-word {
+    display: inline-block;
+  }
+
+  /* ───────── sections ───────── */
+  .kn-section {
+    padding: clamp(4rem, 10vw, 9rem) var(--kn-gut) 0;
+  }
+  .kn-section-head {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: clamp(2rem, 5vw, 4rem);
+    border-top: 1px solid var(--line);
+    padding-top: 1rem;
+  }
+  .kn-section-no,
+  .kn-label {
+    font-family: var(--pf-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .kn-section-no {
+    color: var(--sig);
+  }
+  .kn-h2 {
+    font-family: var(--pf-display);
+    font-size: clamp(2.5rem, 8vw, 7.25rem);
+    line-height: 0.9;
+    letter-spacing: -0.035em;
+    font-weight: var(--kn-hw);
+    font-stretch: var(--kn-hs);
+    --kn-hw: 800;
+    --kn-hs: 82%;
+    overflow-wrap: normal;
+  }
+  @media (min-width: 768px) {
+    .kn-h2 {
+      --kn-hs: 112%;
+    }
+  }
+  .kn-section-sub {
+    max-width: 48ch;
+  }
+  .kn-section-body {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem);
+  }
+  .kn-sub {
+    color: var(--mute);
+    font-size: 0.9375rem;
+  }
+  .kn-date {
+    font-family: var(--pf-mono);
+    font-size: 0.8125rem;
+    color: var(--mute);
+    font-variant-numeric: tabular-nums;
+  }
+  .kn-prose {
+    max-width: 62ch;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+  .kn-prose-lead {
+    font-size: clamp(1.125rem, 1.8vw, 1.5rem);
+    line-height: 1.5;
+  }
+  .kn-media {
+    border-radius: var(--r);
+    background: var(--surface);
+  }
+  .kn-h3 {
+    font-family: var(--pf-display);
+    font-size: clamp(1.25rem, 2vw, 1.625rem);
+    font-weight: 750;
+    font-stretch: 105%;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+  .kn-lead {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .kn-lead-img {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.8fr);
+      align-items: start;
+    }
+  }
+  .kn-lead-title {
+    font-family: var(--pf-display);
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+  .pf-tag {
+    background: transparent;
+    border-color: var(--edge);
+    color: var(--ink);
+    border-radius: 999px;
+  }
+
+  /* timeline: giant outlined year numerals */
+  .kn-timeline {
+    display: grid;
+  }
+  .kn-tl {
+    display: grid;
+    gap: 0.75rem 3rem;
+    padding-block: clamp(1.5rem, 3vw, 2.5rem);
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 768px) {
+    .kn-tl {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      align-items: start;
+    }
+  }
+  .kn-year {
+    font-family: var(--pf-display);
+    font-size: clamp(3.5rem, 11vw, 10rem);
+    font-weight: 800;
+    font-stretch: 125%;
+    line-height: 0.8;
+    letter-spacing: -0.03em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--ink);
+    font-variant-numeric: tabular-nums;
+    transition: color 0.4s var(--kn-ease);
+  }
+  .kn-tl:hover .kn-year {
+    color: var(--sig);
+    -webkit-text-stroke-color: var(--sig);
+  }
+  .kn-tl-body {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+  }
+
+  /* grid: full-width rows; titles gain weight on hover / focus */
+  .kn-rows {
+    display: grid;
+    border-top: 1px solid var(--ink);
+  }
+  .kn-row {
+    display: grid;
+    gap: 1rem 2rem;
+    padding-block: clamp(1.5rem, 3vw, 2.75rem);
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 900px) {
+    .kn-row {
+      grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 20rem);
+      align-items: start;
+    }
+  }
+  .kn-row-no {
+    font-family: var(--pf-mono);
+    font-size: 0.8125rem;
+    color: var(--sig);
+    padding-top: 0.8rem;
+  }
+  .kn-row-main {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+  }
+  .kn-row-title {
+    font-family: var(--pf-display);
+    font-size: clamp(2.25rem, 6vw, 5.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    font-weight: 280;
+    font-stretch: 78%;
+    transition:
+      font-weight 0.5s var(--kn-ease),
+      font-stretch 0.5s var(--kn-ease),
+      color 0.3s;
+  }
+  .kn-row:hover .kn-row-title,
+  .kn-row:focus-within .kn-row-title {
+    font-weight: 860;
+    font-stretch: 118%;
+    color: var(--sig);
+  }
+  .kn-row-meta {
+    color: var(--mute);
+    font-size: 1rem;
+  }
+  .kn-row-metric b {
+    font-family: var(--pf-display);
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .kn-row-media {
+    width: 100%;
+  }
+
+  /* list: rows */
+  .kn-list {
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+  .kn-list-row {
+    display: grid;
+    gap: 0.6rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .kn-list-line {
+    display: grid;
+    gap: 0.25rem 2rem;
+  }
+  @media (min-width: 768px) {
+    .kn-list-line {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+      align-items: baseline;
+    }
+  }
+
+  /* quotes: one huge quote */
+  .kn-quotes {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+  .kn-quote {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .kn-quote-text {
+    font-family: var(--pf-display);
+    font-size: clamp(1.375rem, 2.4vw, 2rem);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    max-width: 38ch;
+  }
+  .kn-quote-hero .kn-quote-text {
+    font-size: clamp(1.875rem, 5vw, 4.5rem);
+    font-weight: 700;
+    font-stretch: 92%;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    max-width: 24ch;
+    text-wrap: balance;
+  }
+  .kn-quote-hero .kn-quote-text::before {
+    content: "“";
+    color: var(--sig);
+  }
+  .kn-quote-by {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .kn-quote-name {
+    font-weight: 700;
+  }
+  .kn-avatar {
+    width: 2.75rem;
+    border-radius: 99px;
+    flex: none;
+  }
+
+  /* metrics: giant numerals */
+  .kn-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+    gap: 2.5rem 3rem;
+  }
+  .kn-metric {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+    padding-top: 1rem;
+    border-top: 2px solid var(--ink);
+  }
+  .kn-giant-line {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .kn-giant {
+    font-family: var(--pf-display);
+    font-size: clamp(3rem, 7vw, 7rem);
+    font-weight: 850;
+    font-stretch: 112%;
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+  }
+  .kn-metric:nth-child(3n + 2) .kn-giant {
+    color: var(--sig);
+  }
+  .kn-giant-label {
+    font-weight: 700;
+    font-size: 1.0625rem;
+  }
+
+  /* tags: a big inline word list with alternating widths */
+  .kn-taggroups {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem);
+  }
+  .kn-taggroup {
+    display: grid;
+    gap: 0.9rem;
+  }
+  .kn-words {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.1em 0.45em;
+    font-family: var(--pf-display);
+    font-size: clamp(1.75rem, 4.6vw, 4.25rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .kn-wordtag {
+    font-weight: 820;
+    font-stretch: 135%;
+    transition: color 0.2s;
+  }
+  .kn-wordtag:nth-child(even) {
+    font-weight: 260;
+    font-stretch: 60%;
+    color: var(--mute);
+  }
+  .kn-wordtag:nth-child(5n + 3) {
+    color: var(--sig);
+  }
+
+  /* ───────── footer ───────── */
+  .kn-foot {
+    margin-top: clamp(5rem, 12vw, 10rem);
+    padding: 0 var(--kn-gut) 2rem;
+    overflow-x: clip;
+    border-top: 1px solid var(--line);
+  }
+  .kn-foot-name {
+    font-family: var(--pf-display);
+    font-size: clamp(3rem, 12vw, 13rem);
+    font-weight: 850;
+    font-stretch: 140%;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--edge);
+    padding-block: 1.5rem 1rem;
+  }
+  .kn-foot-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.9375rem;
+    color: var(--mute);
+  }
+  .kn-top:hover {
+    color: var(--ink);
+  }
+
+  /* ───────── motion ───────── */
+  @media (prefers-reduced-motion: no-preference) {
+    &:not([data-motion="none"]) .kn-split-load .kn-word {
+      animation: kn-up 0.9s var(--kn-ease) both;
+      animation-delay: calc(var(--i) * 55ms + 120ms);
+    }
+    @supports (animation-timeline: view()) {
+      /* The hero name trades width and weight as the page scrolls. */
+      &:not([data-motion="none"]) .kn-even {
+        animation: kn-even linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 85vh;
+      }
+      &:not([data-motion="none"]) .kn-odd {
+        animation: kn-odd linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 85vh;
+      }
+      /* Section titles stretch from condensed to wide as they enter (wide screens only). */
+      @media (min-width: 768px) {
+        &:not([data-motion="none"]) .kn-h2 {
+          animation: kn-stretch linear both;
+          animation-timeline: view();
+          animation-range: entry 0% cover 40%;
+        }
+      }
+      &:not([data-motion="none"]) .kn-split-view .kn-word {
+        animation: kn-up linear both;
+        animation-timeline: view();
+        animation-range: entry calc(var(--i) * 1.5%) cover calc(25% + var(--i) * 1.5%);
+      }
+      &:not([data-motion="none"]) .kn-year {
+        animation: kn-year linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 50%;
+      }
+    }
+  }
+}
+@keyframes kn-up {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes kn-even {
+  from {
+    --kn-bw: 850;
+    --kn-bs: 140%;
+  }
+  to {
+    --kn-bw: 240;
+    --kn-bs: 58%;
+  }
+}
+@keyframes kn-odd {
+  from {
+    --kn-bw: 260;
+    --kn-bs: 62%;
+  }
+  to {
+    --kn-bw: 880;
+    --kn-bs: 138%;
+  }
+}
+@keyframes kn-stretch {
+  from {
+    --kn-hw: 220;
+    --kn-hs: 55%;
+  }
+  to {
+    --kn-hw: 820;
+    --kn-hs: 112%;
+  }
+}
+@keyframes kn-year {
+  from {
+    transform: translateX(-6%);
+    opacity: 0.2;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}

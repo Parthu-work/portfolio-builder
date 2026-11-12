@@ -17,6 +17,7 @@ const F = {
   dm: "'DM Sans Variable'",
   playfair: "'Playfair Display Variable'",
   sora: "'Sora Variable'",
+  anybody: "'Anybody Variable'",
 };
 const SANS = "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
 const SERIF = "ui-serif, Georgia, Cambria, 'Times New Roman', serif";
@@ -279,6 +280,27 @@ export const TEMPLATES: TemplateMeta[] = [
         tk("0.145 0.02 270", "0.18 0.024 270", "0.92 0.01 270", "0.72 0.02 270", "0.27 0.022 270", "0.55 0.025 270", "0.8 0.08 285", "0.17 0.03 280", "0.8 0.09 75")),
     ],
     fontPairs: [fp("inter", "Inter", F.inter, F.inter, F.inter), fp("newsreader", "Newsreader", F.news, F.news, F.news), fp("manrope", "Manrope", F.manrope, F.manrope, F.manrope)],
+  },
+  {
+    id: "kinetic",
+    name: "Kinetic",
+    description: "Typography is the architecture: your name at viewport scale in a variable font whose width and weight answer the scroll.",
+    signature: "Scroll-driven variable type · words that stretch and gain weight · split-word reveals",
+    tags: ["designer", "bold", "typographic", "motion", "dark"],
+    preferredMode: "dark",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("volt", "Volt",
+        tk("0.975 0.01 115", "0.945 0.018 115", "0.15 0.01 120", "0.42 0.02 120", "0.88 0.015 115", "0.55 0.02 120", "0.5 0.14 135", "0.99 0.01 115", "0.52 0.2 330"),
+        tk("0.13 0.005 120", "0.18 0.008 120", "0.97 0.01 120", "0.75 0.015 120", "0.28 0.01 120", "0.55 0.015 120", "0.9 0.2 125", "0.15 0.02 125", "0.72 0.17 330")),
+      pal("signal-orange", "Signal Orange",
+        tk("0.97 0.01 70", "0.94 0.018 70", "0.17 0.015 40", "0.44 0.03 40", "0.88 0.02 60", "0.56 0.03 45", "0.52 0.2 38", "0.99 0.01 70", "0.5 0.12 240"),
+        tk("0.15 0.008 40", "0.2 0.012 40", "0.96 0.012 60", "0.76 0.02 50", "0.3 0.015 40", "0.57 0.02 45", "0.74 0.19 45", "0.15 0.03 40", "0.78 0.12 230")),
+      pal("paper-riot", "Paper Riot",
+        tk("0.96 0.02 95", "0.93 0.03 95", "0.16 0.01 270", "0.42 0.02 270", "0.86 0.025 95", "0.55 0.03 95", "0.48 0.24 25", "0.99 0.01 95", "0.45 0.2 265"),
+        tk("0.16 0.01 270", "0.21 0.014 270", "0.96 0.02 95", "0.77 0.03 95", "0.3 0.015 270", "0.57 0.02 270", "0.72 0.19 28", "0.15 0.02 28", "0.75 0.13 265")),
+    ],
+    fontPairs: [fp("anybody", "Anybody + Inter", F.anybody, F.inter), fp("syne", "Syne + Inter", F.syne, F.inter), fp("bricolage", "Bricolage + DM Sans", F.bric, F.dm)],
   },
 ];
 
