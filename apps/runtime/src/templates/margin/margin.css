@@ -1,0 +1,466 @@
+/* Margin — Tufte-style: a reading column with sidenotes in the margin. */
+[data-template="margin"] {
+  --mg-main: 38rem;
+  --mg-side: 15rem;
+  --mg-gap: 3.5rem;
+
+  .mg-page {
+    width: 100%;
+    max-width: calc(var(--mg-main) + var(--mg-side) + var(--mg-gap));
+    margin-inline: auto;
+    padding: clamp(2.5rem, 8vw, 6rem) 1.35rem 3rem;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    box-sizing: content-box;
+  }
+  @media (min-width: 1100px) {
+    .mg-page {
+      padding-inline: 2.5rem;
+    }
+  }
+  .mg-graph {
+    max-width: none;
+    padding-inline: max(1.35rem, calc((100% - var(--mg-main) - var(--mg-side) - var(--mg-gap)) / 2));
+    box-sizing: border-box;
+    background-image:
+      linear-gradient(color-mix(in oklch, var(--line) 55%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklch, var(--line) 55%, transparent) 1px, transparent 1px);
+    background-size: 1.5rem 1.5rem;
+  }
+
+  /* the two-column unit: text + margin */
+  .mg-entry {
+    display: grid;
+    gap: 0.5rem;
+    align-items: start;
+  }
+  @media (min-width: 1100px) {
+    .mg-entry {
+      grid-template-columns: minmax(0, var(--mg-main)) var(--mg-side);
+      column-gap: var(--mg-gap);
+    }
+  }
+  .mg-main-col {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+  }
+
+  /* sidenotes */
+  .mg-note {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--mute);
+  }
+  .mg-note-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.25rem;
+    cursor: pointer;
+    list-style: none;
+    font-size: 0.8125rem;
+    font-style: italic;
+    color: var(--sig);
+  }
+  .mg-note-toggle::-webkit-details-marker {
+    display: none;
+  }
+  .mg-note-toggle::before {
+    content: "+";
+    display: inline-grid;
+    place-items: center;
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 1px solid currentColor;
+    border-radius: 99px;
+    font-style: normal;
+    font-size: 0.75rem;
+    line-height: 1;
+  }
+  .mg-note[open] .mg-note-toggle::before {
+    content: "−";
+  }
+  .mg-note-body {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.35rem 0 0.5rem 0.85rem;
+    border-left: 1px solid var(--line);
+  }
+  @media (min-width: 1100px) {
+    .mg-note-toggle {
+      display: none;
+    }
+    .mg-note-body {
+      padding: 0.2rem 0 0;
+      border-left: 0;
+    }
+    @supports selector(::details-content) {
+      .mg-note[data-auto]::details-content {
+        content-visibility: visible;
+      }
+    }
+  }
+  .mg-note-date {
+    font-variant-numeric: oldstyle-nums;
+    font-style: italic;
+  }
+  .mg-note-figure {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .mg-note-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.75rem;
+  }
+  .mg-portrait {
+    width: 5rem;
+    margin-bottom: 0.4rem;
+    border-radius: calc(var(--r) * 0.3);
+    filter: grayscale(0.25);
+  }
+
+  /* ───────── head ───────── */
+  .mg-head {
+    margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  }
+  .mg-kicker {
+    font-size: 0.8125rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sig);
+  }
+  .mg-name {
+    font-family: var(--pf-display);
+    font-size: clamp(2.5rem, 6vw, 3.875rem);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+  .mg-headline {
+    font-family: var(--pf-display);
+    font-size: clamp(1.25rem, 2.4vw, 1.625rem);
+    font-style: italic;
+    line-height: 1.3;
+    color: var(--mute);
+  }
+  .mg-abstract-lead {
+    font-size: 1.125rem;
+  }
+  .mg-hero-links {
+    font-size: 0.9375rem;
+  }
+
+  /* contents */
+  .mg-toc {
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  }
+  .mg-toc ol {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 0.1rem 1.5rem;
+    padding-block: 0.75rem;
+    border-block: 1px solid var(--line);
+    font-size: 0.9375rem;
+  }
+  .mg-toc-link {
+    display: flex;
+    gap: 0.6rem;
+    padding-block: 0.25rem;
+  }
+  .mg-toc-link:hover {
+    color: var(--sig);
+  }
+  .mg-toc-n {
+    min-width: 1.25rem;
+    color: var(--mute);
+    font-variant-numeric: oldstyle-nums;
+  }
+
+  /* ───────── sections ───────── */
+  .mg-main {
+    display: grid;
+    gap: clamp(3rem, 7vw, 5rem);
+  }
+  .mg-section {
+    display: grid;
+    gap: 1.5rem;
+    counter-reset: mg-fn;
+    scroll-margin-top: 1.5rem;
+  }
+  .mg-h2-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .mg-h2-n {
+    font-family: var(--pf-display);
+    font-size: 1rem;
+    color: var(--sig);
+    font-variant-numeric: oldstyle-nums;
+  }
+  .mg-h2 {
+    font-family: var(--pf-display);
+    font-size: clamp(1.625rem, 3vw, 2rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.15;
+  }
+  .mg-section-body {
+    display: grid;
+    gap: 1.75rem;
+  }
+  .mg-h3 {
+    font-family: var(--pf-display);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .mg-h3-caps {
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--mute);
+  }
+  .mg-small {
+    font-size: 0.875rem;
+    color: var(--mute);
+  }
+  .mg-prose {
+    text-wrap: pretty;
+    hyphens: auto;
+  }
+  .mg-prose-lead {
+    font-size: 1.125rem;
+  }
+  .mg-lead-title {
+    font-family: var(--pf-display);
+    font-weight: 600;
+    font-size: 1.1875rem;
+  }
+
+  /* links styled like footnotes */
+  .mg-prose a,
+  .mg-a,
+  .pf-link {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--sig);
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .mg-prose a:hover,
+  .mg-a:hover,
+  .pf-link:hover {
+    color: var(--sig);
+    border-bottom-style: solid;
+  }
+  .mg-main .pf-link::after,
+  .mg-main .mg-prose a::after {
+    counter-increment: mg-fn;
+    content: counter(mg-fn);
+    margin-left: 0.1em;
+    font-size: 0.7em;
+    vertical-align: super;
+    line-height: 0;
+    color: var(--sig);
+  }
+  .mg-main .pf-link > span[aria-hidden="true"] {
+    display: none;
+  }
+
+  .mg-figure {
+    display: grid;
+    gap: 0.4rem;
+    max-width: 30rem;
+  }
+  .mg-media {
+    background: var(--surface);
+    border-radius: calc(var(--r) * 0.3);
+  }
+  .mg-caption {
+    font-size: 0.8125rem;
+    font-style: italic;
+    color: var(--mute);
+  }
+  .pf-tag {
+    border: 0;
+    padding: 0;
+    background: none;
+    font-style: italic;
+    color: var(--mute);
+    font-size: 0.875rem;
+  }
+  .pf-tags {
+    gap: 0 0.8rem;
+  }
+  .pf-dl dt {
+    text-transform: none;
+    letter-spacing: 0;
+    font-style: italic;
+    font-size: 0.8125rem;
+  }
+
+  /* timeline: dated paragraphs, dates in the margin */
+  .mg-dated {
+    display: grid;
+    gap: 2rem;
+  }
+
+  /* grid: two-column abstracts */
+  .mg-abstracts {
+    display: grid;
+    gap: 2rem 2.5rem;
+  }
+  @media (min-width: 760px) {
+    .mg-abstracts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .mg-abstract {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+  .mg-abstract .mg-prose {
+    font-size: 1rem;
+  }
+  .mg-abstract-meta {
+    font-style: italic;
+  }
+
+  /* list: a numbered reference list */
+  .mg-refs {
+    display: grid;
+    gap: 1.1rem;
+    max-width: var(--mg-main);
+  }
+  .mg-ref {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+  .mg-ref-n {
+    color: var(--sig);
+    font-variant-numeric: oldstyle-nums;
+  }
+  .mg-ref-text {
+    font-family: var(--pf-body);
+    font-size: 1.0625rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .mg-ref-title {
+    font-weight: 600;
+  }
+  .mg-ref-venue {
+    font-style: italic;
+  }
+  .mg-copy {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8125rem;
+  }
+  .mg-copy-btn {
+    min-height: 2rem;
+    color: var(--mute);
+    text-decoration: underline dotted;
+    text-underline-offset: 0.2em;
+  }
+  .mg-copy-btn:hover {
+    color: var(--sig);
+  }
+  .mg-copy-status {
+    color: var(--sig);
+    font-style: italic;
+  }
+
+  /* quotes: epigraphs */
+  .mg-epigraphs {
+    display: grid;
+    gap: 2rem;
+  }
+  .mg-epigraph-text {
+    font-family: var(--pf-display);
+    font-style: italic;
+    font-size: 1.1875rem;
+    line-height: 1.5;
+    padding-left: 2rem;
+  }
+  .mg-epigraph-by {
+    text-align: right;
+    font-size: 0.9375rem;
+  }
+  .mg-avatar {
+    width: 2.25rem;
+    justify-self: end;
+    border-radius: 99px;
+    filter: grayscale(0.3);
+  }
+
+  /* metrics: small multiples */
+  .mg-multiples {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+    border-top: 1px solid var(--ink);
+    border-left: 1px solid var(--line);
+    max-width: calc(var(--mg-main) + var(--mg-side) + var(--mg-gap));
+  }
+  .mg-multiple {
+    display: grid;
+    gap: 0.2rem;
+    align-content: start;
+    padding: 0.85rem 1rem 1rem;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .mg-multiple-value {
+    font-family: var(--pf-display);
+    font-size: 1.875rem;
+    line-height: 1.05;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  .mg-multiple-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  /* tags: keyword lines */
+  .mg-keywords {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .mg-keyline {
+    font-style: italic;
+  }
+
+  .mg-foot {
+    margin-top: clamp(4rem, 8vw, 6rem);
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      &:not([data-motion="none"]) .mg-note-body {
+        animation: mg-fade linear both;
+        animation-timeline: view();
+        animation-range: entry 10% entry 60%;
+      }
+    }
+  }
+}
+@keyframes mg-fade {
+  from {
+    opacity: 0;
+    transform: translateX(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
