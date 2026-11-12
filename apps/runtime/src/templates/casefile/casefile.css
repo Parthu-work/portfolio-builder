@@ -10,6 +10,7 @@
     .cf-shell {
       display: grid;
       grid-template-columns: 17rem minmax(0, 1fr);
+      background: linear-gradient(to right, var(--surface) calc(17rem - 1px), var(--line) calc(17rem - 1px) 17rem, transparent 17rem);
     }
   }
 
@@ -503,10 +504,19 @@
     padding-block: 1rem;
     border-bottom: 1px solid var(--line);
   }
-  .cf-tcell {
+  .cf-tcell,
+  .cf-trow .cf-h3,
+  .cf-tdetail {
     grid-column: 2;
+  }
+  .cf-tcell {
     font-size: 0.9375rem;
     color: var(--mute);
+  }
+  .cf-tdetail {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.35rem;
   }
   .cf-tcell:empty {
     display: none;
@@ -515,9 +525,14 @@
     .cf-trow {
       grid-template-columns: 2.6rem minmax(0, 1fr) minmax(0, 14rem) 9rem;
     }
-    .cf-tcell {
+    .cf-tcell,
+    .cf-trow .cf-h3 {
       grid-column: auto;
       display: block;
+    }
+    .cf-tdetail {
+      grid-column: 2 / -1;
+      max-width: 68ch;
     }
     .cf-tcell:empty {
       display: block;

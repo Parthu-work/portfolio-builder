@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Cover, TemplateRoot } from "../../render/Root";
+import { TemplateRoot } from "../../render/Root";
 import { Links, Prose, Rest, Tags, Tail } from "../../render/FieldValue";
 import { Img } from "../../render/Img";
 import { viewPortfolio, type Entry, type SectionView } from "../../render/view";
@@ -165,11 +165,7 @@ function Items({ s, si, lang }: { s: SectionView; si: number; lang: string }) {
         <ul className="cf-cases">
           {s.entries.map((e, i) => (
             <li key={e.id} className="cf-case pf-reveal">
-              {e.image ? (
-                <Img image={e.image} aspect="16 / 9" sizes="(min-width: 1280px) 420px, (min-width: 768px) 45vw, 100vw" className="cf-media" />
-              ) : (
-                <Cover seed={e.id + (e.title ?? "")} label={e.title} className="cf-media aspect-[16/9]" />
-              )}
+              {e.image ? <Img image={e.image} aspect="16 / 9" sizes="(min-width: 1280px) 420px, (min-width: 768px) 45vw, 100vw" className="cf-media" /> : null}
               <EntryHead e={e} no={no(i)} />
               {e.metric ? <Outcome metric={e.metric} /> : null}
               {e.body ? <Prose html={e.body} className="cf-prose" /> : null}
@@ -186,14 +182,16 @@ function Items({ s, si, lang }: { s: SectionView; si: number; lang: string }) {
               <span className="cf-no" aria-hidden="true">
                 {no(i)}
               </span>
-              <div className="grid min-w-0 gap-2">
-                <h3 className="cf-h3 cf-h3-sm">{e.title}</h3>
-                {e.image ? <Img image={e.image} aspect="16 / 9" sizes="240px" className="cf-media max-w-[15rem]" /> : null}
-                {e.body ? <Prose html={e.body} className="cf-prose text-mute" /> : null}
-                <Tail e={e} lang={lang} />
-              </div>
+              <h3 className="cf-h3 cf-h3-sm">{e.title}</h3>
               <p className="cf-tcell">{e.subtitle}</p>
               <p className="cf-tcell cf-date">{e.date}</p>
+              {e.image || e.body || e.tags?.length || e.links.length || e.rest.length ? (
+                <div className="cf-tdetail">
+                  {e.image ? <Img image={e.image} aspect="16 / 9" sizes="240px" className="cf-media max-w-[15rem]" /> : null}
+                  {e.body ? <Prose html={e.body} className="cf-prose text-mute" /> : null}
+                  <Tail e={e} lang={lang} />
+                </div>
+              ) : null}
             </li>
           ))}
         </ul>
