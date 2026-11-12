@@ -450,6 +450,27 @@ export const TEMPLATES: TemplateMeta[] = [
     ],
     fontPairs: [fp("bricolage", "Bricolage + Inter", F.bric, F.inter), fp("space", "Space Grotesk + DM Sans", F.space, F.dm), fp("fraunces", "Fraunces + Inter", F.fraunces, F.inter)],
   },
+  {
+    id: "vivid",
+    name: "Vivid",
+    description: "Fluorescent glow on matte black, with discipline: giant outlined type that fills on hover, neon numerals and borders that slowly turn.",
+    signature: "Fluorescent glow on matte · outline type that fills on hover · animated conic borders",
+    tags: ["bold", "neon", "colourful", "energetic", "dark"],
+    preferredMode: "dark",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("acid", "Acid",
+        tk("0.975 0.005 120", "0.995 0.002 120", "0.17 0.01 280", "0.45 0.012 280", "0.89 0.008 120", "0.56 0.012 280", "0.5 0.16 135", "0.99 0.003 120", "0.55 0.24 340"),
+        tk("0.15 0.005 280", "0.2 0.008 280", "0.96 0.005 120", "0.74 0.01 280", "0.28 0.01 280", "0.55 0.012 280", "0.9 0.21 128", "0.15 0.03 128", "0.7 0.25 340")),
+      pal("ultraviolet", "Ultraviolet",
+        tk("0.97 0.01 290", "0.99 0.005 290", "0.2 0.04 290", "0.45 0.04 290", "0.89 0.015 290", "0.57 0.04 290", "0.48 0.22 300", "0.99 0.004 290", "0.55 0.13 200"),
+        tk("0.14 0.025 290", "0.19 0.035 290", "0.96 0.01 290", "0.76 0.03 290", "0.27 0.035 290", "0.56 0.04 290", "0.75 0.17 300", "0.15 0.03 300", "0.84 0.15 195")),
+      pal("daylight-neon", "Daylight Neon",
+        tk("0.985 0.004 100", "0.96 0.008 100", "0.16 0.01 280", "0.44 0.012 280", "0.88 0.008 100", "0.55 0.012 280", "0.49 0.25 350", "0.99 0.003 100", "0.58 0.19 145"),
+        tk("0.17 0.01 280", "0.22 0.012 280", "0.96 0.006 100", "0.76 0.012 280", "0.3 0.012 280", "0.57 0.014 280", "0.72 0.22 350", "0.15 0.03 350", "0.85 0.2 140")),
+    ],
+    fontPairs: [fp("syne", "Syne + Inter", F.syne, F.inter), fp("bricolage", "Bricolage + DM Sans", F.bric, F.dm), fp("space", "Space Grotesk + Inter", F.space, F.inter)],
+  },
 ];
 
 export const TEMPLATE_IDS = TEMPLATES.map((t) => t.id);

@@ -1,6 +1,7 @@
 import type { Portfolio } from "../schema/portfolio";
 import { DEFAULT_TEMPLATE_ID, TEMPLATES } from "./meta";
 import type { Template, TemplateComponent } from "./types";
+import Vivid from "./vivid";
 import Sketch from "./sketch";
 import Thread from "./thread";
 import Margin from "./margin";
@@ -44,6 +45,7 @@ export const TEMPLATE_COMPONENTS: Record<string, TemplateComponent> = {
   margin: Margin,
   thread: Thread,
   sketch: Sketch,
+  vivid: Vivid,
 };
 
 export const REGISTRY: Template[] = TEMPLATES.filter((t) => TEMPLATE_COMPONENTS[t.id]).map((t) => ({
