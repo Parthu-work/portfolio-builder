@@ -13,8 +13,8 @@ Statuses: todo · in-progress · done · blocked. Updated by the agent; one row 
 | 8 | terra | Terra | done | 1b4ed6f | Earthy palettes, token-coloured feTurbulence grain (mask), morphing border-radius blobs, wavy hand-drawn underlines that draw on view(), winding dotted SVG path timeline (straight stem on mobile), staggered garden grid (masonry behind @supports), leaf quotes, pebble metrics. Pure CSS, no islands. |
 | 9 | lumen | Lumen | done | e275655 | Full-bleed hero with ground scrim under the name, masonry wall (native masonry behind @supports, CSS columns fallback), <dialog> lightbox re-showing each img's currentSrc (←/→, Esc, focus return; gallery thumbs made operable), centred quiet type for text sections. |
 | 10 | margin | Margin | done | 71e8ccb | Reading column + margin sidenotes (subtitle/date/metric/tags) that become inline <details> on mobile; list layout as numbered references with Copy reference; footnote-style links (counters); small-multiples metrics; graph-paper ground on the Lab Notebook palette. |
-| 11 | thread | Thread | done | (this commit) | Section titles verbatim in outgoing bubbles, entries as incoming bubbles with sticky avatar, date separators, reaction-pill metrics, scroll-snap card carousel (keyboard-scrollable region), forwarded-message quotes, sticky mailto composer; decorative typing dots on the first bubble only (off under reduced motion). |
-| 12 | sketch | Sketchbook | todo | | |
+| 11 | thread | Thread | done | 6aff9d6 | Section titles verbatim in outgoing bubbles, entries as incoming bubbles with sticky avatar, date separators, reaction-pill metrics, scroll-snap card carousel (keyboard-scrollable region), forwarded-message quotes, sticky mailto composer; decorative typing dots on the first bubble only (off under reduced motion). |
+| 12 | sketch | Sketchbook | in-progress | | |
 | 13 | vivid | Vivid | todo | | |
 | 14 | arcade | Arcade | todo | | |
 | 15 | executive | Executive | todo | | |

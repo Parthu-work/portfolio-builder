@@ -18,6 +18,7 @@ const F = {
   playfair: "'Playfair Display Variable'",
   sora: "'Sora Variable'",
   anybody: "'Anybody Variable'",
+  caveat: "'Caveat Variable'",
 };
 const SANS = "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
 const SERIF = "ui-serif, Georgia, Cambria, 'Times New Roman', serif";
@@ -427,6 +428,27 @@ export const TEMPLATES: TemplateMeta[] = [
         tk("0.15 0.015 265", "0.2 0.02 265", "0.95 0.008 260", "0.75 0.02 262", "0.28 0.02 265", "0.56 0.025 262", "0.72 0.15 268", "0.15 0.03 268", "0.8 0.13 150")),
     ],
     fontPairs: [fp("dm", "DM Sans", F.dm, F.dm), fp("inter", "Inter", F.inter, F.inter), fp("manrope", "Manrope", F.manrope, F.manrope)],
+  },
+  {
+    id: "sketch",
+    name: "Sketchbook",
+    description: "Imperfect by design: dot-grid paper, hand-drawn marks that draw themselves, taped polaroids and sticky-note testimonials.",
+    signature: "Hand-drawn marks that draw themselves · tape and sticky notes · dot-grid paper",
+    tags: ["playful", "hand-drawn", "creative", "imperfect", "light"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("graphite", "Graphite",
+        tk("0.975 0.004 90", "0.995 0.002 90", "0.25 0.008 260", "0.45 0.01 260", "0.88 0.006 90", "0.56 0.01 260", "0.48 0.16 258", "0.99 0.002 90", "0.6 0.15 55"),
+        tk("0.19 0.006 260", "0.235 0.008 260", "0.94 0.006 90", "0.75 0.01 90", "0.32 0.008 260", "0.58 0.01 260", "0.78 0.11 255", "0.18 0.02 260", "0.8 0.13 75")),
+      pal("highlighter", "Highlighter",
+        tk("0.98 0.012 100", "0.995 0.005 100", "0.22 0.02 300", "0.45 0.025 300", "0.89 0.015 100", "0.56 0.025 300", "0.5 0.2 350", "0.99 0.004 100", "0.62 0.15 85"),
+        tk("0.18 0.02 300", "0.225 0.025 300", "0.96 0.012 100", "0.77 0.025 100", "0.31 0.025 300", "0.58 0.03 300", "0.78 0.15 350", "0.18 0.03 350", "0.86 0.16 100")),
+      pal("chalkboard", "Chalkboard",
+        tk("0.96 0.01 160", "0.985 0.005 160", "0.22 0.02 170", "0.44 0.025 170", "0.88 0.012 160", "0.55 0.025 170", "0.45 0.1 160", "0.98 0.01 160", "0.6 0.14 60"),
+        tk("0.24 0.025 165", "0.28 0.028 165", "0.95 0.008 100", "0.8 0.015 120", "0.36 0.025 165", "0.62 0.025 165", "0.85 0.1 95", "0.22 0.03 165", "0.82 0.1 20")),
+    ],
+    fontPairs: [fp("bricolage", "Bricolage + Inter", F.bric, F.inter), fp("space", "Space Grotesk + DM Sans", F.space, F.dm), fp("fraunces", "Fraunces + Inter", F.fraunces, F.inter)],
   },
 ];
 
