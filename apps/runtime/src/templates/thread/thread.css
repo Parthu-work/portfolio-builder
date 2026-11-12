@@ -81,6 +81,8 @@
   /* ───────── conversation ───────── */
   .th-main {
     flex: 1;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
     display: grid;
     align-content: start;
     gap: 1.75rem;
@@ -113,6 +115,7 @@
     transform: scale(0.97);
   }
   .th-section {
+    grid-template-columns: minmax(0, 1fr);
     display: grid;
     gap: 0.75rem;
     scroll-margin-top: 5rem;
@@ -123,7 +126,7 @@
     display: flex;
     justify-content: flex-end;
   }
-  .th-bubble-out {
+  .th-bubble.th-bubble-out {
     max-width: min(30rem, 85%);
     padding: 0.7rem 1rem;
     background: var(--sig);
@@ -153,6 +156,7 @@
   }
   .th-in-stack {
     grid-area: stack;
+    grid-template-columns: minmax(0, 1fr);
     display: grid;
     justify-items: start;
     gap: 0.3rem;
@@ -292,6 +296,7 @@
 
   /* grid: a horizontal scroll-snap row of card bubbles */
   .th-carousel {
+    position: relative;
     width: 100%;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -306,6 +311,7 @@
     width: max-content;
   }
   .th-card {
+    position: relative;
     width: min(16rem, 72vw);
     scroll-snap-align: start;
     background: var(--surface);
