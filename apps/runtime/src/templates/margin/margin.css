@@ -6,12 +6,12 @@
 
   .mg-page {
     width: 100%;
-    max-width: calc(var(--mg-main) + var(--mg-side) + var(--mg-gap));
+    max-width: calc(var(--mg-main) + var(--mg-side) + var(--mg-gap) + 5rem);
     margin-inline: auto;
     padding: clamp(2.5rem, 8vw, 6rem) 1.35rem 3rem;
     font-size: 1.0625rem;
     line-height: 1.6;
-    box-sizing: content-box;
+    box-sizing: border-box;
   }
   @media (min-width: 1100px) {
     .mg-page {
@@ -29,6 +29,13 @@
   }
 
   /* the two-column unit: text + margin */
+  .mg-main,
+  .mg-section,
+  .mg-section-body,
+  .mg-entry,
+  .mg-main-col {
+    grid-template-columns: minmax(0, 1fr);
+  }
   .mg-entry {
     display: grid;
     gap: 0.5rem;
