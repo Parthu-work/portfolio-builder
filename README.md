@@ -127,7 +127,7 @@ pnpm e2e
 ## Supabase setup
 
 1. Create a project at supabase.com (free tier).
-2. Run the migrations in `supabase/migrations/` in order — with the CLI (`supabase link`, then `supabase db push`) or by pasting each file into the SQL editor. They create every table with Row Level Security, the `take_token` rate-limit function and the public `portfolio-assets` storage bucket (2 MB, images only, per-user folders).
+2. Run the three migrations in `supabase/migrations/` in order — with the CLI (`supabase link`, then `supabase db push`) or by pasting each file into the SQL editor. They create every table with Row Level Security, the `take_token` rate-limit function and the public `portfolio-assets` storage bucket (2 MB, images only, per-user folders).
 3. **Authentication → Providers:** enable GitHub and Google (each needs an OAuth app; callback `https://<project>.supabase.co/auth/v1/callback`) and Email (magic link).
 4. **Authentication → URL configuration:** set *Site URL* to your builder URL and add `https://<builder>/auth/callback` to *Redirect URLs*.
 5. Copy the project URL, anon key and service-role key into the builder's env vars.
