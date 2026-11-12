@@ -302,6 +302,27 @@ export const TEMPLATES: TemplateMeta[] = [
     ],
     fontPairs: [fp("anybody", "Anybody + Inter", F.anybody, F.inter), fp("syne", "Syne + Inter", F.syne, F.inter), fp("bricolage", "Bricolage + DM Sans", F.bric, F.dm)],
   },
+  {
+    id: "archive",
+    name: "Archive",
+    description: "A museum catalogue of your work: every entry numbered, a sortable index with image previews, then archival cards for the details.",
+    signature: "Catalogue numbers · sortable index with hover previews · archival cards",
+    tags: ["designer", "index", "catalogue", "archival", "light"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("museum", "Museum",
+        tk("0.95 0.008 75", "0.98 0.005 75", "0.17 0.005 75", "0.44 0.01 75", "0.86 0.008 75", "0.55 0.01 75", "0.48 0.19 27", "0.99 0.004 75", "0.5 0.08 230"),
+        tk("0.17 0.005 75", "0.215 0.006 75", "0.94 0.006 75", "0.74 0.01 75", "0.3 0.006 75", "0.56 0.01 75", "0.7 0.17 27", "0.15 0.02 27", "0.78 0.08 230")),
+      pal("blueprint", "Blueprint",
+        tk("0.95 0.02 240", "0.975 0.012 240", "0.25 0.07 260", "0.45 0.05 258", "0.86 0.025 240", "0.56 0.05 255", "0.45 0.15 262", "0.99 0.006 240", "0.55 0.14 50"),
+        tk("0.2 0.05 258", "0.25 0.055 258", "0.95 0.02 240", "0.78 0.04 245", "0.34 0.05 258", "0.6 0.05 250", "0.82 0.1 235", "0.2 0.05 258", "0.82 0.12 70")),
+      pal("vault", "Vault",
+        tk("0.96 0.004 250", "0.985 0.002 250", "0.19 0.01 250", "0.45 0.012 250", "0.88 0.005 250", "0.56 0.012 250", "0.47 0.1 75", "0.99 0.004 250", "0.5 0.12 300"),
+        tk("0.14 0.008 250", "0.185 0.01 250", "0.93 0.008 80", "0.73 0.012 80", "0.27 0.01 250", "0.55 0.012 250", "0.8 0.11 80", "0.15 0.02 80", "0.75 0.1 300")),
+    ],
+    fontPairs: [fp("archivo", "Archivo + JetBrains Mono", F.archivo, F.archivo), fp("space", "Space Grotesk + JetBrains Mono", F.space, F.space), fp("newsreader", "Newsreader + JetBrains Mono", F.news, F.news)],
+  },
 ];
 
 export const TEMPLATE_IDS = TEMPLATES.map((t) => t.id);

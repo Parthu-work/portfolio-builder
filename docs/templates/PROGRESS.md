@@ -7,8 +7,8 @@ Statuses: todo · in-progress · done · blocked. Updated by the agent; one row 
 | 2 | casefile | Casefile | done | 1ade2a4 | Outcome numerals + Evidence lists, folder-tab sections, scroll-spy rail (tab strip on mobile), count-up only for numeric values, duration bars from parsed English date ranges. |
 | 3 | card | Card | done | 9c2cb27 | Link-in-bio card (sticky left column ≥1280px), tactile press buttons, Share (navigator.share → clipboard + polite toast), <details> mini-cards open from 1024px via ::details-content (no shift) + island. |
 | 4 | quiet | Quiet | done | 61d37af | Single typeface per pair (display=body=mono), hairline index with entry counts, typographic rows, j/k entry focus with left marker + ? hint (hidden on touch). |
-| 5 | kinetic | Kinetic | done | (this commit) | Anybody (wdth 50–150) via @property-animated width/weight on scroll(); h2 stretch on view() ≥768px; split-word reveals on headline + first quote; cursor proximity weight (fine pointers). Width effects fall back to weight-only for Syne/Bricolage pairs. |
-| 6 | archive | Archive | todo | | |
+| 5 | kinetic | Kinetic | done | 95143fc | Anybody (wdth 50–150) via @property-animated width/weight on scroll(); h2 stretch on view() ≥768px; split-word reveals on headline + first quote; cursor proximity weight (fine pointers). Width effects fall back to weight-only for Syne/Bricolage pairs. |
+| 6 | archive | Archive | done | (this commit) | No. 001… numbering in document order; index table island with section filters (aria-pressed), year sort, live count, pointer-following preview on fine pointers + fixed pane ≥1024px; year-grouped rows, letters, specimen labels, classification index. |
 | 7 | vision | Vision | todo | | |
 | 8 | terra | Terra | todo | | |
 | 9 | lumen | Lumen | todo | | |
