@@ -543,7 +543,7 @@
         transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
       @starting-style {
         opacity: 0;
-        transform: translateY(var(--pf-rise)) rotate(-0.4deg);
+        transform: translateY(var(--pf-rise));
       }
     }
   }
