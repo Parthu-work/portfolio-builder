@@ -217,6 +217,27 @@ export const TEMPLATES: TemplateMeta[] = [
     ],
     fontPairs: [fp("newsreader", "Newsreader + Inter", F.news, F.inter), fp("archivo", "Archivo + Inter", F.archivo, F.inter), fp("fraunces", "Fraunces + DM Sans", F.fraunces, F.dm)],
   },
+  {
+    id: "casefile",
+    name: "Casefile",
+    description: "Every project reads like a case file: the outcome in huge numerals, the story, then the evidence, with a sticky index that follows you.",
+    signature: "Case-file layout · sticky scroll-spy index · outcome metrics that count up",
+    tags: ["product", "consulting", "case-study", "outcomes", "light"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("memo", "Memo",
+        tk("0.995 0 0", "0.965 0.006 260", "0.19 0.01 265", "0.45 0.015 265", "0.9 0.008 260", "0.56 0.02 265", "0.47 0.2 264", "0.99 0.005 260", "0.55 0.15 45"),
+        tk("0.165 0.012 265", "0.21 0.016 265", "0.96 0.005 260", "0.76 0.015 262", "0.31 0.016 265", "0.57 0.02 265", "0.75 0.14 262", "0.16 0.03 265", "0.8 0.13 60")),
+      pal("boardroom", "Boardroom",
+        tk("0.99 0.004 150", "0.96 0.01 155", "0.2 0.015 160", "0.44 0.02 160", "0.89 0.012 155", "0.56 0.02 160", "0.44 0.1 158", "0.99 0.005 150", "0.55 0.13 30"),
+        tk("0.165 0.012 160", "0.21 0.016 160", "0.95 0.008 150", "0.76 0.02 155", "0.31 0.016 160", "0.57 0.02 160", "0.8 0.12 160", "0.16 0.03 160", "0.8 0.11 40")),
+      pal("night-brief", "Night Brief",
+        tk("0.975 0.008 255", "0.94 0.016 255", "0.2 0.04 260", "0.44 0.04 258", "0.87 0.02 255", "0.56 0.04 258", "0.46 0.13 250", "0.99 0.005 255", "0.56 0.13 70"),
+        tk("0.15 0.03 262", "0.2 0.035 262", "0.95 0.01 255", "0.76 0.03 258", "0.3 0.035 262", "0.57 0.04 260", "0.83 0.13 80", "0.17 0.03 70", "0.76 0.11 240")),
+    ],
+    fontPairs: [fp("bricolage", "Bricolage + Inter", F.bric, F.inter), fp("manrope", "Manrope + Inter", F.manrope, F.inter), fp("space", "Space Grotesk + Inter", F.space, F.inter)],
+  },
 ];
 
 export const TEMPLATE_IDS = TEMPLATES.map((t) => t.id);

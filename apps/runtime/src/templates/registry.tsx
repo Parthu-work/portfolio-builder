@@ -1,6 +1,7 @@
 import type { Portfolio } from "../schema/portfolio";
 import { DEFAULT_TEMPLATE_ID, TEMPLATES } from "./meta";
 import type { Template, TemplateComponent } from "./types";
+import Casefile from "./casefile";
 import Paper from "./paper";
 import Aurora from "./aurora";
 import Brutal from "./brutal";
@@ -22,6 +23,7 @@ export const TEMPLATE_COMPONENTS: Record<string, TemplateComponent> = {
   signal: Signal,
   swiss: Swiss,
   paper: Paper,
+  casefile: Casefile,
 };
 
 export const REGISTRY: Template[] = TEMPLATES.filter((t) => TEMPLATE_COMPONENTS[t.id]).map((t) => ({
