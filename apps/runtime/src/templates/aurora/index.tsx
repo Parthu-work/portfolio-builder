@@ -188,7 +188,7 @@ export default function Aurora({ portfolio }: TemplateProps) {
           {hero.present ? <Links links={hero.links} primaryFirst className="justify-center" /> : null}
           {hero.present ? <Rest slots={hero.rest} lang={v.lang} /> : null}
           {hero.location || v.socials.length ? (
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 pt-2 text-sm">
+            <div className="au-glass au-nav flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-5 py-2.5 text-sm">
               {hero.location ? <p className="text-mute">{hero.location}</p> : null}
               <Socials socials={v.socials} className="flex flex-wrap justify-center gap-x-5 gap-y-2" />
             </div>

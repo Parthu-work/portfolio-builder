@@ -18,30 +18,30 @@
     height: 62vmax;
     border-radius: 50%;
     filter: blur(90px);
-    opacity: 0.42;
+    opacity: 0.6;
     will-change: transform;
     transition: translate 1.2s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
   .au-blob-1 {
     left: -18vmax;
     top: -26vmax;
-    background: oklch(from var(--sig) l c h);
+    background: color-mix(in oklch, var(--sig) 42%, var(--ground));
     translate: calc(var(--px) * 9vmax) calc(var(--py) * 9vmax);
     animation: au-drift-1 34s ease-in-out infinite alternate;
   }
   .au-blob-2 {
     right: -24vmax;
     top: 8vmax;
-    background: oklch(from var(--comp) l c h);
-    opacity: 0.3;
+    background: color-mix(in oklch, var(--comp) 36%, var(--ground));
+    opacity: 0.5;
     translate: calc(var(--px) * -12vmax) calc(var(--py) * 7vmax);
     animation: au-drift-2 41s ease-in-out infinite alternate;
   }
   .au-blob-3 {
     left: 14vmax;
     bottom: -40vmax;
-    background: oklch(from var(--sig) l c calc(h + 55));
-    opacity: 0.28;
+    background: color-mix(in oklch, oklch(from var(--sig) l c calc(h + 55)) 36%, var(--ground));
+    opacity: 0.5;
     translate: calc(var(--px) * 6vmax) calc(var(--py) * -10vmax);
     animation: au-drift-3 47s ease-in-out infinite alternate;
   }

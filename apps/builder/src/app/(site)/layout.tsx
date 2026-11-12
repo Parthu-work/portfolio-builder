@@ -1,8 +1,18 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import { Toaster } from "sonner";
 import { Analytics } from "@/components/site/Analytics";
 import "./globals.css";
+
+// Self-hosted variable fonts via next/font: preloaded, with metric-matched fallbacks (no layout shift on swap).
+const inter = localFont({ src: "../../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2", weight: "100 900", variable: "--font-inter", display: "swap" });
+const bricolage = localFont({
+  src: "../../../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2",
+  weight: "200 800",
+  variable: "--font-bricolage",
+  display: "swap",
+});
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3100").replace(/\/+$/, "");
 
@@ -18,7 +28,7 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, colo
 
 export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${bricolage.variable}`}>
       <body>
         <a href="#main" className="skip-link">
           Skip to content

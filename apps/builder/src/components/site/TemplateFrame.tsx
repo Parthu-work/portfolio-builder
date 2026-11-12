@@ -24,7 +24,7 @@ export function TemplateFrame({
   height?: number;
   interactive?: boolean;
   eager?: boolean;
-  /** Wait until the page has finished loading and the browser is idle before fetching the preview. */
+  /** Fetch the preview on the visitor's first interaction (or after 8 seconds) instead of during page load. */
   idle?: boolean;
   className?: string;
 }) {
@@ -36,15 +36,13 @@ export function TemplateFrame({
 
   useEffect(() => {
     if (!idle) return;
-    let t = 0;
-    const go = () => {
-      t = window.setTimeout(() => setReady(true), 1200);
-    };
-    if (document.readyState === "complete") go();
-    else window.addEventListener("load", go, { once: true });
+    const events = ["pointerdown", "pointermove", "keydown", "scroll", "touchstart"] as const;
+    const go = () => setReady(true);
+    const t = window.setTimeout(go, 8000);
+    for (const e of events) window.addEventListener(e, go, { once: true, passive: true });
     return () => {
       window.clearTimeout(t);
-      window.removeEventListener("load", go);
+      for (const e of events) window.removeEventListener(e, go);
     };
   }, [idle]);
 

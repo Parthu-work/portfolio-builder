@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button, FieldError, Input, Label } from "@/components/ui";
 import { api, ApiError } from "@/lib/client";
-import { browserClient } from "@/lib/supabase/browser";
 
 const Schema = z.object({ email: z.string().trim().min(1, "Enter your email").email("Enter a valid email address") });
 type Values = z.infer<typeof Schema>;
@@ -27,6 +26,7 @@ export function LoginForm({ mode, next, error }: { mode: "supabase" | "local" | 
         router.refresh();
         return;
       }
+      const { browserClient } = await import("@/lib/supabase/browser");
       const { error: e } = await browserClient()!.auth.signInWithOtp({ email, options: { emailRedirectTo: callback() } });
       if (e) throw new Error(e.message);
       setMessage({ tone: "ok", text: `Check ${email} — we sent you a sign-in link.` });
@@ -36,6 +36,7 @@ export function LoginForm({ mode, next, error }: { mode: "supabase" | "local" | 
   });
 
   const oauth = async (provider: "github" | "google") => {
+    const { browserClient } = await import("@/lib/supabase/browser");
     const { error: e } = await browserClient()!.auth.signInWithOAuth({ provider, options: { redirectTo: callback() } });
     if (e) setMessage({ tone: "bad", text: e.message });
   };
