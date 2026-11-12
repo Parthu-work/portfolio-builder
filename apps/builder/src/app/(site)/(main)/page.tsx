@@ -8,7 +8,7 @@ import { FIELD_TYPE_SHORT } from "@/components/site/field-types";
 import { buttonStyles } from "@/components/ui/styles";
 
 const STEPS = [
-  { icon: MousePointerClick, title: "Pick", text: "Choose one of eight original templates. Change your mind later — your content moves with you." },
+  { icon: MousePointerClick, title: "Pick", text: `Choose one of ${TEMPLATES.length} original templates. Change your mind later — your content moves with you.` },
   { icon: PencilRuler, title: "Fill", text: "Type into a form that bends to your story. Add sections and invent your own fields; watch the real site update as you go." },
   { icon: Rocket, title: "Deploy", text: "One click sends it to your own Vercel account. Free hosting, your repository, your domain." },
 ];
@@ -136,7 +136,7 @@ export default function Landing() {
         <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 py-16 sm:px-6 md:py-24">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="grid gap-3">
-              <p className="font-mono text-sm text-brand">Eight originals</p>
+              <p className="font-mono text-sm text-brand">{TEMPLATES.length} originals</p>
               <h2 id="gallery" className="font-display text-[clamp(2rem,4.4vw,3.25rem)] font-bold leading-[1.02] tracking-[-0.035em]">
                 Templates with a point of view.
               </h2>

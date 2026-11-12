@@ -13,3 +13,4 @@ playwright-report
 .vercel
 apps/builder/src/generated
 .DS_Store
+.qa/
