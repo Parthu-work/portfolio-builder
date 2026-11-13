@@ -3,16 +3,19 @@ import { notFound } from "next/navigation";
 import { migrate } from "@runtime/schema/migrate";
 import { SlugSchema } from "@runtime/schema/portfolio";
 import { TemplateView } from "@runtime/templates/registry";
+import { mergeLive } from "@/lib/integrations/service";
 import { getStore } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
 async function load(slug: string) {
   if (!SlugSchema.safeParse(slug).success) return null;
-  const found = await getStore().getPublished({ slug });
+  const store = getStore();
+  const found = await store.getPublished({ slug });
   if (!found) return null;
   try {
-    return migrate(found.portfolio);
+    const portfolio = migrate(found.portfolio);
+    return (await mergeLive(store, found.id, portfolio).catch(() => ({ portfolio }))).portfolio;
   } catch {
     return null;
   }

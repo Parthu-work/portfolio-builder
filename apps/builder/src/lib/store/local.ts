@@ -14,6 +14,8 @@ import {
   type PortfolioRow,
   type ProfileRow,
   type SessionUser,
+  type SnapshotInput,
+  type SnapshotRow,
   type Store,
   type VersionRow,
 } from "./types";
@@ -25,9 +27,10 @@ type Db = {
   deployments: DeploymentRow[];
   events: EventRow[];
   audit: AuditRow[];
+  snapshots: SnapshotRow[];
 };
 
-const empty = (): Db => ({ profiles: [], portfolios: [], versions: [], deployments: [], events: [], audit: [] });
+const empty = (): Db => ({ profiles: [], portfolios: [], versions: [], deployments: [], events: [], audit: [], snapshots: [] });
 const now = () => new Date().toISOString();
 
 /**
@@ -132,6 +135,33 @@ export class LocalStore implements Store {
   async deletePortfolio(userId: string, id: string) {
     this.own(userId, id).deletedAt = now();
     this.persist();
+  }
+
+  async listSnapshots(portfolioId: string) {
+    return structuredClone(this.db.snapshots.filter((x) => x.portfolioId === portfolioId));
+  }
+
+  async upsertSnapshot(input: SnapshotInput) {
+    const existing = this.db.snapshots.find((x) => x.portfolioId === input.portfolioId && x.provider === input.provider && x.account === input.account);
+    const row: SnapshotRow = { ...structuredClone(input), id: existing?.id ?? crypto.randomUUID() };
+    this.db.snapshots = [...this.db.snapshots.filter((x) => x.id !== row.id), row];
+    this.persist();
+    return structuredClone(row);
+  }
+
+  async updateSnapshot(id: string, patch: Partial<Omit<SnapshotRow, "id" | "portfolioId" | "provider" | "account">>) {
+    const row = this.db.snapshots.find((x) => x.id === id);
+    if (!row) return null;
+    Object.assign(row, structuredClone(patch));
+    this.persist();
+    return structuredClone(row);
+  }
+
+  async deleteSnapshot(portfolioId: string, id: string) {
+    const before = this.db.snapshots.length;
+    this.db.snapshots = this.db.snapshots.filter((x) => !(x.id === id && x.portfolioId === portfolioId));
+    this.persist();
+    return this.db.snapshots.length < before;
   }
 
   async listVersions(userId: string, portfolioId: string) {

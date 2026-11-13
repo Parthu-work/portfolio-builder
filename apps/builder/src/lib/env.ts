@@ -27,6 +27,14 @@ export const env = {
   get runtimeRepoUrl() {
     return (process.env.RUNTIME_REPO_URL || "").replace(/\/+$/, "").replace(/\.git$/, "");
   },
+  /** Server-only. Fine-grained GitHub token with no scopes: public reads + the GraphQL contribution calendar. */
+  get githubApiToken() {
+    return process.env.GITHUB_API_TOKEN || "";
+  },
+  /** Server-only, optional: raises the Stack Exchange API quota. */
+  get stackExchangeKey() {
+    return process.env.STACKEXCHANGE_KEY || "";
+  },
   get runtimeRepoBranch() {
     return process.env.RUNTIME_REPO_BRANCH || "main";
   },
@@ -47,6 +55,14 @@ export function backendMode(): BackendMode {
 }
 
 export const flags = {
+  /** Connected accounts (GitHub, LeetCode, …). Off unless FEATURE_INTEGRATIONS=1; off means the app behaves exactly as before. */
+  get integrations() {
+    return process.env.FEATURE_INTEGRATIONS === "1";
+  },
+  /** Per-provider kill switch: INTEGRATION_<PROVIDER>_DISABLED=1 (dashes become underscores). */
+  providerDisabled(id: string) {
+    return process.env[`INTEGRATION_${id.toUpperCase().replace(/[^A-Z0-9]/g, "_")}_DISABLED`] === "1";
+  },
   /** Phase 2 (scaffold only): deploy via the Vercel REST API instead of the Deploy Button. */
   get vercelApiDeploy() {
     return process.env.FEATURE_VERCEL_API_DEPLOY === "1";

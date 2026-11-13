@@ -13,6 +13,8 @@ import {
   type PortfolioRow,
   type ProfileRow,
   type SessionUser,
+  type SnapshotInput,
+  type SnapshotRow,
   type Store,
   type VersionRow,
 } from "./types";
@@ -51,6 +53,25 @@ function check<T>(res: { data: T; error: { message: string; code?: string } | nu
   }
   return res.data;
 }
+
+const SNAPSHOT_COLS = "id,portfolio_id,provider,account,data,fetched_at,status,error,verified,verify_code";
+const toSnapshot = (r: Row): SnapshotRow => ({
+  id: s(r.id),
+  portfolioId: s(r.portfolio_id),
+  provider: s(r.provider),
+  account: s(r.account),
+  data: r.data ?? null,
+  fetchedAt: s(r.fetched_at),
+  status: r.status === "error" || r.status === "stale" ? r.status : "ok",
+  error: sn(r.error),
+  verified: r.verified === true,
+  verifyCode: sn(r.verify_code),
+});
+
+type DbError = { message: string; code?: string } | null;
+/** Postgres 42P01 (undefined table) or PostgREST PGRST205 (table not in the schema cache): the migration has not been applied. */
+export const isMissingTable = (e: DbError) => Boolean(e && (e.code === "42P01" || e.code === "PGRST205" || /relation .* does not exist|could not find the table/i.test(e.message)));
+let warnedMissingSnapshots = false;
 
 const PORTFOLIO_COLS = "id,user_id,slug,template_id,draft,published,published_at,edit_count,created_at,updated_at";
 
@@ -198,6 +219,55 @@ export class SupabaseStore implements Store {
     check(
       await this.admin().from("audit_log").insert({ actor_user_id: a.actorUserId, action: a.action, entity_type: a.entityType, entity_id: a.entityId, before: a.before ?? null, after: a.after ?? null, ip_hash: a.ipHash }),
     );
+  }
+
+  /** Unwraps a snapshot query. A missing table is logged once and reported as null ("integrations unavailable"). */
+  private snap<T>(res: { data: T; error: DbError }): T | null {
+    if (!res.error) return res.data;
+    if (isMissingTable(res.error)) {
+      if (!warnedMissingSnapshots) {
+        warnedMissingSnapshots = true;
+        console.warn(JSON.stringify({ level: "warn", msg: "integration_snapshots table is missing; integrations are disabled until the migration is applied", ts: new Date().toISOString() }));
+      }
+      return null;
+    }
+    throw new Error(`Database error: ${res.error.message}`);
+  }
+
+  async listSnapshots(portfolioId: string) {
+    const rows = this.snap(await this.admin().from("integration_snapshots").select(SNAPSHOT_COLS).eq("portfolio_id", portfolioId));
+    return rows ? (rows as Row[]).map(toSnapshot) : null;
+  }
+
+  async upsertSnapshot(input: SnapshotInput) {
+    const row = this.snap(
+      await this.admin()
+        .from("integration_snapshots")
+        .upsert(
+          { portfolio_id: input.portfolioId, provider: input.provider, account: input.account, data: input.data, fetched_at: input.fetchedAt, status: input.status, error: input.error, verified: input.verified, verify_code: input.verifyCode },
+          { onConflict: "portfolio_id,provider,account" },
+        )
+        .select(SNAPSHOT_COLS)
+        .single(),
+    );
+    return row ? toSnapshot(row as Row) : null;
+  }
+
+  async updateSnapshot(id: string, patch: Partial<Omit<SnapshotRow, "id" | "portfolioId" | "provider" | "account">>) {
+    const cols: Row = {};
+    if ("data" in patch) cols.data = patch.data;
+    if (patch.fetchedAt !== undefined) cols.fetched_at = patch.fetchedAt;
+    if (patch.status !== undefined) cols.status = patch.status;
+    if ("error" in patch) cols.error = patch.error;
+    if (patch.verified !== undefined) cols.verified = patch.verified;
+    if ("verifyCode" in patch) cols.verify_code = patch.verifyCode;
+    const row = this.snap(await this.admin().from("integration_snapshots").update(cols).eq("id", id).select(SNAPSHOT_COLS).maybeSingle());
+    return row ? toSnapshot(row as Row) : null;
+  }
+
+  async deleteSnapshot(portfolioId: string, id: string) {
+    const rows = this.snap(await this.admin().from("integration_snapshots").delete().eq("id", id).eq("portfolio_id", portfolioId).select("id"));
+    return rows ? (rows as Row[]).length > 0 : null;
   }
 
   async takeToken(key: string, capacity: number, refillPerSec: number) {
