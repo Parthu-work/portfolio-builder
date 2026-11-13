@@ -195,6 +195,7 @@ How it works (`apps/builder/src/lib/integrations/`):
 | Provider | API | Shows |
 | --- | --- | --- |
 | GitHub | Official (GraphQL, server token) | Contribution heatmap, top languages by code (bars), contributions / stars / followers / public repos, pinned repos as projects (optional). Verified by signing in with the same GitHub account, or a bio code. |
+| LeetCode | Experimental (unofficial public GraphQL) | Solved easy/medium/hard (rings), submission heatmap, problems solved, contest rating, top percentile, contests, max streak, active days; badges (incl. Knight/Guardian) as awards; most-solved topics as skills. Bio code in About me. |
 
 ## Adding a template — the template contract
 

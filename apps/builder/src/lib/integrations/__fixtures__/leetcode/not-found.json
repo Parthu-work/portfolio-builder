@@ -1,0 +1,20 @@
+{
+ "data": {
+  "matchedUser": null,
+  "userContestRanking": null
+ },
+ "errors": [
+  {
+   "message": "That user does not exist.",
+   "locations": [
+    {
+     "line": 2,
+     "column": 3
+    }
+   ],
+   "path": [
+    "matchedUser"
+   ]
+  }
+ ]
+}
