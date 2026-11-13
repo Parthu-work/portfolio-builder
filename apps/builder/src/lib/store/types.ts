@@ -1,7 +1,13 @@
 import type { Portfolio } from "@runtime/schema/portfolio";
 import type { EventType } from "../analytics-core";
 
-export type SessionUser = { id: string; email: string; name: string };
+export type SessionUser = {
+  id: string;
+  email: string;
+  name: string;
+  /** Accounts the user signed in with, as `<provider>:<provider's user id>` (e.g. "github:583231"). Proof of ownership. */
+  linked?: string[];
+};
 
 export type PortfolioRow = {
   id: string;

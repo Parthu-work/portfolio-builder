@@ -1,0 +1,14 @@
+{
+ "data": {
+  "user": null
+ },
+ "errors": [
+  {
+   "type": "NOT_FOUND",
+   "path": [
+    "user"
+   ],
+   "message": "Could not resolve to a User with the login of 'nobody-here'."
+  }
+ ]
+}

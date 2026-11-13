@@ -194,7 +194,7 @@ How it works (`apps/builder/src/lib/integrations/`):
 
 | Provider | API | Shows |
 | --- | --- | --- |
-| _none yet_ | | |
+| GitHub | Official (GraphQL, server token) | Contribution heatmap, top languages by code (bars), contributions / stars / followers / public repos, pinned repos as projects (optional). Verified by signing in with the same GitHub account, or a bio code. |
 
 ## Adding a template — the template contract
 

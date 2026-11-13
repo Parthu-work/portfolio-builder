@@ -41,7 +41,8 @@ export async function getUser(): Promise<SessionUser | null> {
   if (!u?.email) return null;
   const meta = u.user_metadata as Record<string, unknown> | undefined;
   const name = [meta?.full_name, meta?.name, meta?.user_name].find((v): v is string => typeof v === "string" && v.length > 0);
-  return { id: u.id, email: u.email, name: name ?? u.email.split("@")[0] ?? u.email };
+  const linked = (u.identities ?? []).flatMap((i) => (i.provider && i.id ? [`${i.provider}:${i.id}`] : []));
+  return { id: u.id, email: u.email, name: name ?? u.email.split("@")[0] ?? u.email, ...(linked.length ? { linked } : {}) };
 }
 
 /** For pages: redirects to /login when signed out. */
