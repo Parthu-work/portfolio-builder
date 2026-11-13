@@ -183,6 +183,14 @@ What exists in the data model and renderer today (works in all 23 templates, no 
 - **`sync` on a section** — marks it as fetched from a connected account; the renderer adds one quiet provenance line ("Live from github.com · updated … · Verified owner"). "Verified owner" appears only when ownership was actually checked.
 - **`integrations` on the portfolio** — the user's choices per connected account (never tokens, never fetched data).
 
+How it works (`apps/builder/src/lib/integrations/`):
+
+- A **provider** (`providers/<id>.ts`) implements `fetch(account)` and `toSections(data, cfg)`; it maps public data into ordinary sections. Each has recorded-fixture unit tests and never runs in the browser.
+- The latest fetch per account is stored in **`integration_snapshots`** (public data only — no tokens, no passwords). Disconnecting deletes it.
+- **Merge on read:** `GET /api/public/portfolios/[id]` swaps the content of synced sections for the latest snapshot, keeping the user's position, title and visibility. Snapshots older than 12 hours are served as they are and refreshed after the response; a provider is called automatically at most once per 6 hours per account. Deployed sites therefore update themselves with no cron and no redeploy. A failed refresh keeps the last good data.
+- **Zip export** bakes the latest snapshot in, worded "From … as of …" because it stops updating.
+- **Flags:** `FEATURE_INTEGRATIONS=1` enables everything; `INTEGRATION_<PROVIDER>_DISABLED=1` stops calls to one provider. With the flag off, or before the migration is applied, the app behaves exactly as before.
+
 | Provider | API | Shows |
 | --- | --- | --- |
 | _none yet_ | | |

@@ -30,6 +30,7 @@ export default defineConfig({
         RUNTIME_REPO_URL: "https://github.com/example/persona",
         ADMIN_EMAILS: "admin@example.com",
         ANALYTICS_SALT_SECRET: "e2e-secret",
+        FEATURE_INTEGRATIONS: "1",
       },
     },
     {

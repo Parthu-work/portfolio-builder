@@ -47,6 +47,23 @@ export type AuditRow = {
 export type AuditInput = Omit<AuditRow, "id" | "ts">;
 export type AuditFilter = { actor?: string; action?: string; from?: string; to?: string; limit?: number };
 
+/** The latest data fetched for one connected account. `id` doubles as the integration id in the portfolio document. */
+export type SnapshotRow = {
+  id: string;
+  portfolioId: string;
+  provider: string;
+  account: string;
+  /** Provider-shaped JSON; null until a fetch has succeeded. */
+  data: unknown;
+  fetchedAt: string;
+  /** ok: last fetch worked · stale: last fetch failed, `data` is the last good one · error: last fetch failed and there is no data. */
+  status: "ok" | "error" | "stale";
+  error: string | null;
+  verified: boolean;
+  verifyCode: string | null;
+};
+export type SnapshotInput = Omit<SnapshotRow, "id">;
+
 export class SlugTakenError extends Error {
   constructor(slug: string) {
     super(`The address "${slug}" is already taken`);
@@ -89,6 +106,15 @@ export interface Store {
   insertEvents(events: EventRow[]): Promise<void>;
   insertAudit(entry: AuditInput): Promise<void>;
   takeToken(key: string, capacity: number, refillPerSec: number): Promise<boolean>;
+
+  /* ── integrations (server-only; callers check ownership first) ──
+   * Every method returns null when snapshot storage is unavailable (e.g. the
+   * migration has not been applied yet): callers then behave as if integrations were off. */
+  listSnapshots(portfolioId: string): Promise<SnapshotRow[] | null>;
+  /** Inserts, or replaces the row with the same (portfolio, provider, account). */
+  upsertSnapshot(input: SnapshotInput): Promise<SnapshotRow | null>;
+  updateSnapshot(id: string, patch: Partial<Omit<SnapshotRow, "id" | "portfolioId" | "provider" | "account">>): Promise<SnapshotRow | null>;
+  deleteSnapshot(portfolioId: string, id: string): Promise<boolean | null>;
 
   /* ── admin ── */
   listEvents(since: string | null, limit: number): Promise<EventRow[]>;
