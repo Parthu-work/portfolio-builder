@@ -91,6 +91,7 @@ describe("proof links", () => {
 
     const row = (await connect(store, PID, proofLinksProvider, "links", {}, Date.now(), [], doc()))!;
     expect(connectionInfo(proofLinksProvider, row).details.filter((d) => d.ok)).toHaveLength(1);
+    expect(connectionInfo(proofLinksProvider, row).proofs?.checks.find((c) => c.nameFound)?.url).toBe(CERT);
     const withConfig = { ...forged, integrations: [{ id: row.id, provider: "proof-links", account: "links", options: {}, hidden: [] }] };
     const merged = (await mergeLive(store, PID, withConfig, {}, { find, now })).portfolio;
     expect(merged.sections.find((s) => s.id === "certs")!.items![0]!.values._proof).toMatchObject({ checkedAt: expect.any(String) });

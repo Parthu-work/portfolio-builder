@@ -4,7 +4,7 @@ import { flags } from "../env";
 import type { SnapshotRow, Store } from "../store/types";
 import { TIMEOUT_MS } from "./http";
 import { findProvider, getProvider, serverToken } from "./registry";
-import { applyHidden, mergeSynced, stamp, stripProofs } from "./sections";
+import { applyHidden, mergeSynced, stamp, stripProofs, type ProofSet } from "./sections";
 import { ProviderError, type ConnectionInfo, type HighlightSource, type Provider, type ProviderData } from "./types";
 
 /** Snapshots older than this are refreshed in the background the next time a site reads them. */
@@ -122,6 +122,7 @@ export function connectionInfo(provider: Provider, row: SnapshotRow, cfg?: Integ
     verified: row.verified,
     verifyCode: row.verified ? null : row.verifyCode,
     details: describeRow(provider, row),
+    proofs: provider.annotate && row.data && typeof row.data === "object" && Array.isArray((row.data as { checks?: unknown }).checks) ? (row.data as ProofSet) : null,
     available: mapSections(provider, row, { ...(cfg ?? defaultConfig(provider, row)), id: row.id, hidden: [] }, true, siblings),
   };
 }

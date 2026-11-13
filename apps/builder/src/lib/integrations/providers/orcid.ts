@@ -109,6 +109,16 @@ export const orcidProvider: Provider = {
     ];
   },
 
+  verify: {
+    method: "bio-code",
+    instructions: "Add the code to the Biography or Keywords of your ORCID record (orcid.org/my-orcid), set it to “Everyone”, save, then press Verify. You can remove it afterwards.",
+    async check(account, code, ctx) {
+      type Person = { biography?: { content?: string | null } | null; keywords?: { keyword?: { content?: string }[] } | null };
+      const p = await providerJson<Person>(`${API}/${account}/person`, { headers: { accept: "application/json" }, signal: ctx.signal });
+      return [p.biography?.content, ...(p.keywords?.keyword ?? []).map((k) => k.content)].some((v) => typeof v === "string" && v.includes(code));
+    },
+  },
+
   highlights(raw) {
     const d = raw as unknown as OrcidData;
     return d.total ? [{ id: "works", value: String(d.total), label: d.total === 1 ? "publication on ORCID" : "publications on ORCID" }] : [];

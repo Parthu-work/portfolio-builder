@@ -204,7 +204,9 @@ export type ProofCheck = { url: string; ok: boolean; nameFound: boolean; reason?
  * name. Only for the name that was checked: after a rename nothing is marked
  * until the next check.
  */
-export function annotateProofs(doc: Portfolio, checks: { name: string; checkedAt: string; checks: ProofCheck[] }): Portfolio {
+export type ProofSet = { name: string; checkedAt: string; checks: ProofCheck[] };
+
+export function annotateProofs(doc: Portfolio, checks: ProofSet): Portfolio {
   if (normalizeName(doc.profile.name) !== normalizeName(checks.name)) return doc;
   const good = new Set(checks.checks.filter((c) => c.ok && c.nameFound).map((c) => c.url));
   if (!good.size) return doc;

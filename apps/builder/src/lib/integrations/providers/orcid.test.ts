@@ -56,4 +56,12 @@ describe("orcid provider", () => {
     respond(404, { "response-code": 404 });
     await expect(orcidProvider.fetch(ID, {}, ctx())).rejects.toMatchObject({ kind: "not_found" });
   });
+
+  it("verifies with the code in the public biography or keywords", async () => {
+    const fetch = respond(200, { biography: { content: "Systems researcher.", visibility: "public" }, keywords: { keyword: [{ content: "caches" }, { content: "persona-OR7C2D" }] } });
+    expect(await orcidProvider.verify!.check(ID, "persona-OR7C2D", ctx())).toBe(true);
+    expect((fetch.mock.calls[0] as unknown as [string])[0]).toBe(`https://pub.orcid.org/v3.0/${ID}/person`);
+    respond(200, { biography: null, keywords: null });
+    expect(await orcidProvider.verify!.check(ID, "persona-OR7C2D", ctx())).toBe(false);
+  });
 });

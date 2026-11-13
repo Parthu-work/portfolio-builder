@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SectionSchema } from "@runtime/schema/portfolio";
 import projects from "../__fixtures__/gitlab/projects.json";
+import recordedProjects from "../__fixtures__/gitlab/recorded-projects-dnsmichi.json";
+import recordedUsers from "../__fixtures__/gitlab/recorded-users-dnsmichi.json";
 import user from "../__fixtures__/gitlab/user.json";
 import users from "../__fixtures__/gitlab/users.json";
 import { gitlabProvider, type GitlabData } from "./gitlab";
@@ -61,5 +63,19 @@ describe("gitlab provider", () => {
     route(full());
     expect(await gitlabProvider.verify!.check("maya.o", "persona-GL8M2Q", ctx())).toBe(true);
     expect(await gitlabProvider.verify!.check("maya.o", "persona-NOPE11", ctx())).toBe(false);
+  });
+
+  it("reads a real gitlab.com answer (recorded 2026-11-13)", async () => {
+    route([
+      [/\/users\?username=dnsmichi$/, recordedUsers],
+      [/\/projects\?/, recordedProjects],
+    ]);
+    const d = (await gitlabProvider.fetch("dnsmichi", {}, ctx())) as unknown as GitlabData;
+    expect(d.projects.map((p) => [p.name, p.stars])).toEqual([
+      ["dotfiles", 45],
+      ["opsindev.news", 5],
+      ["atasteofaustria", 3],
+    ]);
+    for (const s of gitlabProvider.toSections(d as never, cfg)) expect(SectionSchema.safeParse(s).success).toBe(true);
   });
 });
