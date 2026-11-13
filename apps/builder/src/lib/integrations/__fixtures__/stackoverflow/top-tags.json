@@ -1,0 +1,31 @@
+{
+ "items": [
+  {
+   "user_id": 1144035,
+   "answer_count": 812,
+   "answer_score": 5410,
+   "question_count": 12,
+   "question_score": 40,
+   "tag_name": "python"
+  },
+  {
+   "user_id": 1144035,
+   "answer_count": 301,
+   "answer_score": 1822,
+   "question_count": 3,
+   "question_score": 9,
+   "tag_name": "c&#43;&#43;"
+  },
+  {
+   "user_id": 1144035,
+   "answer_count": 40,
+   "answer_score": 0,
+   "question_count": 30,
+   "question_score": 120,
+   "tag_name": "rust"
+  }
+ ],
+ "has_more": false,
+ "quota_max": 300,
+ "quota_remaining": 295
+}

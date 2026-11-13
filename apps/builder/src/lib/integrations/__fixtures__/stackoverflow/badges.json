@@ -1,0 +1,39 @@
+{
+ "items": [
+  {
+   "badge_id": 146,
+   "rank": "gold",
+   "name": "Famous Question",
+   "award_count": 3,
+   "badge_type": "named",
+   "link": "https://stackoverflow.com/badges/28/famous-question"
+  },
+  {
+   "badge_id": 5544,
+   "rank": "gold",
+   "name": "python",
+   "award_count": 1,
+   "badge_type": "tag_based",
+   "link": "https://stackoverflow.com/help/badges/5544/python"
+  },
+  {
+   "badge_id": 17,
+   "rank": "silver",
+   "name": "Necromancer",
+   "award_count": 2,
+   "badge_type": "named",
+   "link": "https://stackoverflow.com/badges/17/necromancer"
+  },
+  {
+   "badge_id": 4,
+   "rank": "bronze",
+   "name": "Autobiographer",
+   "award_count": 1,
+   "badge_type": "named",
+   "link": "https://stackoverflow.com/badges/9/autobiographer"
+  }
+ ],
+ "has_more": true,
+ "quota_max": 300,
+ "quota_remaining": 296
+}
