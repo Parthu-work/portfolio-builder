@@ -1,0 +1,9 @@
+{
+ "data": {
+  "last_day": 120,
+  "last_month": 3400,
+  "last_week": 800
+ },
+ "package": "fastqueue",
+ "type": "recent_downloads"
+}

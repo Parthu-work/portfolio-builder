@@ -1,0 +1,10 @@
+{
+ "info": {
+  "name": "fastqueue",
+  "summary": "A fast queue.",
+  "version": "1.8.0",
+  "package_url": "https://pypi.org/project/fastqueue/",
+  "project_url": "https://pypi.org/project/fastqueue/"
+ },
+ "releases": {}
+}
