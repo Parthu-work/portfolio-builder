@@ -175,7 +175,7 @@ Security model: user-facing operations run with the user's session, so **RLS is 
 
 ## Integrations
 
-People can connect accounts (GitHub, LeetCode, Codeforces, …) so their portfolio shows live, real numbers. The feature is **off by default** (`FEATURE_INTEGRATIONS=1` turns it on). Fourteen providers are built (GeeksforGeeks/HackerRank is blocked: no public API and bot-protected pages); see [`docs/integrations/PROGRESS.md`](docs/integrations/PROGRESS.md) for details and the manual steps to switch it on in production.
+People can connect accounts (GitHub, LeetCode, Codeforces, …) so their portfolio shows live, real numbers. The feature is **off by default** (`FEATURE_INTEGRATIONS=1` turns it on). All sixteen providers in the queue are built (GeeksforGeeks and HackerRank as two separate experimental providers); see [`docs/integrations/PROGRESS.md`](docs/integrations/PROGRESS.md) for details and the manual steps to switch it on in production.
 
 The data model and renderer (works in all 23 templates, no template code involved):
 
@@ -206,6 +206,8 @@ How it works (`apps/builder/src/lib/integrations/`):
 | ORCID | Official (public API v3.0) | Works newest first (up to 15) in the publications section, with DOIs as doi.org links, plus a works count. The iD is checksum-validated; ownership verified with a code in the public Biography or Keywords. |
 | WakaTime | Official (public stats only) | Coding time and daily average for the last 7 (or 30) days, languages and editors (bars). Private stats get a clear how-to-make-public message. |
 | CodeChef | Experimental (public profile page, parsed server-side) | Rating with stars, highest rating, global and country rank, problems solved — each only if the page shows it. "Public profile"; no ownership check. |
+| GeeksforGeeks | Experimental (public profile-info JSON) | Coding score, problems solved, institute rank, longest problem-of-the-day streak — each only if returned. |
+| HackerRank | Experimental (public badges and certificates JSON) | Starred skill badges as awards; passed certificates as certifications linking to the certificate page. Bot-protection refusals are reported, never worked around. |
 | Proof links | No third-party API | Fetches the https links already on certificate, award, project and education entries (up to 12) and marks entries whose page shows the owner's name: "Link checked · contains your name · <date>". SSRF-safe: HTTPS on 443 only, every resolved IP checked at connect time, ≤ 3 redirects, 8 s, 1 MB. |
 | Achievement wall | No network (aggregator) | One "big numbers" section with each connected provider's own strongest signals (e.g. LeetCode Knight, Codeforces max rating, GitHub stars), each labelled with its source and verification. Verified accounts only unless the user opts in. |
 

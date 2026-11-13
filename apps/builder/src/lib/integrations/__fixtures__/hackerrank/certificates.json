@@ -1,0 +1,39 @@
+{
+ "data": [
+  {
+   "id": "91311",
+   "type": "hacker_certificate",
+   "attributes": {
+    "status": "test_passed",
+    "completed_at": "2025-06-02T11:00:00.000Z",
+    "unique_id": "a1b2c3d4e5f6",
+    "certificate": {
+     "label": "Problem Solving (Intermediate)",
+     "level": "intermediate"
+    }
+   }
+  },
+  {
+   "id": "91312",
+   "type": "hacker_certificate",
+   "attributes": {
+    "status": "test_failed",
+    "certificate": {
+     "label": "SQL (Advanced)"
+    }
+   }
+  },
+  {
+   "id": "91313",
+   "type": "hacker_certificate",
+   "attributes": {
+    "status": "test_passed",
+    "completed_at": "bad",
+    "unique_id": "../evil",
+    "certificate": {
+     "label": "Python (Basic)"
+    }
+   }
+  }
+ ]
+}
