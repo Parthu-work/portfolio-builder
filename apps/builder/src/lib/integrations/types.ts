@@ -1,4 +1,4 @@
-import type { IntegrationConfig, Section } from "@runtime/schema/portfolio";
+import type { IntegrationConfig, Portfolio, Section } from "@runtime/schema/portfolio";
 
 export type { IntegrationConfig };
 
@@ -26,7 +26,8 @@ export class ProviderError extends Error {
   }
 }
 
-export type FetchCtx = { token?: string; signal: AbortSignal };
+/** `portfolio` is the document being edited (or the published one, for background refreshes): only providers that check the user's own content read it. */
+export type FetchCtx = { token?: string; signal: AbortSignal; portfolio?: Portfolio };
 
 /** A user-facing switch a provider offers beyond hiding individual items. */
 export type ProviderOption = { key: string; label: string; default: boolean };
@@ -54,6 +55,10 @@ export interface Provider {
   highlights?(data: ProviderData): Highlight[];
   /** Aggregators build their sections from the other connected accounts; `fetch` then only stamps the time. */
   aggregate?(sources: HighlightSource[], cfg: IntegrationConfig): Section[];
+  /** Adds marks to the user's own content from fetched data (e.g. checked proof links). Applied on read, after synced sections. */
+  annotate?(doc: Portfolio, data: ProviderData): Portfolio;
+  /** One line per thing the provider checked, for the editor (e.g. each proof link and its result). */
+  describe?(data: ProviderData): { label: string; ok: boolean; detail: string }[];
   /** Not offered for new connections unless the server has this provider's token (see `serverToken`). */
   needsToken?: boolean;
   /** Shown under the handle input, e.g. "Your username, as in github.com/<username>". */
@@ -94,6 +99,7 @@ export type ProviderInfo = {
   verify: { method: "oauth" | "bio-code"; instructions: string } | null;
   fixedAccount: string | null;
   aggregate: boolean;
+  annotates: boolean;
 };
 
 /** What the browser is told about a connected account. */
@@ -106,6 +112,8 @@ export type ConnectionInfo = {
   error: string | null;
   verified: boolean;
   verifyCode: string | null;
+  /** For providers that check things (proof links): what was checked and how it went. */
+  details: { label: string; ok: boolean; detail: string }[];
   /** Everything the provider can show, before the user's `hidden` choices: the source for the toggles. */
   available: Section[];
 };

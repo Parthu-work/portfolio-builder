@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { migrate } from "@runtime/schema/migrate";
 import { SlugSchema } from "@runtime/schema/portfolio";
 import { TemplateView } from "@runtime/templates/registry";
+import { stripProofs } from "@/lib/integrations/sections";
 import { mergeLive } from "@/lib/integrations/service";
 import { getStore } from "@/lib/store";
 
@@ -15,7 +16,7 @@ async function load(slug: string) {
   if (!found) return null;
   try {
     const portfolio = migrate(found.portfolio);
-    return (await mergeLive(store, found.id, portfolio).catch(() => ({ portfolio }))).portfolio;
+    return (await mergeLive(store, found.id, portfolio).catch(() => ({ portfolio: stripProofs(portfolio) }))).portfolio;
   } catch {
     return null;
   }

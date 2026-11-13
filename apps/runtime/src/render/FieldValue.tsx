@@ -2,7 +2,7 @@ import type { ChartValue, CodeValue, DateRangeValue, FieldDef, ImageValue, LinkV
 import { Chart } from "./Chart";
 import { Img } from "./Img";
 import { sanitizeRichText, textToHtml } from "./sanitize";
-import { formatDate, formatRange, hostLabel, isEmptyValue, isExternal, read, SYNC_KEY, type Slot } from "./view";
+import { formatDate, formatRange, hostLabel, isEmptyValue, isExternal, PROOF_KEY, read, SYNC_KEY, type Slot } from "./view";
 
 const ext = (href: string) => (isExternal(href) ? { target: "_blank", rel: "noopener noreferrer" } : {});
 
@@ -160,9 +160,9 @@ export function Rest({ slots, lang, className = "" }: { slots: Slot[]; lang?: st
   return (
     <dl className={`pf-dl ${className}`}>
       {slots.map(({ def, value }) =>
-        def.key === SYNC_KEY ? (
-          // Provenance of a synced section: present, but quieter than any content.
-          <div key={def.key} className="pf-dl-row pf-sync" style={WIDE}>
+        def.key === SYNC_KEY || def.key === PROOF_KEY ? (
+          // Provenance of a synced section, or of a checked proof link: present, but quieter than any content.
+          <div key={def.key} className={`pf-dl-row ${def.key === SYNC_KEY ? "pf-sync" : "pf-proof"}`} style={WIDE}>
             <dd style={{ fontSize: "0.75rem", lineHeight: 1.5, color: "var(--mute)" }}>{String(value)}</dd>
           </div>
         ) : (

@@ -6,7 +6,7 @@ import { SEEDS } from "../schema/seeds";
 import { FIXTURE_CHARTS, fixturePortfolio } from "../schema/seeds/fixture";
 import { FieldValue, Rest } from "./FieldValue";
 import { sanitizeRichText, safeHref, textToHtml } from "./sanitize";
-import { formatDate, formatRange, isEmptyValue, provenance, toEntry, viewPortfolio, viewSection } from "./view";
+import { formatDate, formatRange, isEmptyValue, proofNote, provenance, toEntry, viewPortfolio, viewSection } from "./view";
 import { contrast, oklchToSrgb, toHex, paletteGrade } from "./color";
 import { TEMPLATES } from "../templates/meta";
 
@@ -125,6 +125,18 @@ describe("synced sections", () => {
     expect(html).toContain("Live from github.com · updated Nov 13, 2026 · Verified owner");
     // Sections without sync are untouched.
     expect(view.sections.filter((s) => s.id !== "synced").flatMap((s) => [s.lead, ...s.entries]).flatMap((e) => e?.rest ?? []).some((r) => r.def.key === "_sync")).toBe(false);
+  });
+
+  it("adds a quiet proof note to entries the server checked, and nothing for malformed values", () => {
+    const section = { id: "c", kind: "certifications", title: "Certs", visible: true, fields: [], itemSchema: [{ key: "name", label: "Name", type: "text" as const }], items: [
+      { id: "a", visible: true, values: { name: "AWS SAA", _proof: { checkedAt: "2026-11-13T08:00:00.000Z" } } },
+      { id: "b", visible: true, values: { name: "Other", _proof: { checkedAt: "yesterday" } } },
+      { id: "e", visible: true, values: { _proof: { checkedAt: "2026-11-13" } } },
+    ] };
+    const view = viewSection(section, "en", "c")!;
+    expect(view.entries.map((e) => e.rest.map((r) => r.value))).toEqual([["Link checked · contains your name · Nov 13, 2026"], []]);
+    expect(proofNote(undefined)).toBeNull();
+    expect(renderToStaticMarkup(<Rest slots={view.entries[0]!.rest} />)).toContain("pf-proof");
   });
 
   it("puts provenance on the last entry when a synced section has no lead", () => {

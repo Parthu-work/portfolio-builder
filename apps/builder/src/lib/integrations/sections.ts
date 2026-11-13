@@ -154,3 +154,71 @@ export function resync(doc: Portfolio, connections: { id: string; available: Sec
   }
   return sameData(next, doc) ? doc : next;
 }
+
+/** Key the renderer reads for a checked proof link (see @runtime/render/view PROOF_KEY). */
+export const PROOF_KEY = "_proof";
+
+/** Removes any proof marks a document carries: only the server's own checks may add them. */
+export function stripProofs(doc: Portfolio): Portfolio {
+  if (!doc.sections.some((s) => s.items?.some((it) => PROOF_KEY in it.values))) return doc;
+  return {
+    ...doc,
+    sections: doc.sections.map((s) =>
+      s.items?.some((it) => PROOF_KEY in it.values)
+        ? {
+            ...s,
+            items: s.items.map((it) => {
+              if (!(PROOF_KEY in it.values)) return it;
+              const { [PROOF_KEY]: _gone, ...values } = it.values;
+              return { ...it, values };
+            }),
+          }
+        : s,
+    ),
+  };
+}
+
+/** The https links of an entry (its `url` and `link` fields). */
+export function entryLinks(section: Section, values: Record<string, unknown>): string[] {
+  const out: string[] = [];
+  for (const def of section.itemSchema ?? []) {
+    const v = values[def.key];
+    const href = def.type === "url" ? v : def.type === "link" && v && typeof v === "object" ? (v as { href?: unknown }).href : undefined;
+    if (typeof href === "string" && href.startsWith("https://")) out.push(href);
+  }
+  return out;
+}
+
+export const normalizeName = (s: string) =>
+  s
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+
+export type ProofCheck = { url: string; ok: boolean; nameFound: boolean; reason?: string };
+
+/**
+ * Marks the user's own entries whose proof link was fetched and showed their
+ * name. Only for the name that was checked: after a rename nothing is marked
+ * until the next check.
+ */
+export function annotateProofs(doc: Portfolio, checks: { name: string; checkedAt: string; checks: ProofCheck[] }): Portfolio {
+  if (normalizeName(doc.profile.name) !== normalizeName(checks.name)) return doc;
+  const good = new Set(checks.checks.filter((c) => c.ok && c.nameFound).map((c) => c.url));
+  if (!good.size) return doc;
+  return {
+    ...doc,
+    sections: doc.sections.map((s) => {
+      if (s.sync || !s.items?.length) return s;
+      let changed = false;
+      const items = s.items.map((it) => {
+        if (!entryLinks(s, it.values).some((u) => good.has(u))) return it;
+        changed = true;
+        return { ...it, values: { ...it.values, [PROOF_KEY]: { checkedAt: checks.checkedAt } } };
+      });
+      return changed ? { ...s, items } : s;
+    }),
+  };
+}
