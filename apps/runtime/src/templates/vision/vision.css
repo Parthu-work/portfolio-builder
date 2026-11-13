@@ -1,10 +1,4 @@
 /* Vision — spatial "liquid glass": floating windows in a lit room, a capsule tab bar. */
-@property --vs-drift {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 50%;
-}
-
 [data-template="vision"] {
   /* Specular highlights are always light, whatever the mode. */
   --vs-spec: light-dark(var(--ground), var(--ink));
@@ -35,9 +29,9 @@
     translate: -50% 0;
     border-radius: 50%;
     background:
-      radial-gradient(closest-side at var(--vs-drift) 60%, color-mix(in oklch, var(--sig) 42%, transparent), transparent 70%),
-      radial-gradient(closest-side at calc(100% - var(--vs-drift)) 70%, color-mix(in oklch, var(--comp) 30%, transparent), transparent 75%);
-    filter: blur(20px);
+      radial-gradient(closest-side at 38% 60%, color-mix(in oklch, var(--sig) 42%, transparent), transparent 70%),
+      radial-gradient(closest-side at 64% 70%, color-mix(in oklch, var(--comp) 30%, transparent), transparent 75%);
+    will-change: transform;
   }
   .vs-tint {
     position: absolute;
@@ -130,6 +124,10 @@
   }
   .vs-window {
     padding: clamp(1.25rem, 3.5vw, 2.75rem);
+  }
+  .vs-window :is(.vs-pane, .vs-chip) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   /* Solid surfaces when the visitor asks for less transparency. */
@@ -638,10 +636,10 @@
 }
 @keyframes vs-drift {
   from {
-    --vs-drift: 30%;
+    transform: translateX(-6%) scale(1);
   }
   to {
-    --vs-drift: 70%;
+    transform: translateX(6%) scale(1.05);
   }
 }
 @keyframes vs-condense {

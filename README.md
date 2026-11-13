@@ -214,7 +214,7 @@ The builder uses no Vercel-only products: persistence is Supabase over HTTPS, ha
 
 - The Supabase code path is type-checked and its SQL/RLS is tested on PGlite, but it has not been exercised against a live Supabase project in this repository's CI (e2e runs in local mode).
 - Lighthouse: accessibility, best practices and SEO score 100; performance is 93–98 in a throttled lab run with LCP around 2.2–3.0 s (see `docs/lighthouse.md`), short of the 2.0 s LCP goal on simulated slow 4G.
-- Templates that use framer-motion (Bento, Cinematic, Desktop OS) ship ~165 kB of JavaScript on first load; the others ~115 kB.
+- Templates that use framer-motion (Bento, Cinematic, Desktop OS) ship ~165 kB of JavaScript on first load; the others ~115–118 kB (the 15 templates added by the template factory use only small client islands, no framer-motion).
 - Admin analytics aggregate at most the latest 20,000 events per query.
 - Uploaded images referenced by a downloaded zip remain hosted in Supabase Storage.
 

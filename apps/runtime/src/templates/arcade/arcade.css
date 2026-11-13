@@ -99,7 +99,8 @@
   }
   .ac-name {
     font-family: var(--pf-display);
-    font-size: clamp(2.5rem, 8vw, 6rem);
+    overflow-wrap: normal;
+    font-size: clamp(1.75rem, var(--ac-size, 12vw), 6rem);
     font-weight: 700;
     line-height: 1;
     text-transform: uppercase;
@@ -110,7 +111,11 @@
       calc(var(--p) * 2) calc(var(--p) * 2) 0 color-mix(in oklch, var(--comp) 35%, transparent);
   }
   .ac-title-compact .ac-name {
-    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-size: clamp(1.5rem, min(5vw, var(--ac-size, 5vw)), 3.5rem);
+  }
+  .ac-name-word {
+    display: block;
+    white-space: nowrap;
   }
   .ac-headline {
     font-size: clamp(1.125rem, 2.2vw, 1.5rem);
