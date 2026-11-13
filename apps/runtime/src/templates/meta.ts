@@ -19,6 +19,7 @@ const F = {
   sora: "'Sora Variable'",
   anybody: "'Anybody Variable'",
   caveat: "'Caveat Variable'",
+  silkscreen: "'Silkscreen'",
 };
 const SANS = "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
 const SERIF = "ui-serif, Georgia, Cambria, 'Times New Roman', serif";
@@ -470,6 +471,31 @@ export const TEMPLATES: TemplateMeta[] = [
         tk("0.17 0.01 280", "0.22 0.012 280", "0.96 0.006 100", "0.76 0.012 280", "0.3 0.012 280", "0.57 0.014 280", "0.72 0.22 350", "0.15 0.03 350", "0.85 0.2 140")),
     ],
     fontPairs: [fp("syne", "Syne + Inter", F.syne, F.inter), fp("bricolage", "Bricolage + DM Sans", F.bric, F.dm), fp("space", "Space Grotesk + Inter", F.space, F.inter)],
+  },
+  {
+    id: "arcade",
+    name: "Arcade",
+    description: "A 2D game menu for your career: a HUD, a level-select map of sections, quests for experience and achievements for awards.",
+    signature: "Level-select section map · XP-bar skills · achievements for awards",
+    tags: ["playful", "game", "retro", "developer", "interactive"],
+    preferredMode: "dark",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("cartridge", "Cartridge",
+        tk("0.94 0.008 90", "0.985 0.004 90", "0.2 0.015 270", "0.44 0.015 270", "0.86 0.008 90", "0.5 0.02 270", "0.47 0.19 30", "0.99 0.004 90", "0.55 0.13 250"),
+        tk("0.17 0.01 270", "0.23 0.015 270", "0.95 0.01 90", "0.76 0.015 270", "0.32 0.015 270", "0.6 0.02 270", "0.75 0.17 30", "0.16 0.02 30", "0.82 0.14 95")),
+      pal("handheld", "Handheld Green",
+        tk("0.88 0.09 120", "0.93 0.06 120", "0.25 0.05 140", "0.4 0.06 138", "0.8 0.08 122", "0.47 0.07 135", "0.38 0.09 145", "0.93 0.06 120", "0.48 0.12 60"),
+        tk("0.24 0.04 135", "0.3 0.05 135", "0.93 0.08 125", "0.8 0.07 128", "0.38 0.05 135", "0.65 0.07 130", "0.85 0.15 125", "0.22 0.04 135", "0.78 0.1 70")),
+      pal("neon-arcade", "Neon Arcade",
+        tk("0.96 0.015 290", "0.99 0.006 290", "0.2 0.05 290", "0.45 0.05 290", "0.88 0.02 290", "0.55 0.05 290", "0.48 0.12 215", "0.99 0.004 290", "0.55 0.22 350"),
+        tk("0.15 0.05 290", "0.21 0.06 290", "0.96 0.015 290", "0.78 0.04 290", "0.3 0.06 290", "0.6 0.06 290", "0.85 0.14 190", "0.16 0.04 290", "0.72 0.2 350")),
+    ],
+    fontPairs: [
+      { id: "pixel-inter", name: "Silkscreen + Inter", display: `${F.silkscreen}, ${MONO}`, body: `${F.inter}, ${SANS}`, mono: `${F.jet}, ${MONO}` },
+      { id: "pixel-mono", name: "Silkscreen + JetBrains Mono", display: `${F.silkscreen}, ${MONO}`, body: `${F.jet}, ${MONO}`, mono: `${F.jet}, ${MONO}` },
+      fp("mono-inter", "JetBrains Mono + Inter", F.jet, F.inter),
+    ],
   },
 ];
 
