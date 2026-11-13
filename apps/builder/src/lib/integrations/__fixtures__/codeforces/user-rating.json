@@ -1,0 +1,221 @@
+{
+ "status": "OK",
+ "result": [
+  {
+   "contestId": 1600,
+   "contestName": "Codeforces Round 900 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 800,
+   "ratingUpdateTimeSeconds": 1640995200,
+   "oldRating": 0,
+   "newRating": 1620
+  },
+  {
+   "contestId": 1601,
+   "contestName": "Codeforces Round 901 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 780,
+   "ratingUpdateTimeSeconds": 1642204800,
+   "oldRating": 0,
+   "newRating": 1580
+  },
+  {
+   "contestId": 1602,
+   "contestName": "Codeforces Round 902 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 760,
+   "ratingUpdateTimeSeconds": 1643414400,
+   "oldRating": 0,
+   "newRating": 1665
+  },
+  {
+   "contestId": 1603,
+   "contestName": "Codeforces Round 903 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 740,
+   "ratingUpdateTimeSeconds": 1644624000,
+   "oldRating": 0,
+   "newRating": 1725
+  },
+  {
+   "contestId": 1604,
+   "contestName": "Codeforces Round 904 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 720,
+   "ratingUpdateTimeSeconds": 1645833600,
+   "oldRating": 0,
+   "newRating": 1650
+  },
+  {
+   "contestId": 1605,
+   "contestName": "Codeforces Round 905 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 700,
+   "ratingUpdateTimeSeconds": 1647043200,
+   "oldRating": 0,
+   "newRating": 1760
+  },
+  {
+   "contestId": 1606,
+   "contestName": "Codeforces Round 906 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 680,
+   "ratingUpdateTimeSeconds": 1648252800,
+   "oldRating": 0,
+   "newRating": 1790
+  },
+  {
+   "contestId": 1607,
+   "contestName": "Codeforces Round 907 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 660,
+   "ratingUpdateTimeSeconds": 1649462400,
+   "oldRating": 0,
+   "newRating": 1770
+  },
+  {
+   "contestId": 1608,
+   "contestName": "Codeforces Round 908 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 640,
+   "ratingUpdateTimeSeconds": 1650672000,
+   "oldRating": 0,
+   "newRating": 1890
+  },
+  {
+   "contestId": 1609,
+   "contestName": "Codeforces Round 909 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 620,
+   "ratingUpdateTimeSeconds": 1651881600,
+   "oldRating": 0,
+   "newRating": 1850
+  },
+  {
+   "contestId": 1610,
+   "contestName": "Codeforces Round 910 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 600,
+   "ratingUpdateTimeSeconds": 1653091200,
+   "oldRating": 0,
+   "newRating": 1935
+  },
+  {
+   "contestId": 1611,
+   "contestName": "Codeforces Round 911 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 580,
+   "ratingUpdateTimeSeconds": 1654300800,
+   "oldRating": 0,
+   "newRating": 1995
+  },
+  {
+   "contestId": 1612,
+   "contestName": "Codeforces Round 912 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 560,
+   "ratingUpdateTimeSeconds": 1655510400,
+   "oldRating": 0,
+   "newRating": 1920
+  },
+  {
+   "contestId": 1613,
+   "contestName": "Codeforces Round 913 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 540,
+   "ratingUpdateTimeSeconds": 1656720000,
+   "oldRating": 0,
+   "newRating": 2030
+  },
+  {
+   "contestId": 1614,
+   "contestName": "Codeforces Round 914 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 520,
+   "ratingUpdateTimeSeconds": 1657929600,
+   "oldRating": 0,
+   "newRating": 2060
+  },
+  {
+   "contestId": 1615,
+   "contestName": "Codeforces Round 915 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 500,
+   "ratingUpdateTimeSeconds": 1659139200,
+   "oldRating": 0,
+   "newRating": 2040
+  },
+  {
+   "contestId": 1616,
+   "contestName": "Codeforces Round 916 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 480,
+   "ratingUpdateTimeSeconds": 1660348800,
+   "oldRating": 0,
+   "newRating": 2160
+  },
+  {
+   "contestId": 1617,
+   "contestName": "Codeforces Round 917 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 460,
+   "ratingUpdateTimeSeconds": 1661558400,
+   "oldRating": 0,
+   "newRating": 2120
+  },
+  {
+   "contestId": 1618,
+   "contestName": "Codeforces Round 918 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 440,
+   "ratingUpdateTimeSeconds": 1662768000,
+   "oldRating": 0,
+   "newRating": 2205
+  },
+  {
+   "contestId": 1619,
+   "contestName": "Codeforces Round 919 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 420,
+   "ratingUpdateTimeSeconds": 1663977600,
+   "oldRating": 0,
+   "newRating": 2265
+  },
+  {
+   "contestId": 1620,
+   "contestName": "Codeforces Round 920 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 400,
+   "ratingUpdateTimeSeconds": 1665187200,
+   "oldRating": 0,
+   "newRating": 2190
+  },
+  {
+   "contestId": 1621,
+   "contestName": "Codeforces Round 921 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 380,
+   "ratingUpdateTimeSeconds": 1666396800,
+   "oldRating": 0,
+   "newRating": 2300
+  },
+  {
+   "contestId": 1622,
+   "contestName": "Codeforces Round 922 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 360,
+   "ratingUpdateTimeSeconds": 1667606400,
+   "oldRating": 0,
+   "newRating": 2330
+  },
+  {
+   "contestId": 1623,
+   "contestName": "Codeforces Round 923 (Div. 2)",
+   "handle": "tourist_fan",
+   "rank": 340,
+   "ratingUpdateTimeSeconds": 1668816000,
+   "oldRating": 0,
+   "newRating": 2310
+  }
+ ]
+}
