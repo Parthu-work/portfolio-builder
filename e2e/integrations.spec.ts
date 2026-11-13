@@ -118,7 +118,7 @@ test("Editor: connect → preview → toggle → verify → publish → public p
 
   await page.getByRole("tab", { name: "Accounts" }).click();
   await expect(page.getByRole("heading", { name: "Connected accounts" })).toBeVisible();
-  await page.getByRole("radio", { name: /Mock Judge/ }).check({ force: true });
+  await page.locator("label", { hasText: "Mock Judge" }).click();
   const handle = page.getByLabel("Mock Judge handle");
 
   // A malformed handle is caught before any request; a missing account is reported inline.
@@ -163,7 +163,7 @@ test("Editor: connect → preview → toggle → verify → publish → public p
   await expect(card.getByTestId("verify-code")).toHaveCount(0);
 
   // The Achievement wall gathers verified highlights from the other accounts, each with its source.
-  await page.getByRole("radio", { name: /Achievement wall/ }).check({ force: true });
+  await page.locator("label", { hasText: "Achievement wall" }).click();
   await page.getByRole("button", { name: "Add Achievement wall" }).click();
   await expect(page.locator("[data-connection=achievements]")).toBeVisible();
   await expect(page.getByRole("radio", { name: /Achievement wall/ })).toHaveCount(0);
