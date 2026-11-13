@@ -14,10 +14,11 @@ import { writingProvider } from "./providers/writing";
 import { mockProvider } from "./providers/mock";
 import { orcidProvider } from "./providers/orcid";
 import { packagesProvider } from "./providers/packages";
+import { proofLinksProvider } from "./providers/proof-links";
 import type { Provider, ProviderInfo } from "./types";
 
 /** Real providers, in the order the editor shows them. Each lives in ./providers/<id>.ts. */
-const PROVIDERS: Provider[] = [githubProvider, leetcodeProvider, codeforcesProvider, stackoverflowProvider, credlyProvider, writingProvider, packagesProvider, huggingfaceProvider, gitlabProvider, orcidProvider, wakatimeProvider, codechefProvider, achievementsProvider];
+const PROVIDERS: Provider[] = [githubProvider, leetcodeProvider, codeforcesProvider, stackoverflowProvider, credlyProvider, writingProvider, packagesProvider, huggingfaceProvider, gitlabProvider, orcidProvider, wakatimeProvider, codechefProvider, achievementsProvider, proofLinksProvider];
 
 /**
  * The mock provider exists only where there is no real backend: development
@@ -56,4 +57,5 @@ export const providerInfo = (p: Provider): ProviderInfo => ({
   verify: p.verify ? { method: p.verify.method, instructions: p.verify.instructions } : null,
   fixedAccount: p.fixedAccount ?? null,
   aggregate: Boolean(p.aggregate),
+  annotates: Boolean(p.annotate),
 });

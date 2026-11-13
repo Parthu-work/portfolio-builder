@@ -4,7 +4,7 @@ import { flags } from "../env";
 import type { SnapshotRow, Store } from "../store/types";
 import { TIMEOUT_MS } from "./http";
 import { findProvider, getProvider, serverToken } from "./registry";
-import { applyHidden, mergeSynced, stamp } from "./sections";
+import { applyHidden, mergeSynced, stamp, stripProofs } from "./sections";
 import { ProviderError, type ConnectionInfo, type HighlightSource, type Provider, type ProviderData } from "./types";
 
 /** Snapshots older than this are refreshed in the background the next time a site reads them. */
@@ -102,6 +102,15 @@ export function sectionsFor(provider: Provider, row: SnapshotRow, cfg: Integrati
   return applyHidden(mapSections(provider, row, cfg, live, siblings), cfg);
 }
 
+function describeRow(provider: Provider, row: SnapshotRow): ConnectionInfo["details"] {
+  if (!provider.describe || row.data === null || row.data === undefined) return [];
+  try {
+    return provider.describe(row.data as ProviderData).slice(0, 40);
+  } catch {
+    return [];
+  }
+}
+
 export function connectionInfo(provider: Provider, row: SnapshotRow, cfg?: IntegrationConfig, siblings?: Siblings): ConnectionInfo {
   return {
     id: row.id,
@@ -112,6 +121,7 @@ export function connectionInfo(provider: Provider, row: SnapshotRow, cfg?: Integ
     error: row.error,
     verified: row.verified,
     verifyCode: row.verified ? null : row.verifyCode,
+    details: describeRow(provider, row),
     available: mapSections(provider, row, { ...(cfg ?? defaultConfig(provider, row)), id: row.id, hidden: [] }, true, siblings),
   };
 }
@@ -122,8 +132,8 @@ export function newVerifyCode(): string {
   return `persona-${[...bytes].map((b) => ALPHABET[b % ALPHABET.length]).join("")}`;
 }
 
-async function callProvider(provider: Provider, account: string, options: Record<string, unknown>): Promise<ProviderData> {
-  const data = await provider.fetch(account, options, { token: serverToken(provider.id), signal: AbortSignal.timeout(TIMEOUT_MS * 3) });
+async function callProvider(provider: Provider, account: string, options: Record<string, unknown>, portfolio?: Portfolio): Promise<ProviderData> {
+  const data = await provider.fetch(account, options, { token: serverToken(provider.id), signal: AbortSignal.timeout(TIMEOUT_MS * 3), ...(portfolio ? { portfolio } : {}) });
   if (JSON.stringify(data).length > MAX_DATA_BYTES) throw new ProviderError("upstream", "The provider returned more data than we can store.");
   return data;
 }
@@ -142,9 +152,9 @@ export function ownedViaSignIn(provider: Provider, data: unknown, linked: string
 }
 
 /** First fetch for an account. Throws ProviderError when the provider cannot be read: nothing is stored then. */
-export async function connect(store: Store, portfolioId: string, provider: Provider, account: string, options: Record<string, unknown>, now = Date.now(), linked: string[] = []): Promise<SnapshotRow | null> {
+export async function connect(store: Store, portfolioId: string, provider: Provider, account: string, options: Record<string, unknown>, now = Date.now(), linked: string[] = [], portfolio?: Portfolio): Promise<SnapshotRow | null> {
   if (!provider.accountPattern.test(account)) throw new ProviderError("not_found", `That does not look like a ${provider.name} ${provider.accountLabel.toLowerCase()}.`);
-  const data = await callProvider(provider, account, options);
+  const data = await callProvider(provider, account, options, portfolio);
   const owned = ownedViaSignIn(provider, data, linked);
   return store.upsertSnapshot({
     portfolioId,
@@ -163,9 +173,9 @@ export async function connect(store: Store, portfolioId: string, provider: Provi
  * Re-reads an account. On failure the last good data stays in place and keeps
  * its original "as of" time; only the status and error change.
  */
-export async function refresh(store: Store, provider: Provider, row: SnapshotRow, options: Record<string, unknown> = {}, now = Date.now()): Promise<SnapshotRow | null> {
+export async function refresh(store: Store, provider: Provider, row: SnapshotRow, options: Record<string, unknown> = {}, now = Date.now(), portfolio?: Portfolio): Promise<SnapshotRow | null> {
   try {
-    const data = await callProvider(provider, row.account, options);
+    const data = await callProvider(provider, row.account, options, portfolio);
     return await store.updateSnapshot(row.id, { data, fetchedAt: new Date(now).toISOString(), status: "ok", error: null });
   } catch (e) {
     const hasData = row.data !== null && row.data !== undefined;
@@ -180,8 +190,10 @@ export type Merged = { portfolio: Portfolio; stale: SnapshotRow[] };
  * With the feature off, storage unavailable or nothing synced, the document
  * comes back as it was (minus any claim of being live or verified).
  */
-export async function mergeLive(store: Store, portfolioId: string, doc: Portfolio, opts: { live?: boolean } = {}, deps: Deps = DEPS): Promise<Merged> {
-  if (!doc.sections.some((s) => s.sync)) return { portfolio: doc, stale: [] };
+export async function mergeLive(store: Store, portfolioId: string, input: Portfolio, opts: { live?: boolean } = {}, deps: Deps = DEPS): Promise<Merged> {
+  // Proof marks only ever come from our own checks below, never from the stored document.
+  const doc = stripProofs(input);
+  if (!doc.sections.some((s) => s.sync) && !doc.integrations?.length) return { portfolio: doc, stale: [] };
   const rows = flags.integrations ? await store.listSnapshots(portfolioId).catch(() => null) : null;
   if (!rows) return { portfolio: mergeSynced(doc, null), stale: [] };
   const generated: Section[] = [];
@@ -193,7 +205,17 @@ export async function mergeLive(store: Store, portfolioId: string, doc: Portfoli
     generated.push(...sectionsFor(provider, row, { ...cfg, id: row.id, provider: row.provider, account: row.account }, opts.live !== false, { rows, find: deps.find }));
     if (deps.now() - Date.parse(row.fetchedAt) > REFRESH_AFTER_MS) stale.push(row);
   }
-  return { portfolio: mergeSynced(doc, generated), stale };
+  let portfolio = mergeSynced(doc, generated);
+  for (const row of rows) {
+    const provider = deps.find(row.provider);
+    if (!provider?.annotate || row.data === null || row.data === undefined) continue;
+    try {
+      portfolio = provider.annotate(portfolio, row.data as ProviderData);
+    } catch {
+      /* a bad annotation never breaks a page */
+    }
+  }
+  return { portfolio, stale };
 }
 
 /**
@@ -208,7 +230,7 @@ export async function refreshStale(store: Store, rows: SnapshotRow[], doc: Portf
       const provider = getProvider(row.provider);
       if (!provider) continue;
       if (!(await store.takeToken(`int-auto:${row.portfolioId}:${row.provider}:${row.account}`, 1, 1 / MIN_INTERVAL_S))) continue;
-      await refresh(store, provider, row, doc?.integrations?.find((c) => c.id === row.id)?.options ?? {});
+      await refresh(store, provider, row, doc?.integrations?.find((c) => c.id === row.id)?.options ?? {}, Date.now(), doc ?? undefined);
     } catch {
       /* never let a background refresh surface */
     }

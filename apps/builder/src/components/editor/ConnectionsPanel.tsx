@@ -65,8 +65,11 @@ function ProviderMark({ name }: { name: string }) {
   );
 }
 
-function Kind({ official }: { official: boolean }) {
-  return official ? <Badge tone="ok">Official API</Badge> : <Badge tone="warn">Experimental</Badge>;
+const kindLabel = (p: ProviderInfo) => (p.aggregate || p.annotates ? "Built in" : p.official ? "Official API" : "Experimental");
+
+function Kind({ provider }: { provider: ProviderInfo }) {
+  const label = kindLabel(provider);
+  return <Badge tone={label === "Experimental" ? "warn" : label === "Official API" ? "ok" : "neutral"}>{label}</Badge>;
 }
 
 type Shared = { portfolio: Portfolio; update: Update; portfolioId: string; put: (c: ConnectionInfo) => void; changed: () => void };
@@ -130,7 +133,7 @@ function ConnectForm({ portfolio, update, portfolioId, put, changed, providers }
               <ProviderMark name={p.name} />
               <span className="grid min-w-0 gap-0.5">
                 <span className="truncate text-sm font-medium">{p.name}</span>
-                <span className="text-xs text-dim">{p.official ? "Official API" : "Experimental"}</span>
+                <span className="text-xs text-dim">{kindLabel(p)}</span>
               </span>
             </label>
           ))}
@@ -150,19 +153,21 @@ function ConnectForm({ portfolio, update, portfolioId, put, changed, providers }
         </p>
         <FieldError id={`${uid}-err`}>{error ?? undefined}</FieldError>
       </div>
-      <div className="grid gap-1.5">
-        <Label htmlFor={`${uid}-after`}>Where it appears</Label>
-        <Select id={`${uid}-after`} value={after} onChange={(e) => setAfter(e.target.value)}>
-          <option value="">Before Contact (its own section)</option>
-          {portfolio.sections
-            .filter((s) => !s.sync)
-            .map((s) => (
-              <option key={s.id} value={s.id}>
-                After “{s.title || s.kind}”
-              </option>
-            ))}
-        </Select>
-      </div>
+      {provider.annotates ? null : (
+        <div className="grid gap-1.5">
+          <Label htmlFor={`${uid}-after`}>Where it appears</Label>
+          <Select id={`${uid}-after`} value={after} onChange={(e) => setAfter(e.target.value)}>
+            <option value="">Before Contact (its own section)</option>
+            {portfolio.sections
+              .filter((s) => !s.sync)
+              .map((s) => (
+                <option key={s.id} value={s.id}>
+                  After “{s.title || s.kind}”
+                </option>
+              ))}
+          </Select>
+        </div>
+      )}
       <Button type="submit" variant="primary" disabled={busy || (!provider.fixedAccount && !account.trim())} className="w-fit">
         {busy ? <Loader2 className="animate-spin" /> : null} {busy ? "Connecting…" : provider.fixedAccount ? `Add ${provider.name}` : "Connect"}
       </Button>
@@ -273,12 +278,12 @@ function ConnectionCard({ portfolio, update, portfolioId, put, changed, drop, pr
             )}
           </h4>
           <div className="flex flex-wrap gap-1">
-            {provider ? <Kind official={provider.official} /> : null}
+            {provider ? <Kind provider={provider} /> : null}
             {connection.verified ? (
               <Badge tone="ok">
                 <ShieldCheck className="size-3" aria-hidden="true" /> Verified owner
               </Badge>
-            ) : provider?.aggregate ? null : (
+            ) : provider?.aggregate || provider?.annotates ? null : (
               <Badge>Public profile</Badge>
             )}
           </div>
@@ -302,34 +307,55 @@ function ConnectionCard({ portfolio, update, portfolioId, put, changed, drop, pr
         </fieldset>
       ) : null}
 
-      <fieldset className="grid gap-2">
-        <legend className="mb-1 text-[0.8125rem] font-medium">What appears on your site</legend>
-        {connection.available.length === 0 ? <p className="text-xs text-dim">Nothing to show yet.</p> : null}
-        {connection.available.map((s) => {
-          const key = sectionKey(cfg, s.id);
-          const off = hidden.has(key);
-          return (
-            <div key={s.id} className="grid gap-1 rounded-lg border border-rule p-2">
-              <label className="flex items-center gap-2 text-sm font-medium">
-                <input type="checkbox" className="size-4 accent-brand" checked={!off} onChange={(e) => setHidden(key, !e.target.checked)} />
-                {s.title}
-              </label>
-              {off ? null : (
-                <ul className="grid gap-1 pl-6">
-                  {toggles(s, cfg).map((t) => (
-                    <li key={t.key}>
-                      <label className="flex items-center gap-2 text-[0.8125rem]">
-                        <input type="checkbox" className="size-4 accent-brand" checked={!hidden.has(t.key)} onChange={(e) => setHidden(t.key, !e.target.checked)} />
-                        {t.label}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          );
-        })}
-      </fieldset>
+      {connection.details.length ? (
+        <ul className="grid gap-1 text-[0.8125rem]" aria-label="Checked links">
+          {connection.details.map((d, i) => (
+            <li key={i} className="flex items-start gap-1.5">
+              <span aria-hidden="true" className={d.ok ? "text-ok" : "text-warn"}>
+                {d.ok ? "✓" : "✕"}
+              </span>
+              <span className="min-w-0">
+                <span className="break-all font-mono text-xs">{d.label}</span>
+                <span className="block text-xs text-dim">
+                  <span className="sr-only">{d.ok ? "Passed: " : "Not passed: "}</span>
+                  {d.detail}
+                </span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
+      {provider?.annotates ? null : (
+        <fieldset className="grid gap-2">
+          <legend className="mb-1 text-[0.8125rem] font-medium">What appears on your site</legend>
+          {connection.available.length === 0 ? <p className="text-xs text-dim">Nothing to show yet.</p> : null}
+          {connection.available.map((s) => {
+            const key = sectionKey(cfg, s.id);
+            const off = hidden.has(key);
+            return (
+              <div key={s.id} className="grid gap-1 rounded-lg border border-rule p-2">
+                <label className="flex items-center gap-2 text-sm font-medium">
+                  <input type="checkbox" className="size-4 accent-brand" checked={!off} onChange={(e) => setHidden(key, !e.target.checked)} />
+                  {s.title}
+                </label>
+                {off ? null : (
+                  <ul className="grid gap-1 pl-6">
+                    {toggles(s, cfg).map((t) => (
+                      <li key={t.key}>
+                        <label className="flex items-center gap-2 text-[0.8125rem]">
+                          <input type="checkbox" className="size-4 accent-brand" checked={!hidden.has(t.key)} onChange={(e) => setHidden(t.key, !e.target.checked)} />
+                          {t.label}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </fieldset>
+      )}
 
       {!connection.verified && provider?.verify?.method === "bio-code" ? (
         <div className="grid gap-2 rounded-lg bg-panel2 p-2.5" aria-labelledby={`${uid}-verify`}>

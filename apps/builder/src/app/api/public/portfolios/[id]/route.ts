@@ -1,6 +1,7 @@
 import { after } from "next/server";
 import { z } from "zod";
 import { HttpError, json, log, route } from "@/lib/api";
+import { stripProofs } from "@/lib/integrations/sections";
 import { mergeLive, refreshStale } from "@/lib/integrations/service";
 
 const CORS = { "access-control-allow-origin": "*", "access-control-allow-methods": "GET, OPTIONS" };
@@ -18,7 +19,7 @@ export const GET = route<undefined, { id: string }>({ auth: "public", rate: { na
   if (!z.string().uuid().safeParse(id).success) throw new HttpError(404, "Not found");
   const found = await store.getPublished({ id });
   if (!found) throw new HttpError(404, "This portfolio has not been published.");
-  let portfolio = found.portfolio;
+  let portfolio = stripProofs(found.portfolio);
   try {
     const merged = await mergeLive(store, found.id, found.portfolio);
     portfolio = merged.portfolio;

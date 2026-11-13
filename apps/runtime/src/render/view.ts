@@ -205,6 +205,16 @@ export type SectionView = {
 /** Key of the generated provenance slot. Field keys start with a letter, so it can never collide with a user field. */
 export const SYNC_KEY = "_sync";
 
+/** Key of an entry's checked-proof note. Set only by the builder's server from its own checks, never stored by users. */
+export const PROOF_KEY = "_proof";
+
+/** "Link checked · contains your name · 13 Nov 2026" for a server-checked proof link. */
+export function proofNote(value: unknown, lang = "en"): string | null {
+  const at = value && typeof value === "object" ? (value as { checkedAt?: unknown }).checkedAt : undefined;
+  const day = typeof at === "string" ? /^\d{4}-\d{2}-\d{2}/.exec(at)?.[0] : undefined;
+  return day ? `Link checked · contains your name · ${formatDate(day, lang)}` : null;
+}
+
 /** "Live from leetcode.com · updated 13 Nov 2026 · Verified owner" — never claims more than `sync` says. */
 export function provenance(sync: Sync, lang = "en"): string {
   const day = /^\d{4}-\d{2}-\d{2}/.exec(sync.syncedAt)?.[0];
@@ -240,7 +250,12 @@ export function viewSection(section: Section, lang: string, anchor: string): Sec
   const defs = section.itemSchema ?? [];
   const entries = (section.items ?? [])
     .filter((it) => it.visible !== false)
-    .map((it) => toEntry(it.id, defs, it.values, lang))
+    .map((it) => {
+      const e = toEntry(it.id, defs, it.values, lang);
+      const proof = proofNote(it.values[PROOF_KEY], lang);
+      if (proof && !isEmptyEntry(e)) e.rest.push({ def: { key: PROOF_KEY, label: "", type: "text" }, value: proof });
+      return e;
+    })
     .filter((e) => !isEmptyEntry(e));
   const hasLead = !isEmptyEntry(lead);
   if (!hasLead && entries.length === 0) return null;

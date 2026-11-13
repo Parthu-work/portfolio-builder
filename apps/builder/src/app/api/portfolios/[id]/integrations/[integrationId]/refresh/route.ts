@@ -13,7 +13,7 @@ export const POST = route<typeof ChoicesSchema, P>({ auth: "user", body: Choices
     throw new HttpError(429, "You can refresh an account once every 10 minutes.");
   }
   const config = configFor(provider, row, portfolio, body);
-  const next = await refresh(store, provider, row, config.options);
+  const next = await refresh(store, provider, row, config.options, Date.now(), portfolio.draft);
   if (!next) throw unavailable();
   return json({ config, connection: connectionInfo(provider, next, config, siblings), sections: sectionsFor(provider, next, config, true, siblings) });
 });
