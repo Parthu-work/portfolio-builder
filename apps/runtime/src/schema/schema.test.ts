@@ -128,6 +128,35 @@ describe("migrate", () => {
     expect(migrate(p).sections[0]!.fields.some((f) => f.key === "weird")).toBe(false);
   });
 
+  it("accepts documents written before integrations existed, and round-trips the new optional parts", () => {
+    const old = structuredClone(SEEDS.developer.portfolio) as Record<string, unknown>;
+    expect("integrations" in old).toBe(false);
+    expect(migrate(old)).toEqual(SEEDS.developer.portfolio);
+    const next = migrate({
+      ...old,
+      integrations: [{ id: "int_1", provider: "github", account: "maya", options: { placement: "own", heatmap: true }, hidden: ["followers"] }],
+      sections: [
+        ...SEEDS.developer.portfolio.sections,
+        {
+          id: "gh", kind: "custom", title: "GitHub", visible: true,
+          fields: [{ key: "cal", label: "Calendar", type: "chart", value: { variant: "heatmap", title: "T", summary: "S", points: [{ x: "2026-01-01", y: 3 }] } }],
+          sync: { provider: "github", account: "maya", syncedAt: "2026-11-13T08:00:00.000Z", verified: false },
+        },
+      ],
+    });
+    expect(next.integrations?.[0]?.hidden).toEqual(["followers"]);
+    expect(next.sections.at(-1)?.sync?.verified).toBe(false);
+    expect(next.schemaVersion).toBe(1);
+  });
+
+  it("rejects malformed charts and oversized point lists", () => {
+    const chart = (value: unknown) => PortfolioSchema.safeParse({ ...SEEDS.developer.portfolio, sections: [{ id: "c", kind: "custom", title: "C", fields: [{ key: "c", label: "C", type: "chart", value }] }] }).success;
+    expect(chart({ variant: "line", title: "", summary: "", points: [{ x: "a", y: 1 }] })).toBe(true);
+    expect(chart({ variant: "pie", title: "", summary: "", points: [] })).toBe(false);
+    expect(chart({ variant: "line", title: "", summary: "", points: [{ x: "a", y: "1" }] })).toBe(false);
+    expect(chart({ variant: "line", title: "", summary: "", points: Array.from({ length: 401 }, (_, i) => ({ x: String(i), y: i })) })).toBe(false);
+  });
+
   it("rejects newer versions and garbage", () => {
     expect(() => migrate({ ...SEEDS.developer.portfolio, schemaVersion: 99 })).toThrow(MigrationError);
     expect(() => migrate("nope")).toThrow(MigrationError);

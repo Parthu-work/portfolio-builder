@@ -173,6 +173,20 @@ Security model: user-facing operations run with the user's session, so **RLS is 
 
 **How every template renders every section:** `src/render/view.ts` turns a section into `Entry` objects *purely from field types and order* — the first text is the title, the first date the date, the first image the cover, the first metric the metric; everything else lands in `rest` and is drawn by the generic `<FieldValue>`. Templates lay out `Entry` objects in six layouts (timeline, grid, list, quotes, metrics, tags), so a user-invented "Patents" section with *(title, patent no., link, date)* looks native everywhere. Hidden or empty sections and items are removed in the view model and never reach a template.
 
+## Integrations
+
+People can connect accounts (GitHub, LeetCode, Codeforces, …) so their portfolio shows live, real numbers. The feature is **off by default** (`FEATURE_INTEGRATIONS=1` turns it on) and is being built in stages — see [`docs/integrations/PROGRESS.md`](docs/integrations/PROGRESS.md) for what has landed and the manual ops steps.
+
+What exists in the data model and renderer today (works in all 23 templates, no template code involved):
+
+- **`chart` field type** — `heatmap`, `line`, `bars` or `rings`, drawn once in `apps/runtime/src/render/Chart.tsx` as static inline SVG using theme tokens, with an accessible name and a hidden data table.
+- **`sync` on a section** — marks it as fetched from a connected account; the renderer adds one quiet provenance line ("Live from github.com · updated … · Verified owner"). "Verified owner" appears only when ownership was actually checked.
+- **`integrations` on the portfolio** — the user's choices per connected account (never tokens, never fetched data).
+
+| Provider | API | Shows |
+| --- | --- | --- |
+| _none yet_ | | |
+
 ## Adding a template — the template contract
 
 A template is **metadata + one component + one stylesheet**.

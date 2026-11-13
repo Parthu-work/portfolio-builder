@@ -19,4 +19,5 @@ export const FIELD_TYPE_SHORT: Record<FieldType, string> = {
   video: "Video",
   code: "Code",
   select: "Choice",
+  chart: "Chart",
 };

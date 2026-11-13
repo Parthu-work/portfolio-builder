@@ -1,4 +1,4 @@
-import type { DateRangeValue, FieldDef, FieldType, ImageValue, LinkValue, MetricValue, Portfolio, Section, SocialLink } from "../schema/portfolio";
+import type { ChartValue, DateRangeValue, FieldDef, FieldType, ImageValue, LinkValue, MetricValue, Portfolio, Section, SocialLink, Sync } from "../schema/portfolio";
 import { VALUE_SCHEMAS } from "../schema/portfolio";
 import { isPresetKind } from "../schema/presets";
 import { LAYOUTS, type Layout } from "../templates/types";
@@ -33,6 +33,8 @@ export function isEmptyValue(type: FieldType, value: unknown): boolean {
       return (v as LinkValue[]).every((l) => l.href === "");
     case "code":
       return (v as { code: string }).code.trim() === "";
+    case "chart":
+      return (v as ChartValue).points.length === 0;
     case "number":
       return false;
     default:
@@ -196,7 +198,26 @@ export type SectionView = {
   /** The section's single-value fields, if any are filled in. */
   lead: Entry | null;
   entries: Entry[];
+  /** Set on sections synced from a connected account. */
+  sync?: Sync;
 };
+
+/** Key of the generated provenance slot. Field keys start with a letter, so it can never collide with a user field. */
+export const SYNC_KEY = "_sync";
+
+/** "Live from leetcode.com · updated 13 Nov 2026 · Verified owner" — never claims more than `sync` says. */
+export function provenance(sync: Sync, lang = "en"): string {
+  const day = /^\d{4}-\d{2}-\d{2}/.exec(sync.syncedAt)?.[0];
+  const when = day ? formatDate(day, lang) : "";
+  return [
+    `${sync.live === false ? "From" : "Live from"} ${sync.source || sync.provider}`,
+    when ? `${sync.live === false ? "as of" : "updated"} ${when}` : "",
+    sync.verified ? "Verified owner" : sync.note || "Public profile",
+    sync.experimental ? "Experimental" : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
+}
 
 function anchorFor(section: Section, taken: Set<string>): string {
   const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -234,6 +255,11 @@ export function viewSection(section: Section, lang: string, anchor: string): Sec
       }
     }
   }
+  if (section.sync) {
+    // The provenance line rides in `rest`, the one place every template and every layout renders generically.
+    const host = hasLead ? lead : entries[entries.length - 1]!;
+    host.rest.push({ def: { key: SYNC_KEY, label: "", type: "text" }, value: provenance(section.sync, lang) });
+  }
   return {
     id: section.id,
     anchor,
@@ -243,6 +269,7 @@ export function viewSection(section: Section, lang: string, anchor: string): Sec
     layout,
     lead: hasLead ? lead : null,
     entries,
+    ...(section.sync ? { sync: section.sync } : {}),
   };
 }
 

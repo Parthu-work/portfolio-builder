@@ -191,6 +191,16 @@ export function FieldInput({ id, def, value, onChange, error }: { id: string; de
       );
       break;
     }
+    case "chart": {
+      // Charts hold data fetched from a connected account, so there is nothing to type.
+      const c = val("chart", value);
+      control = (
+        <p id={id} className="rounded-lg border border-rule bg-panel2 px-3 py-2 text-sm text-dim">
+          {c.points.length ? `${c.title ? `${c.title}: ` : ""}${c.summary || `${c.points.length} data points`}` : "Filled in automatically from a connected account."}
+        </p>
+      );
+      break;
+    }
   }
   const grouped = ["metric", "daterange", "gallery", "linklist", "code", "link", "image", "richtext", "tags"].includes(def.type);
   return (

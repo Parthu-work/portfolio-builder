@@ -3,9 +3,10 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { FIELD_TYPES, type FieldType } from "../schema/portfolio";
 import { createSection } from "../schema/presets";
 import { SEEDS } from "../schema/seeds";
+import { FIXTURE_CHARTS, fixturePortfolio } from "../schema/seeds/fixture";
 import { FieldValue, Rest } from "./FieldValue";
 import { sanitizeRichText, safeHref, textToHtml } from "./sanitize";
-import { formatDate, formatRange, isEmptyValue, toEntry, viewPortfolio, viewSection } from "./view";
+import { formatDate, formatRange, isEmptyValue, provenance, toEntry, viewPortfolio, viewSection } from "./view";
 import { contrast, oklchToSrgb, toHex, paletteGrade } from "./color";
 import { TEMPLATES } from "../templates/meta";
 
@@ -28,6 +29,7 @@ const SAMPLE: Record<FieldType, unknown> = {
   video: "https://example.com/watch?v=1",
   code: { language: "ts", code: "const a = 1 < 2;" },
   select: "Option A",
+  chart: FIXTURE_CHARTS.bars,
 };
 
 describe("generic field renderer", () => {
@@ -59,6 +61,77 @@ describe("generic field renderer", () => {
     );
     expect(html).toContain("<dt>Patent no.</dt>");
     expect(html).toContain("EP 1");
+  });
+});
+
+describe("charts", () => {
+  const draw = (chart: unknown) => renderToStaticMarkup(<FieldValue def={{ type: "chart", label: "Chart" }} value={chart} />);
+
+  it.each(Object.values(FIXTURE_CHARTS))("draws $variant as labelled inline SVG with a data table", (chart) => {
+    const html = draw(chart);
+    expect(html).toContain(`data-variant="${chart.variant}"`);
+    expect(html).toContain(`role="img" aria-label="${chart.summary}"`);
+    expect(html).toMatch(/viewBox="0 0 [\d.]+ [\d.]+"/);
+    expect(html).toMatch(/aspect-ratio:\s*[\d.]+ \/ [\d.]+/);
+    // Colours come from theme tokens only: no hard-coded colour anywhere.
+    expect(html).toContain("var(--sig)");
+    expect(html).not.toMatch(/#[0-9a-f]{3,8}\b|rgb\(|hsl\(/i);
+    expect(html).not.toMatch(/<animate|animation|transition/);
+    // Every point is in the fallback table.
+    expect(html.match(/<tr>/g)!.length).toBe(chart.points.length + 1);
+  });
+
+  it("draws exactly the given numbers", () => {
+    const html = draw(FIXTURE_CHARTS.rings);
+    for (const n of ["180", "192", "40"]) expect(html).toContain(`>${n}</text>`);
+    expect(draw(FIXTURE_CHARTS.heatmap).match(/<rect/g)!.length).toBe(364);
+  });
+
+  it("renders nothing without points, and survives a single point and all-zero data", () => {
+    expect(draw({ variant: "line", title: "T", summary: "S", points: [] })).toBe("");
+    expect(draw({ variant: "line", title: "T", summary: "S", points: [{ x: "a", y: 5 }] })).not.toContain("NaN");
+    for (const variant of ["heatmap", "line", "bars", "rings"]) {
+      const html = draw({ variant, title: "T", summary: "S", points: [{ x: "a", y: 0 }, { x: "b", y: 0 }] });
+      expect(html).toContain("<svg");
+      expect(html).not.toMatch(/NaN|Infinity/);
+    }
+  });
+
+  it("escapes labels", () => {
+    expect(draw({ variant: "bars", title: "<b>x</b>", summary: "a \"q\" <i>", points: [{ x: "<script>", y: 1 }] })).not.toMatch(/<script|<b>|<i>/);
+  });
+});
+
+describe("synced sections", () => {
+  const sync = { provider: "leetcode", account: "maya", syncedAt: "2026-11-13T08:00:00.000Z", verified: true, source: "leetcode.com" };
+
+  it("words provenance from the sync metadata and never overclaims", () => {
+    expect(provenance(sync)).toBe("Live from leetcode.com · updated Nov 13, 2026 · Verified owner");
+    expect(provenance({ ...sync, verified: false, experimental: true })).toBe("Live from leetcode.com · updated Nov 13, 2026 · Public profile · Experimental");
+    expect(provenance({ ...sync, verified: false, note: "Issuer-verified on Credly", source: undefined })).toBe("Live from leetcode · updated Nov 13, 2026 · Issuer-verified on Credly");
+    expect(provenance({ ...sync, live: false })).toBe("From leetcode.com · as of Nov 13, 2026 · Verified owner");
+    expect(provenance({ ...sync, syncedAt: "nonsense" })).toBe("Live from leetcode.com · Verified owner");
+  });
+
+  it("adds one provenance line per synced section, through the generic renderer", () => {
+    const view = viewPortfolio(fixturePortfolio);
+    const synced = view.sections.find((s) => s.id === "synced")!;
+    expect(synced.sync?.provider).toBe("github");
+    const slots = [synced.lead, ...synced.entries].flatMap((e) => e?.rest ?? []).filter((r) => r.def.key === "_sync");
+    expect(slots).toHaveLength(1);
+    expect(synced.lead!.rest.map((r) => r.def.type)).toEqual(["chart", "text"]);
+    const html = renderToStaticMarkup(<Rest slots={synced.lead!.rest} />);
+    expect(html).toContain("pf-sync");
+    expect(html).toContain("Live from github.com · updated Nov 13, 2026 · Verified owner");
+    // Sections without sync are untouched.
+    expect(view.sections.filter((s) => s.id !== "synced").flatMap((s) => [s.lead, ...s.entries]).flatMap((e) => e?.rest ?? []).some((r) => r.def.key === "_sync")).toBe(false);
+  });
+
+  it("puts provenance on the last entry when a synced section has no lead", () => {
+    const s = createSection("awards");
+    const view = viewSection({ ...s, sync, items: [{ id: "a", visible: true, values: { title: "Knight" } }, { id: "b", visible: true, values: { title: "Guardian" } }] }, "en", "x")!;
+    expect(view.lead).toBeNull();
+    expect(view.entries.map((e) => e.rest.length)).toEqual([0, 1]);
   });
 });
 

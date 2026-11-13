@@ -12,6 +12,38 @@ const take = (p: Portfolio, kind: string) => {
 
 const IMG = { src: "/fixture/cover.svg", alt: "Abstract landscape in blue and coral", width: 800, height: 600 };
 
+/** A deterministic year of daily counts (no randomness, so snapshots and tests are stable). */
+const YEAR = Array.from({ length: 364 }, (_, i) => {
+  const date = new Date(Date.UTC(2025, 10, 16 + i)).toISOString().slice(0, 10);
+  const wave = Math.sin(i / 9) + Math.sin(i / 23) * 0.6;
+  const y = i % 7 === 0 || wave < -0.7 ? 0 : Math.max(0, Math.round((wave + 1.2) * 4) - (i % 3));
+  return { x: date, y };
+});
+
+export const FIXTURE_CHARTS = {
+  heatmap: { variant: "heatmap", title: "Activity", summary: "1,004 lab sessions in the last year", points: YEAR, unit: "sessions" },
+  line: {
+    variant: "line",
+    title: "Rating history",
+    summary: "Rating rose from 1,480 to 1,912 over 8 rounds",
+    points: [1480, 1532, 1509, 1611, 1688, 1743, 1850, 1912].map((y, i) => ({ x: `2026-${String(i + 1).padStart(2, "0")}`, y, label: `Round ${i + 1}` })),
+  },
+  bars: {
+    variant: "bars",
+    title: "Languages",
+    summary: "TypeScript leads at 48% of lab code",
+    points: [{ x: "TypeScript", y: 48 }, { x: "Rust", y: 27 }, { x: "Go", y: 15 }, { x: "Python", y: 10 }],
+    unit: "%",
+  },
+  rings: {
+    variant: "rings",
+    title: "Solved",
+    summary: "412 lab problems solved across three levels",
+    points: [{ x: "Easy", y: 180 }, { x: "Medium", y: 192 }, { x: "Hard", y: 40 }],
+    max: 412,
+  },
+} as const;
+
 /**
  * The kitchen sink: every preset section kind, a user-invented section that
  * uses every FieldType, an unknown kind, plus hidden and empty sections that
@@ -66,6 +98,10 @@ export const fixturePortfolio: Portfolio = {
         { key: "extraDate", label: "Reviewed", type: "date" },
         { key: "extraText", label: "Codename", type: "text" },
         { key: "third", label: "Station", type: "text" },
+        { key: "heat", label: "Heatmap", type: "chart" },
+        { key: "trend", label: "Trend", type: "chart" },
+        { key: "share", label: "Share", type: "chart" },
+        { key: "rings", label: "Rings", type: "chart" },
       ],
       items: [
         {
@@ -90,6 +126,10 @@ export const fixturePortfolio: Portfolio = {
           extraDate: "2024-07",
           extraText: "Bluebird",
           third: "Station Nine",
+          heat: FIXTURE_CHARTS.heatmap,
+          trend: FIXTURE_CHARTS.line,
+          share: FIXTURE_CHARTS.bars,
+          rings: FIXTURE_CHARTS.rings,
         },
       ],
     }),
@@ -105,6 +145,25 @@ export const fixturePortfolio: Portfolio = {
       ],
       items: [{ title: "Adaptive back-pressure for event streams", patentNo: "EP 4 012 345", link: "https://example.com/patents/1", date: "2023-08" }],
     }),
+    // A section synced from a connected account: charts in the lead, metrics as items, provenance from `sync`.
+    {
+      id: "synced",
+      kind: "custom",
+      title: "Live stats",
+      visible: true,
+      layout: "metrics",
+      fields: [{ key: "calendar", label: "Contributions", type: "chart", value: { ...FIXTURE_CHARTS.heatmap, title: "Contributions", summary: "1,004 contributions in the last year", unit: "contributions" } }],
+      itemSchema: [
+        { key: "stat", label: "Stat", type: "metric" },
+        { key: "note", label: "Note", type: "text" },
+      ],
+      items: [
+        { id: "synced-1", visible: true, values: { stat: { value: "1,004", label: "contributions this year" } } },
+        { id: "synced-2", visible: true, values: { stat: { value: "312", label: "stars earned" } } },
+        { id: "synced-3", visible: true, values: { stat: { value: "58", label: "public repositories" } } },
+      ],
+      sync: { provider: "github", account: "mayaokafor", syncedAt: "2026-11-13T08:00:00.000Z", verified: true, source: "github.com" },
+    },
     { ...seedSection({ kind: "awards", id: "hidden-awards", title: "Hidden section", items: [{ title: "Should never render" }] }), visible: false },
     seedSection({ kind: "custom", id: "empty-custom", title: "Empty section" }),
     take(solutionsEngineerSeed, "contact"),
@@ -114,6 +173,6 @@ export const fixturePortfolio: Portfolio = {
 /** Titles that must be visible in every template, and titles that must not. */
 export const FIXTURE_EXPECTED_TITLES = [
   "About", "By the numbers", "Selected work", "Experience", "Skills", "Education", "Kind words", "Certifications",
-  "Talks", "Writing", "Recognition", "Volunteering", "Field lab", "Patents", "Get in touch",
+  "Talks", "Writing", "Recognition", "Volunteering", "Field lab", "Patents", "Live stats", "Get in touch",
 ];
 export const FIXTURE_FORBIDDEN_TEXT = ["Hidden section", "Should never render", "Empty section"];

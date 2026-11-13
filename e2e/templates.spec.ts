@@ -5,10 +5,13 @@ const RUNTIME = "http://localhost:3200";
 const TEMPLATES = ["signal", "editorial", "bento", "aurora", "brutal", "cinematic", "swiss", "os", "paper", "casefile", "card", "quiet", "kinetic", "archive", "vision", "terra", "lumen", "margin", "thread", "sketch", "vivid", "arcade", "executive"];
 
 // Mirrors apps/runtime/src/schema/seeds/fixture.ts
-const EXPECTED_TITLES = ["About", "By the numbers", "Selected work", "Experience", "Skills", "Education", "Kind words", "Certifications", "Talks", "Writing", "Recognition", "Volunteering", "Field lab", "Patents", "Get in touch"];
+const EXPECTED_TITLES = ["About", "By the numbers", "Selected work", "Experience", "Skills", "Education", "Kind words", "Certifications", "Talks", "Writing", "Recognition", "Volunteering", "Field lab", "Patents", "Live stats", "Get in touch"];
 const FORBIDDEN = ["Hidden section", "Should never render", "Empty section"];
 // One value from every FieldType in the user-invented "Field lab" section.
-const LAB_VALUES = ["Everything at once", "Experiment", "Plain notes with a line break.", "Rich", "example.com", "lab@example.com", "+1 555 010 2030", "1,234,567", "quality score", "Jun 1, 2024", "Jan 2023 — Jun 2024", "alpha", "Open the lab", "Paper", "Watch on example.com", "export const answer", "Bluebird", "Station Nine", "EP 4 012 345"];
+const LAB_VALUES = ["Everything at once", "Experiment", "Plain notes with a line break.", "Rich", "example.com", "lab@example.com", "+1 555 010 2030", "1,234,567", "quality score", "Jun 1, 2024", "Jan 2023 — Jun 2024", "alpha", "Open the lab", "Paper", "Watch on example.com", "export const answer", "Bluebird", "Station Nine", "EP 4 012 345",
+  // chart summaries (heatmap, line, bars, rings) and the provenance line of the synced section
+  "1,004 lab sessions in the last year", "Rating rose from 1,480 to 1,912 over 8 rounds", "TypeScript leads at 48% of lab code", "412 lab problems solved across three levels",
+  "1,004 contributions in the last year", "Live from github.com · updated Nov 13, 2026 · Verified owner"];
 
 for (const template of TEMPLATES) {
   for (const mode of ["light", "dark"] as const) {
@@ -34,6 +37,13 @@ for (const template of TEMPLATES) {
       for (const value of LAB_VALUES) expect(html, `field value "${value}"`).toContain(value);
       expect(await page.locator("pre.pf-code").count()).toBeGreaterThan(0);
       expect(await page.locator(".pf-gallery img").count()).toBe(2);
+      // Charts are labelled inline SVG, one per variant, each with a data-table fallback.
+      for (const variant of ["heatmap", "line", "bars", "rings"]) {
+        const chart = page.locator(`.pf-chart[data-variant="${variant}"]`).first();
+        await expect(chart.locator("svg[role=img][aria-label]")).toHaveCount(1);
+        await expect(chart.locator("table")).toHaveCount(1);
+      }
+      await expect(page.locator(".pf-sync")).toHaveCount(1);
       // …while hidden and empty sections leave no trace.
       for (const text of FORBIDDEN) expect(html).not.toContain(text);
 

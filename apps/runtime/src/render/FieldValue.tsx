@@ -1,7 +1,8 @@
-import type { CodeValue, DateRangeValue, FieldDef, ImageValue, LinkValue, MetricValue } from "../schema/portfolio";
+import type { ChartValue, CodeValue, DateRangeValue, FieldDef, ImageValue, LinkValue, MetricValue } from "../schema/portfolio";
+import { Chart } from "./Chart";
 import { Img } from "./Img";
 import { sanitizeRichText, textToHtml } from "./sanitize";
-import { formatDate, formatRange, hostLabel, isEmptyValue, isExternal, read, type Slot } from "./view";
+import { formatDate, formatRange, hostLabel, isEmptyValue, isExternal, read, SYNC_KEY, type Slot } from "./view";
 
 const ext = (href: string) => (isExternal(href) ? { target: "_blank", rel: "noopener noreferrer" } : {});
 
@@ -144,24 +145,35 @@ export function FieldValue({ def, value, lang = "en" }: { def: Pick<FieldDef, "t
         </pre>
       );
     }
+    case "chart":
+      return <Chart chart={read("chart", value) as ChartValue} />;
     default:
       return null;
   }
 }
+
+const WIDE = { gridColumn: "1 / -1" } as const;
 
 /** Labelled list of leftover fields — the tail of every entry. */
 export function Rest({ slots, lang, className = "" }: { slots: Slot[]; lang?: string; className?: string }) {
   if (!slots.length) return null;
   return (
     <dl className={`pf-dl ${className}`}>
-      {slots.map(({ def, value }) => (
-        <div key={def.key} className="pf-dl-row">
-          {def.label ? <dt>{def.label}</dt> : null}
-          <dd>
-            <FieldValue def={def} value={value} lang={lang} />
-          </dd>
-        </div>
-      ))}
+      {slots.map(({ def, value }) =>
+        def.key === SYNC_KEY ? (
+          // Provenance of a synced section: present, but quieter than any content.
+          <div key={def.key} className="pf-dl-row pf-sync" style={WIDE}>
+            <dd style={{ fontSize: "0.75rem", lineHeight: 1.5, color: "var(--mute)" }}>{String(value)}</dd>
+          </div>
+        ) : (
+          <div key={def.key} className="pf-dl-row" style={def.type === "chart" ? WIDE : undefined}>
+            {def.label && def.type !== "chart" ? <dt>{def.label}</dt> : null}
+            <dd>
+              <FieldValue def={def} value={value} lang={lang} />
+            </dd>
+          </div>
+        ),
+      )}
     </dl>
   );
 }

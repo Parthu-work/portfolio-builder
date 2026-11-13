@@ -4,7 +4,7 @@ Queue and rules: [`MASTER_PROMPT.md`](./MASTER_PROMPT.md). Status is one of `tod
 
 | # | id | name | status | commit | notes |
 | --- | --- | --- | --- | --- | --- |
-| F1 | schema-chart | Chart field, sync metadata, integrations config | todo | | |
+| F1 | schema-chart | Chart field, sync metadata, integrations config | done | see `git log --grep schema-chart` | `chart` type (4 variants, inline SVG, theme tokens), `sync` + provenance line via `Rest`, `integrations` config; no schema version bump. Extra optional `sync.source` / `note` / `live`. Proven in all 23 templates. |
 | F2 | framework | Storage, provider framework, API routes, merge on read | todo | | |
 | F3 | editor-ui | Connected accounts panel, verification, e2e | todo | | |
 | 1 | github | GitHub | todo | | |
