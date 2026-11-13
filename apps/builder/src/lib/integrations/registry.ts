@@ -4,11 +4,12 @@ import { githubProvider } from "./providers/github";
 import { achievementsProvider } from "./providers/achievements";
 import { codeforcesProvider } from "./providers/codeforces";
 import { leetcodeProvider } from "./providers/leetcode";
+import { stackoverflowProvider } from "./providers/stackoverflow";
 import { mockProvider } from "./providers/mock";
 import type { Provider, ProviderInfo } from "./types";
 
 /** Real providers, in the order the editor shows them. Each lives in ./providers/<id>.ts. */
-const PROVIDERS: Provider[] = [githubProvider, leetcodeProvider, codeforcesProvider, achievementsProvider];
+const PROVIDERS: Provider[] = [githubProvider, leetcodeProvider, codeforcesProvider, stackoverflowProvider, achievementsProvider];
 
 /**
  * The mock provider exists only where there is no real backend: development

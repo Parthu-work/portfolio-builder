@@ -1,0 +1,21 @@
+{
+ "items": [
+  {
+   "badge_counts": {
+    "bronze": 212,
+    "silver": 118,
+    "gold": 14
+   },
+   "account_id": 123,
+   "is_employee": false,
+   "reputation": 48213,
+   "user_id": 1144035,
+   "link": "https://stackoverflow.com/users/1144035/maya-o&#39;neil",
+   "display_name": "Maya O&#39;Neil",
+   "user_type": "registered"
+  }
+ ],
+ "has_more": false,
+ "quota_max": 300,
+ "quota_remaining": 297
+}
