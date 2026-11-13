@@ -17,7 +17,7 @@ Queue and rules: [`MASTER_PROMPT.md`](./MASTER_PROMPT.md). Status is one of `tod
 | 8 | packages | npm and PyPI | done | see `git log --grep "integrations): packages"` | Up to 12 packages listed; downloads and the trend use the first 5 (calls made in parallel; a failed stats call just leaves that number out, and labels say "top N"). Weekly buckets keep complete ISO weeks only. PyPI has no JSON "packages by user" API, so XML-RPC `user_packages` is used; PyPI trend excludes mirrors and covers pypistats' ~180 days. No ownership check. |
 | 9 | huggingface | Hugging Face | done | see `git log --grep "integrations): huggingface"` | Existence checked via `/api/users/<n>/overview`, then `/api/organizations/<n>/overview`. Lists capped at 100 per kind; a capped count shows as "100+". Hub `downloads` is a 30-day figure and is labelled so. Only repos whose owner is the account are kept. No ownership check. |
 | 10 | gitlab | GitLab | done | see `git log --grep "integrations): gitlab"` | gitlab.com only (self-managed instances not supported). 2 calls per refresh (`/users?username`, `/users/:id/projects` by stars, 100 max, "+" when capped). Blocked users read as not found; only gitlab.com project links kept. |
-| 11 | orcid | ORCID | todo | | |
+| 11 | orcid | ORCID | done | see `git log --grep "integrations): orcid"` | One call (`/works`, JSON). iD checksum (ISO 7064 MOD 11-2) validated before any request. One work per group (ORCID's preferred summary). Shows "Public profile" until ORCID OAuth exists (see Ops). |
 | 12 | wakatime | WakaTime | todo | | |
 | 13 | codechef | CodeChef | todo | | |
 | 14 | gfg-hackerrank | GeeksforGeeks and HackerRank | todo | | |
@@ -32,8 +32,9 @@ Manual steps, in the order they must be done. Nothing here is needed while `FEAT
    - `GITHUB_API_TOKEN` — a fine-grained personal access token with **no scopes / public repositories read-only**. Needed by the GitHub provider (REST quota + GraphQL contribution calendar).
    - `STACKEXCHANGE_KEY` — optional; raises the Stack Exchange quota.
 3. **GitHub sign-in (optional, for automatic "Verified owner")**: keep the GitHub provider enabled in Supabase Auth. Users who signed in with GitHub are verified without a bio code.
-4. **Switch the feature on**: set `FEATURE_INTEGRATIONS=1` on the builder and redeploy. Do this last.
-5. **Kill switches** (no deploy of code needed): `INTEGRATION_<PROVIDER>_DISABLED=1`, e.g. `INTEGRATION_LEETCODE_DISABLED=1`, stops all calls to that provider; data already fetched keeps showing.
+4. **ORCID sign-in (later, optional)**: register a public API client at orcid.org/developer-tools and add ORCID as a sign-in method, so researchers can be marked "Verified owner" (needs a small code change to match the signed-in iD, like GitHub's).
+5. **Switch the feature on**: set `FEATURE_INTEGRATIONS=1` on the builder and redeploy. Do this last.
+6. **Kill switches** (no deploy of code needed): `INTEGRATION_<PROVIDER>_DISABLED=1`, e.g. `INTEGRATION_LEETCODE_DISABLED=1`, stops all calls to that provider; data already fetched keeps showing.
 
 Notes:
 

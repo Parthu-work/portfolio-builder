@@ -1,0 +1,141 @@
+{
+ "last-modified-date": {
+  "value": 1763020000000
+ },
+ "group": [
+  {
+   "work-summary": [
+    {
+     "put-code": 111,
+     "title": {
+      "title": {
+       "value": "Tail latency in   shared caches"
+      },
+      "subtitle": null
+     },
+     "external-ids": {
+      "external-id": [
+       {
+        "external-id-type": "doi",
+        "external-id-value": "10.1145/3600006.3613139",
+        "external-id-url": {
+         "value": "https://doi.org/10.1145/3600006.3613139"
+        },
+        "external-id-relationship": "self"
+       }
+      ]
+     },
+     "url": null,
+     "type": "journal-article",
+     "publication-date": {
+      "year": {
+       "value": "2024"
+      },
+      "month": {
+       "value": "3"
+      },
+      "day": {
+       "value": "7"
+      }
+     },
+     "journal-title": {
+      "value": "Journal of Systems"
+     }
+    },
+    {
+     "put-code": 112,
+     "title": {
+      "title": {
+       "value": "dup from another source"
+      },
+      "subtitle": null
+     },
+     "external-ids": {
+      "external-id": []
+     },
+     "url": null,
+     "type": "journal-article",
+     "publication-date": {
+      "year": {
+       "value": "2024"
+      },
+      "month": null,
+      "day": null
+     },
+     "journal-title": {
+      "value": "x"
+     }
+    }
+   ]
+  },
+  {
+   "work-summary": [
+    {
+     "put-code": 222,
+     "title": {
+      "title": {
+       "value": "Queues as logs"
+      },
+      "subtitle": null
+     },
+     "external-ids": {
+      "external-id": []
+     },
+     "url": {
+      "value": "https://example.org/paper.pdf"
+     },
+     "type": "conference-paper",
+     "publication-date": {
+      "year": {
+       "value": "2026"
+      },
+      "month": {
+       "value": "11"
+      },
+      "day": null
+     },
+     "journal-title": {
+      "value": "Proceedings of OSDI"
+     }
+    }
+   ]
+  },
+  {
+   "work-summary": [
+    {
+     "put-code": 333,
+     "title": {
+      "title": {
+       "value": "Untitled-less"
+      },
+      "subtitle": null
+     },
+     "external-ids": {
+      "external-id": [
+       {
+        "external-id-type": "doi",
+        "external-id-value": "not-a-doi",
+        "external-id-url": {
+         "value": "https://doi.org/not-a-doi"
+        },
+        "external-id-relationship": "self"
+       }
+      ]
+     },
+     "url": null,
+     "type": "journal-article",
+     "publication-date": null,
+     "journal-title": null
+    }
+   ]
+  },
+  {
+   "work-summary": [
+    {
+     "put-code": 444,
+     "title": null
+    }
+   ]
+  }
+ ]
+}
