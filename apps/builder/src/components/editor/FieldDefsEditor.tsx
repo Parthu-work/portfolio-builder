@@ -27,7 +27,11 @@ export const FIELD_TYPE_LABELS: Record<FieldType, string> = {
   video: "Video URL",
   code: "Code snippet",
   select: "Choice",
+  chart: "Chart (from a connected account)",
 };
+
+/** Types a person can add by hand. Charts are only ever written by integrations. */
+export const ADDABLE_FIELD_TYPES = FIELD_TYPES.filter((t) => t !== "chart");
 
 const AddSchema = z.object({ label: z.string().trim().min(1, "Give the field a name").max(80), type: FieldTypeSchema });
 type AddValues = z.infer<typeof AddSchema>;
@@ -106,7 +110,7 @@ export function FieldDefsEditor({
             Type
           </Label>
           <Select id={`${idPrefix}-new-type`} className="h-9" {...register("type")}>
-            {FIELD_TYPES.map((t) => (
+            {ADDABLE_FIELD_TYPES.map((t) => (
               <option key={t} value={t}>
                 {FIELD_TYPE_LABELS[t]}
               </option>

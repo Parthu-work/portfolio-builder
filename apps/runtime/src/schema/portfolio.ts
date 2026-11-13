@@ -29,6 +29,7 @@ export const FIELD_TYPES = [
   "video",
   "code",
   "select",
+  "chart",
 ] as const;
 export const FieldTypeSchema = z.enum(FIELD_TYPES);
 export type FieldType = z.infer<typeof FieldTypeSchema>;
@@ -111,6 +112,24 @@ export type DateRangeValue = z.infer<typeof DateRangeValueSchema>;
 export const CodeValueSchema = z.object({ language: z.string().max(40), code: z.string().max(20000) });
 export type CodeValue = z.infer<typeof CodeValueSchema>;
 
+export const CHART_VARIANTS = ["heatmap", "line", "bars", "rings"] as const;
+/**
+ * A small data visualisation. Written by integrations (never typed by hand):
+ * `summary` is the one-sentence reading of the data and doubles as the
+ * accessible name; `points` are drawn exactly as given.
+ */
+export const ChartValueSchema = z.object({
+  variant: z.enum(CHART_VARIANTS),
+  title: z.string().max(120),
+  summary: z.string().max(300),
+  points: z
+    .array(z.object({ x: z.string().max(40), y: z.number().finite(), label: z.string().max(80).optional() }))
+    .max(400),
+  max: z.number().finite().optional(),
+  unit: z.string().max(20).optional(),
+});
+export type ChartValue = z.infer<typeof ChartValueSchema>;
+
 /** The Zod schema for the value of each FieldType. */
 export const VALUE_SCHEMAS = {
   text: z.string().max(500),
@@ -131,6 +150,7 @@ export const VALUE_SCHEMAS = {
   video: UrlSchema,
   code: CodeValueSchema,
   select: z.string().max(120),
+  chart: ChartValueSchema,
 } as const satisfies Record<FieldType, z.ZodTypeAny>;
 
 export type FieldValueMap = { [K in FieldType]: z.infer<(typeof VALUE_SCHEMAS)[K]> };
@@ -157,6 +177,7 @@ export function emptyValue<T extends FieldType>(type: T): FieldValueMap[T] {
     video: "",
     code: { language: "", code: "" },
     select: "",
+    chart: { variant: "bars", title: "", summary: "", points: [] },
   };
   return structuredClone(empties[type]);
 }
@@ -212,6 +233,28 @@ function uniqueKeys(defs: { key: string }[], ctx: z.RefinementCtx, path: string)
   });
 }
 
+/**
+ * Provenance of a section whose content is fetched from a connected account.
+ * Synced sections are rebuilt on every refresh; the renderer adds a small
+ * "Live from … · updated … · Verified owner" line from this.
+ */
+export const SyncSchema = z.object({
+  provider: z.string().min(1).max(40),
+  account: z.string().max(120),
+  /** ISO timestamp of the fetch the content came from. */
+  syncedAt: z.string().max(40),
+  /** True only when ownership of the account was actually checked. */
+  verified: z.boolean(),
+  experimental: z.boolean().optional(),
+  /** Where the data came from, as shown to visitors (e.g. "leetcode.com"). Defaults to `provider`. */
+  source: z.string().max(80).optional(),
+  /** Shown instead of "Public profile" for unverified accounts whose proof is elsewhere (e.g. "Issuer-verified on Credly"). */
+  note: z.string().max(80).optional(),
+  /** False once the data is frozen (zip export): it is no longer refreshed. */
+  live: z.boolean().optional(),
+});
+export type Sync = z.infer<typeof SyncSchema>;
+
 export const SectionSchema = z
   .object({
     id: z.string().min(1).max(64),
@@ -224,6 +267,7 @@ export const SectionSchema = z
     fields: z.array(FieldSchema).max(40).default([]),
     items: z.array(ItemSchema).max(200).optional(),
     itemSchema: z.array(FieldDefSchema).max(40).optional(),
+    sync: SyncSchema.optional(),
   })
   .superRefine((s, ctx) => {
     uniqueKeys(s.fields, ctx, "fields");
@@ -280,6 +324,17 @@ export const ThemeSchema = z.object({
 });
 export type Theme = z.infer<typeof ThemeSchema>;
 
+/** A connected account: the user's choices only — never tokens, never fetched data. */
+export const IntegrationConfigSchema = z.object({
+  id: z.string().min(1).max(64),
+  provider: z.string().min(1).max(40),
+  account: z.string().min(1).max(120),
+  options: z.record(z.string().max(40), z.union([z.boolean(), z.string().max(200)])).default({}),
+  /** Keys of metrics, charts and entries the user switched off. */
+  hidden: z.array(z.string().max(80)).max(200).default([]),
+});
+export type IntegrationConfig = z.infer<typeof IntegrationConfigSchema>;
+
 export const PortfolioSchema = z.object({
   schemaVersion: z.literal(SCHEMA_VERSION),
   meta: z.object({
@@ -300,6 +355,7 @@ export const PortfolioSchema = z.object({
   }),
   theme: ThemeSchema,
   sections: z.array(SectionSchema).max(60),
+  integrations: z.array(IntegrationConfigSchema).max(24).optional(),
 });
 export type Portfolio = z.infer<typeof PortfolioSchema>;
 
