@@ -52,7 +52,7 @@ describe("supabase migrations", () => {
     const { rows } = await db.query<{ relname: string; relrowsecurity: boolean }>(
       `select c.relname, c.relrowsecurity from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and c.relkind = 'r' order by 1`,
     );
-    expect(rows.map((r) => r.relname)).toEqual(["audit_log", "deployments", "events", "portfolio_versions", "portfolios", "profiles", "rate_limits"]);
+    expect(rows.map((r) => r.relname)).toEqual(["audit_log", "deployments", "events", "integration_snapshots", "portfolio_versions", "portfolios", "profiles", "rate_limits"]);
     expect(rows.every((r) => r.relrowsecurity)).toBe(true);
   });
 
@@ -119,6 +119,23 @@ describe("supabase migrations", () => {
     expect((await as("authenticated", A, () => db.query(`select 1 from public.deployments`))).rows).toHaveLength(1);
     expect((await as("authenticated", B, () => db.query(`select 1 from public.deployments`))).rows).toHaveLength(0);
     await expect(as("authenticated", A, () => db.query(`insert into public.deployments (portfolio_id, vercel_url, template_id, runtime_version) values ($1, 'y.vercel.app', 'swiss', '1')`, [rows[0]!.id]))).rejects.toThrow(/permission denied/);
+  });
+
+  it("integration snapshots: readable by the owner only, written by the server only, removed with the portfolio", async () => {
+    const { rows } = await insertPortfolio(A, "synced");
+    const pid = rows[0]!.id;
+    const insert = `insert into public.integration_snapshots (portfolio_id, provider, account, data) values ($1, 'github', 'alice', '{"stars":3}')`;
+    await expect(as("authenticated", A, () => db.query(insert, [pid]))).rejects.toThrow(/permission denied/);
+    await expect(as("anon", null, () => db.query(`select 1 from public.integration_snapshots`))).rejects.toThrow(/permission denied/);
+    await as("service_role", null, () => db.query(insert, [pid]));
+    await expect(as("service_role", null, () => db.query(insert, [pid]))).rejects.toThrow(/duplicate key/);
+    await expect(as("service_role", null, () => db.query(`insert into public.integration_snapshots (portfolio_id, provider, account, status) values ($1, 'github', 'bob', 'weird')`, [pid]))).rejects.toThrow(/check constraint/);
+    expect((await as("authenticated", A, () => db.query(`select 1 from public.integration_snapshots`))).rows).toHaveLength(1);
+    expect((await as("authenticated", B, () => db.query(`select 1 from public.integration_snapshots`))).rows).toHaveLength(0);
+    await expect(as("authenticated", A, () => db.query(`update public.integration_snapshots set verified = true`))).rejects.toThrow(/permission denied/);
+    await expect(as("authenticated", A, () => db.query(`delete from public.integration_snapshots`))).rejects.toThrow(/permission denied/);
+    await db.query(`delete from public.portfolios where id = $1`, [pid]);
+    expect((await db.query(`select 1 from public.integration_snapshots where portfolio_id = $1`, [pid])).rows).toHaveLength(0);
   });
 
   it("take_token implements a refilling token bucket", async () => {
