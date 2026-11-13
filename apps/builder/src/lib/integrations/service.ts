@@ -95,10 +95,22 @@ async function callProvider(provider: Provider, account: string, options: Record
 
 export const describeError = (e: unknown): string => (e instanceof ProviderError ? e.message : "Something went wrong while reading the provider.");
 
+/** True when the user signed in with this provider as the account the data belongs to. */
+export function ownedViaSignIn(provider: Provider, data: unknown, linked: string[] = []): boolean {
+  if (!provider.ownerId || data === null || data === undefined) return false;
+  try {
+    const id = provider.ownerId(data as ProviderData);
+    return Boolean(id) && linked.includes(`${provider.id}:${id}`);
+  } catch {
+    return false;
+  }
+}
+
 /** First fetch for an account. Throws ProviderError when the provider cannot be read: nothing is stored then. */
-export async function connect(store: Store, portfolioId: string, provider: Provider, account: string, options: Record<string, unknown>, now = Date.now()): Promise<SnapshotRow | null> {
+export async function connect(store: Store, portfolioId: string, provider: Provider, account: string, options: Record<string, unknown>, now = Date.now(), linked: string[] = []): Promise<SnapshotRow | null> {
   if (!provider.accountPattern.test(account)) throw new ProviderError("not_found", `That does not look like a ${provider.name} ${provider.accountLabel.toLowerCase()}.`);
   const data = await callProvider(provider, account, options);
+  const owned = ownedViaSignIn(provider, data, linked);
   return store.upsertSnapshot({
     portfolioId,
     provider: provider.id,
@@ -107,8 +119,8 @@ export async function connect(store: Store, portfolioId: string, provider: Provi
     fetchedAt: new Date(now).toISOString(),
     status: "ok",
     error: null,
-    verified: false,
-    verifyCode: provider.verify?.method === "bio-code" ? newVerifyCode() : null,
+    verified: owned,
+    verifyCode: !owned && provider.verify?.method === "bio-code" ? newVerifyCode() : null,
   });
 }
 

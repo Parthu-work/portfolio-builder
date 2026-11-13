@@ -40,6 +40,8 @@ export interface Provider {
   accountLabel: string;
   /** Handles are validated against this before any network call. */
   accountPattern: RegExp;
+  /** Not offered for new connections unless the server has this provider's token (see `serverToken`). */
+  needsToken?: boolean;
   /** Shown under the handle input, e.g. "Your username, as in github.com/<username>". */
   accountHint?: string;
   options?: ProviderOption[];
@@ -52,6 +54,12 @@ export interface Provider {
    * and do not apply `cfg.hidden`: the framework does both.
    */
   toSections(data: ProviderData, cfg: IntegrationConfig): Section[];
+  /**
+   * The provider's own, stable user id in fetched data. When the signed-in
+   * user logged in with this provider under the same id, the account is
+   * verified without a bio code.
+   */
+  ownerId?(data: ProviderData): string | null;
   verify?: {
     method: "oauth" | "bio-code";
     instructions: string;

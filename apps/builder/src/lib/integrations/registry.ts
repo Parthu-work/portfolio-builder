@@ -1,10 +1,11 @@
 import "server-only";
 import { backendMode, env, flags } from "../env";
+import { githubProvider } from "./providers/github";
 import { mockProvider } from "./providers/mock";
 import type { Provider, ProviderInfo } from "./types";
 
 /** Real providers, in the order the editor shows them. Each lives in ./providers/<id>.ts. */
-const PROVIDERS: Provider[] = [];
+const PROVIDERS: Provider[] = [githubProvider];
 
 /**
  * The mock provider exists only where there is no real backend: development
@@ -15,8 +16,8 @@ const mockEnabled = () => backendMode() === "local" || process.env.NODE_ENV === 
 
 const all = (): Provider[] => (flags.integrations ? [...PROVIDERS, ...(mockEnabled() ? [mockProvider] : [])] : []);
 
-/** Providers people can connect and refresh right now. */
-export const listProviders = (): Provider[] => all().filter((p) => !flags.providerDisabled(p.id));
+/** Providers people can connect and refresh right now: not switched off, and configured when they need a token. */
+export const listProviders = (): Provider[] => all().filter((p) => !flags.providerDisabled(p.id) && (!p.needsToken || Boolean(serverToken(p.id))));
 export const getProvider = (id: string): Provider | null => listProviders().find((p) => p.id === id) ?? null;
 /**
  * For rendering stored snapshots only: a provider switched off with

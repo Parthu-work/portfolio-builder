@@ -9,7 +9,7 @@ import { providerFetch, providerJson } from "./http";
 import { mockProvider } from "./providers/mock";
 import { findProvider, getProvider, listProviders, providerInfo } from "./registry";
 import { addMissing, applyHidden, mergeSynced, removeAccount, resync, syncAccount, toggles } from "./sections";
-import { connect, connectionInfo, defaultConfig, mergeLive, newVerifyCode, refresh, refreshStale, REFRESH_AFTER_MS, sectionsFor } from "./service";
+import { connect, connectionInfo, defaultConfig, mergeLive, newVerifyCode, ownedViaSignIn, refresh, refreshStale, REFRESH_AFTER_MS, sectionsFor } from "./service";
 import { ProviderError, type Provider } from "./types";
 
 const PID = "3f2b1c9e-0000-4000-8000-000000000001";
@@ -92,6 +92,14 @@ describe("feature flags and registry", () => {
     expect(findProvider("mock")?.id).toBe("mock");
   });
 
+  it("offers providers that need a server token only once it is configured, but still renders their data", () => {
+    vi.stubEnv("GITHUB_API_TOKEN", "");
+    expect(getProvider("github")).toBeNull();
+    expect(findProvider("github")?.id).toBe("github");
+    vi.stubEnv("GITHUB_API_TOKEN", "t0ken");
+    expect(listProviders().map((p) => p.id)).toContain("github");
+  });
+
   it("tells the browser about a provider without functions or secrets", () => {
     const info = providerInfo(mockProvider);
     expect(info).toMatchObject({ id: "mock", official: false, verify: { method: "bio-code" } });
@@ -158,6 +166,26 @@ describe("connect, refresh and keep-last-good", () => {
     expect(sectionsFor({ ...p, toSections: () => [{ id: "about", kind: "about", title: "Hijack", visible: true, fields: [] }] }, row, defaultConfig(p, row))).toEqual([]);
     expect(connectionInfo(p, row).available).toHaveLength(1);
     expect(connectionInfo(p, { ...row, verified: true }).verifyCode).toBeNull();
+  });
+});
+
+describe("ownership via sign-in", () => {
+  const p = fake({ ownerId: (d) => (typeof d.n === "number" ? `u${d.n}` : null) });
+
+  it("verifies at connect only when the signed-in identity is the account's owner", async () => {
+    const store = new LocalStore(null);
+    p.next(7);
+    const mine = (await connect(store, PID, p, "maya", {}, Date.now(), ["github:u7", "fake:u7"]))!;
+    expect(mine).toMatchObject({ verified: true, verifyCode: null });
+    const theirs = (await connect(store, PID, p, "zed", {}, Date.now(), ["fake:u8", "github:u7"]))!;
+    expect(theirs.verified).toBe(false);
+  });
+
+  it("never verifies without an owner id, or when reading it throws", () => {
+    expect(ownedViaSignIn(fake(), { n: 7 }, ["fake:u7"])).toBe(false);
+    expect(ownedViaSignIn(p, null, ["fake:u7"])).toBe(false);
+    expect(ownedViaSignIn(p, { n: "x" }, ["fake:null"])).toBe(false);
+    expect(ownedViaSignIn(fake({ ownerId: () => { throw new Error("bad"); } }), { n: 7 }, ["fake:u7"])).toBe(false);
   });
 });
 

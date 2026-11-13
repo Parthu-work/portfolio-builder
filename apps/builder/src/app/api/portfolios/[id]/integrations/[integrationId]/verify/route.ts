@@ -2,7 +2,7 @@ import { HttpError, json, route } from "@/lib/api";
 import { ChoicesSchema, configFor, ownConnection, toHttp, unavailable } from "@/lib/integrations/api";
 import { TIMEOUT_MS } from "@/lib/integrations/http";
 import { getProvider, serverToken } from "@/lib/integrations/registry";
-import { connectionInfo, newVerifyCode, sectionsFor } from "@/lib/integrations/service";
+import { connectionInfo, newVerifyCode, ownedViaSignIn, sectionsFor } from "@/lib/integrations/service";
 
 type P = { id: string; integrationId: string };
 
@@ -14,6 +14,12 @@ export const POST = route<typeof ChoicesSchema, P>({ auth: "user", body: Choices
   const { portfolio, row, provider } = await ownConnection(store, user!.id, id, integrationId);
   const config = configFor(provider, row, portfolio, body);
   if (row.verified) return json({ verified: true, config, connection: connectionInfo(provider, row, config), sections: sectionsFor(provider, row, config) });
+  if (ownedViaSignIn(provider, row.data, user!.linked)) {
+    const next = await store.updateSnapshot(row.id, { verified: true, verifyCode: null });
+    if (!next) throw unavailable();
+    await audit({ action: "integration.verify", entityType: "portfolio", entityId: portfolio.id, before: null, after: { provider: row.provider, account: row.account, via: "sign-in" } });
+    return json({ verified: true, config, connection: connectionInfo(provider, next, config), sections: sectionsFor(provider, next, config) });
+  }
   if (!provider.verify || provider.verify.method !== "bio-code") throw new HttpError(422, `${provider.name} accounts cannot be verified this way.`);
   if (!getProvider(provider.id)) throw new HttpError(503, `${provider.name} is switched off at the moment.`);
   let current = row;

@@ -34,7 +34,7 @@ export const POST = route<typeof ConnectSchema, P>({ auth: "user", body: Connect
   if (existing.length >= MAX_INTEGRATIONS) throw new HttpError(422, `You can connect up to ${MAX_INTEGRATIONS} accounts.`);
   // One connect attempt per account per minute, whoever asks: handles cannot be used to hammer a provider.
   if (!(await store.takeToken(`int-connect:${provider.id}:${body.account}`, 2, 1 / 60))) throw new HttpError(429, "Please wait a minute before trying this account again.");
-  const row = await connect(store, portfolio.id, provider, body.account, body.options ?? {}).catch(toHttp);
+  const row = await connect(store, portfolio.id, provider, body.account, body.options ?? {}, Date.now(), user!.linked).catch(toHttp);
   if (!row) throw unavailable();
   const config = configFor(provider, row, portfolio, body);
   await audit({ action: "integration.connect", entityType: "portfolio", entityId: portfolio.id, before: null, after: { provider: provider.id, account: row.account } });
