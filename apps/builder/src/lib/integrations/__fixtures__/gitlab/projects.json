@@ -1,0 +1,28 @@
+[
+ {
+  "id": 101,
+  "name": "pipeline-kit",
+  "description": "CI templates\nfor monorepos.",
+  "star_count": 210,
+  "forks_count": 30,
+  "web_url": "https://gitlab.com/maya.o/pipeline-kit",
+  "topics": [
+   "ci",
+   "gitlab"
+  ]
+ },
+ {
+  "id": 102,
+  "name": "dotfiles",
+  "description": null,
+  "star_count": 1,
+  "web_url": "https://gitlab.com/maya.o/dotfiles"
+ },
+ {
+  "id": 103,
+  "name": "mirror",
+  "description": "x",
+  "star_count": 5,
+  "web_url": "http://evil.example.com/x"
+ }
+]

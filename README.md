@@ -202,6 +202,7 @@ How it works (`apps/builder/src/lib/integrations/`):
 | Writing | Official (DEV API, Hashnode GraphQL, Medium and Substack RSS) | Latest 10 posts with dates and links in a Writing (publications) section; total post count where the platform reports it (DEV, Hashnode). Provenance names the actual platform. |
 | npm / PyPI | Official (npm registry + downloads API; PyPI XML-RPC `user_packages`, JSON API, pypistats) | Package count, last-month downloads, weekly downloads trend (line) for the top 5, and a package list with version and monthly downloads. Account `npm/<user>` or `pypi/<user>`. |
 | Hugging Face | Official (Hub API) | Counts of models, Spaces and datasets, total likes, model downloads (last 30 days), and the top 4 of each as linked entries. Users and organizations. |
+| GitLab | Official (REST v4, gitlab.com, no token) | Public project count and total stars, top 6 projects by stars as project entries. Bio code in the GitLab bio. |
 | Achievement wall | No network (aggregator) | One "big numbers" section with each connected provider's own strongest signals (e.g. LeetCode Knight, Codeforces max rating, GitHub stars), each labelled with its source and verification. Verified accounts only unless the user opts in. |
 
 ## Adding a template — the template contract
