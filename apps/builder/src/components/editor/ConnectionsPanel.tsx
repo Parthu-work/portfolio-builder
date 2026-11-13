@@ -65,8 +65,11 @@ function ProviderMark({ name }: { name: string }) {
   );
 }
 
-function Kind({ official }: { official: boolean }) {
-  return official ? <Badge tone="ok">Official API</Badge> : <Badge tone="warn">Experimental</Badge>;
+const kindLabel = (p: ProviderInfo) => (p.aggregate || p.annotates ? "Built in" : p.official ? "Official API" : "Experimental");
+
+function Kind({ provider }: { provider: ProviderInfo }) {
+  const label = kindLabel(provider);
+  return <Badge tone={label === "Experimental" ? "warn" : label === "Official API" ? "ok" : "neutral"}>{label}</Badge>;
 }
 
 type Shared = { portfolio: Portfolio; update: Update; portfolioId: string; put: (c: ConnectionInfo) => void; changed: () => void };
@@ -130,7 +133,7 @@ function ConnectForm({ portfolio, update, portfolioId, put, changed, providers }
               <ProviderMark name={p.name} />
               <span className="grid min-w-0 gap-0.5">
                 <span className="truncate text-sm font-medium">{p.name}</span>
-                <span className="text-xs text-dim">{p.official ? "Official API" : "Experimental"}</span>
+                <span className="text-xs text-dim">{kindLabel(p)}</span>
               </span>
             </label>
           ))}
@@ -275,7 +278,7 @@ function ConnectionCard({ portfolio, update, portfolioId, put, changed, drop, pr
             )}
           </h4>
           <div className="flex flex-wrap gap-1">
-            {provider ? <Kind official={provider.official} /> : null}
+            {provider ? <Kind provider={provider} /> : null}
             {connection.verified ? (
               <Badge tone="ok">
                 <ShieldCheck className="size-3" aria-hidden="true" /> Verified owner
