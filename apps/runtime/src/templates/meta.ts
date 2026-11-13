@@ -497,6 +497,27 @@ export const TEMPLATES: TemplateMeta[] = [
       fp("mono-inter", "JetBrains Mono + Inter", F.jet, F.inter),
     ],
   },
+  {
+    id: "executive",
+    name: "Executive",
+    description: "Quiet luxury for senior leaders: serif headlines, generous margins, an outcomes band and testimonials set as signed letters.",
+    signature: "Quiet-luxury layout · signed-letter testimonials · outcomes band",
+    tags: ["executive", "corporate", "recruiter-safe", "serif", "light"],
+    preferredMode: "light",
+    layouts: LAYOUTS,
+    palettes: [
+      pal("navy-ivory", "Navy & Ivory",
+        tk("0.975 0.012 85", "0.995 0.006 85", "0.24 0.06 262", "0.46 0.04 262", "0.88 0.012 85", "0.57 0.03 262", "0.5 0.09 75", "0.99 0.005 85", "0.5 0.1 25"),
+        tk("0.19 0.045 262", "0.235 0.05 262", "0.95 0.015 85", "0.78 0.025 85", "0.32 0.045 262", "0.6 0.04 262", "0.8 0.1 80", "0.2 0.04 262", "0.75 0.1 25")),
+      pal("bordeaux", "Bordeaux",
+        tk("0.975 0.01 60", "0.995 0.005 60", "0.25 0.07 15", "0.46 0.05 15", "0.88 0.012 40", "0.57 0.04 15", "0.44 0.12 15", "0.99 0.005 60", "0.5 0.08 75"),
+        tk("0.19 0.04 15", "0.235 0.045 15", "0.95 0.015 60", "0.78 0.025 50", "0.32 0.04 15", "0.6 0.04 15", "0.78 0.1 70", "0.2 0.04 15", "0.74 0.1 15")),
+      pal("charcoal", "Charcoal",
+        tk("0.97 0.003 90", "0.99 0.002 90", "0.22 0.005 260", "0.46 0.006 260", "0.88 0.004 90", "0.57 0.006 260", "0.46 0.07 230", "0.99 0.002 90", "0.52 0.08 75"),
+        tk("0.18 0.004 260", "0.225 0.005 260", "0.94 0.004 90", "0.75 0.006 90", "0.31 0.005 260", "0.57 0.006 260", "0.82 0.07 80", "0.18 0.01 80", "0.75 0.06 230")),
+    ],
+    fontPairs: [fp("playfair", "Playfair + Inter", F.playfair, F.inter), fp("fraunces", "Fraunces + Manrope", F.fraunces, F.manrope), fp("newsreader", "Newsreader + Inter", F.news, F.inter)],
+  },
 ];
 
 export const TEMPLATE_IDS = TEMPLATES.map((t) => t.id);

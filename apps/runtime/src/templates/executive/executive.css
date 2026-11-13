@@ -1,0 +1,543 @@
+/* Executive — quiet luxury: serif headlines, generous margins, signed letters, an outcomes band. */
+[data-template="executive"] {
+  --ex-gut: clamp(1.25rem, 6vw, 6rem);
+  --ex-max: 78rem;
+  --ex-hair: color-mix(in oklch, var(--ink) 16%, transparent);
+
+  .ex-caps {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .ex-sub {
+    color: var(--mute);
+    font-size: 0.9375rem;
+  }
+  .ex-nums {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .ex-a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--sig);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+    transition: color 0.2s;
+  }
+  .ex-a:hover {
+    color: var(--sig);
+  }
+
+  /* ───────── top ───────── */
+  .ex-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    max-width: calc(var(--ex-max) + 2 * var(--ex-gut));
+    margin-inline: auto;
+    padding: 1.75rem var(--ex-gut);
+  }
+  .ex-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .ex-monogram {
+    display: inline-grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1px solid var(--sig);
+    border-radius: 999px;
+    font-family: var(--pf-display);
+    font-size: 0.9375rem;
+    letter-spacing: 0.04em;
+    color: var(--sig);
+  }
+  .ex-monogram-lg {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.125rem;
+  }
+  .ex-mark-name {
+    font-family: var(--pf-display);
+    font-size: 1.0625rem;
+    letter-spacing: 0.02em;
+  }
+  .ex-nav {
+    display: none;
+  }
+  @media (min-width: 1000px) {
+    .ex-nav {
+      display: block;
+    }
+  }
+  .ex-nav ul {
+    display: flex;
+    gap: 2rem;
+  }
+  .ex-nav a {
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mute);
+    transition: color 0.2s;
+  }
+  .ex-nav a:hover {
+    color: var(--ink);
+  }
+
+  /* ───────── hero ───────── */
+  .ex-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ex-hero {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 6rem);
+    align-items: center;
+    width: 100%;
+    max-width: calc(var(--ex-max) + 2 * var(--ex-gut));
+    margin-inline: auto;
+    padding: clamp(2.5rem, 8vw, 7rem) var(--ex-gut) clamp(4rem, 9vw, 8rem);
+  }
+  @media (min-width: 900px) {
+    .ex-hero {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.8fr);
+    }
+  }
+  .ex-hero-compact {
+    padding-block: 2rem 4rem;
+  }
+  .ex-hero-text {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .ex-eyebrow {
+    color: var(--sig);
+  }
+  .ex-name {
+    font-family: var(--pf-display);
+    font-size: clamp(2.75rem, 6.5vw, 5.75rem);
+    font-weight: 450;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+  .ex-hero-compact .ex-name {
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+  }
+  .ex-statement {
+    font-family: var(--pf-display);
+    font-style: italic;
+    font-size: clamp(1.375rem, 2.6vw, 2.125rem);
+    line-height: 1.3;
+    max-width: 30ch;
+    padding-left: 1.25rem;
+    border-left: 1px solid var(--sig);
+    text-wrap: balance;
+  }
+  .ex-tagline {
+    max-width: 56ch;
+    color: var(--mute);
+    font-size: 1.0625rem;
+  }
+  .ex-contact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--ex-hair);
+    font-size: 0.9375rem;
+  }
+  /* refined frame: a fine rule set off the image */
+  .ex-frame {
+    position: relative;
+    padding: 0.6rem;
+    border: 1px solid var(--ex-hair);
+    background: var(--surface);
+  }
+  .ex-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0.6rem;
+    border: 1px solid color-mix(in oklch, var(--ground) 45%, transparent);
+    pointer-events: none;
+  }
+  .ex-portrait {
+    width: min(100%, 22rem);
+    justify-self: center;
+    box-shadow: 1.25rem 1.25rem 0 -0.25rem color-mix(in oklch, var(--sig) 14%, transparent);
+  }
+  .pf-btn {
+    border-radius: 0;
+    min-height: 3rem;
+    padding-inline: 1.5rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.8125rem;
+  }
+  .pf-btn-ghost {
+    border-color: var(--ink);
+  }
+  .pf-tag {
+    border: 0;
+    padding: 0;
+    background: none;
+    border-radius: 0;
+    font-size: 0.8125rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .pf-tags {
+    gap: 0.25rem 1.1rem;
+  }
+  .pf-dl dt {
+    letter-spacing: 0.14em;
+  }
+
+  /* ───────── sections ───────── */
+  .ex-section {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    width: 100%;
+    max-width: calc(var(--ex-max) + 2 * var(--ex-gut));
+    margin-inline: auto;
+    padding: clamp(4rem, 9vw, 8rem) var(--ex-gut) 0;
+    scroll-margin-top: 1rem;
+  }
+  .ex-section-head {
+    display: grid;
+    justify-items: center;
+    gap: 0.75rem;
+    text-align: center;
+  }
+  .ex-section-no {
+    color: var(--sig);
+    font-family: var(--pf-display);
+    letter-spacing: 0.2em;
+  }
+  .ex-h2 {
+    font-family: var(--pf-display);
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 450;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+  }
+  .ex-section-head::after {
+    content: "";
+    width: 3rem;
+    height: 1px;
+    margin-top: 0.5rem;
+    background: var(--sig);
+  }
+  .ex-section-sub {
+    max-width: 48ch;
+  }
+  .ex-section-body {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem);
+    min-width: 0;
+  }
+  .ex-h3 {
+    font-family: var(--pf-display);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  .ex-h3-sm {
+    font-size: 1.1875rem;
+  }
+  .ex-prose {
+    max-width: 64ch;
+    line-height: 1.75;
+    text-wrap: pretty;
+  }
+  .ex-prose-lead {
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  }
+  .ex-media {
+    background: var(--surface);
+  }
+  .ex-lead {
+    display: grid;
+    gap: 3rem;
+    max-width: 62rem;
+    width: 100%;
+    margin-inline: auto;
+  }
+  @media (min-width: 900px) {
+    .ex-lead-img {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 17rem);
+      align-items: center;
+    }
+  }
+  .ex-lead-title {
+    font-family: var(--pf-display);
+    font-size: 1.375rem;
+  }
+  .ex-lead-frame {
+    width: min(100%, 17rem);
+  }
+  .ex-figure {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .ex-figure-value {
+    font-family: var(--pf-display);
+    font-size: clamp(2rem, 3.6vw, 2.75rem);
+    line-height: 1;
+    color: var(--sig);
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  .ex-figure-sm .ex-figure-value {
+    font-size: 1.75rem;
+  }
+
+  /* timeline: a boardroom-style two-column record */
+  .ex-timeline {
+    max-width: 62rem;
+    width: 100%;
+    margin-inline: auto;
+    border-top: 1px solid var(--ink);
+  }
+  .ex-tl {
+    display: grid;
+    gap: 0.75rem 3rem;
+    padding-block: clamp(1.5rem, 3vw, 2.25rem);
+    border-bottom: 1px solid var(--ex-hair);
+  }
+  @media (min-width: 768px) {
+    .ex-tl {
+      grid-template-columns: 15rem minmax(0, 1fr);
+    }
+  }
+  .ex-tl-side {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+  }
+  .ex-company {
+    color: var(--ink);
+  }
+  .ex-tl-main {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  /* grid: refined cards */
+  .ex-cards {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 3vw, 3rem);
+  }
+  @media (min-width: 760px) {
+    .ex-cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .ex-card {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--ink);
+  }
+
+  /* list: a ruled list */
+  .ex-ruled {
+    max-width: 62rem;
+    width: 100%;
+    margin-inline: auto;
+    border-top: 1px solid var(--ink);
+  }
+  .ex-ruled-row {
+    display: grid;
+    gap: 0.6rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--ex-hair);
+  }
+  .ex-ruled-line {
+    display: grid;
+    gap: 0.25rem 2rem;
+    align-items: baseline;
+  }
+  @media (min-width: 768px) {
+    .ex-ruled-line {
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) auto;
+    }
+  }
+  .ex-ruled-body {
+    display: grid;
+    gap: 0.6rem;
+    max-width: 64ch;
+  }
+
+  /* quotes: signed letters */
+  .ex-letters {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  @media (min-width: 900px) {
+    .ex-letters {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .ex-letter {
+    position: relative;
+    display: grid;
+    gap: 1.75rem;
+    align-content: start;
+    padding: clamp(1.75rem, 4vw, 3rem);
+    background: var(--surface);
+    border: 1px solid var(--ex-hair);
+    outline: 1px solid var(--ex-hair);
+    outline-offset: -0.6rem;
+  }
+  .ex-letter-text {
+    font-family: var(--pf-display);
+    font-style: italic;
+    font-size: clamp(1.125rem, 1.8vw, 1.3125rem);
+    line-height: 1.6;
+  }
+  .ex-signature {
+    display: grid;
+    gap: 0.3rem;
+    justify-items: start;
+  }
+  .ex-sign-rule {
+    width: 7rem;
+    height: 1px;
+    margin-bottom: 0.6rem;
+    background: var(--sig);
+  }
+  .ex-sign-name {
+    font-family: var(--pf-display);
+    font-size: 1.375rem;
+    font-style: italic;
+  }
+  .ex-seal {
+    position: absolute;
+    right: clamp(1.75rem, 4vw, 3rem);
+    bottom: clamp(1.75rem, 4vw, 3rem);
+    width: 3rem;
+    border-radius: 999px;
+    filter: grayscale(0.4);
+  }
+
+  /* metrics: an outcomes band */
+  .ex-band {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    margin-inline: calc(var(--ex-gut) * -1);
+    padding: clamp(2.5rem, 5vw, 4rem) var(--ex-gut);
+    background: var(--ink);
+    color: var(--ground);
+  }
+  .ex-band-item {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+    padding: 1rem clamp(1rem, 2.5vw, 2rem);
+    border-left: 1px solid color-mix(in oklch, var(--ground) 28%, transparent);
+  }
+  .ex-band-value {
+    font-family: var(--pf-display);
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    line-height: 1;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  .ex-band-label {
+    font-size: 0.8125rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .ex-band-note {
+    font-size: 0.9375rem;
+    color: color-mix(in oklch, var(--ground) 82%, var(--ink));
+  }
+  .ex-band-img {
+    width: 5rem;
+  }
+  .ex-band-more,
+  .ex-band-more :is(.pf-link, .pf-tag, .pf-dl dt, .pf-prose a) {
+    color: var(--ground);
+  }
+
+  /* tags: small-caps lists */
+  .ex-capslist {
+    max-width: 62rem;
+    width: 100%;
+    margin-inline: auto;
+    display: grid;
+    border-top: 1px solid var(--ink);
+  }
+  .ex-capsrow {
+    display: grid;
+    gap: 0.5rem 3rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--ex-hair);
+  }
+  @media (min-width: 768px) {
+    .ex-capsrow {
+      grid-template-columns: 15rem minmax(0, 1fr);
+    }
+  }
+  .ex-capsrun {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0;
+    font-variant: small-caps;
+    font-size: 1.0625rem;
+    letter-spacing: 0.06em;
+  }
+  .ex-capsrun li + li::before {
+    content: "·";
+    padding-inline: 0.7rem;
+    color: var(--sig);
+  }
+
+  /* ───────── footer ───────── */
+  .ex-foot {
+    display: grid;
+    justify-items: center;
+    gap: 0.85rem;
+    margin-top: clamp(5rem, 10vw, 9rem);
+    padding: clamp(3rem, 6vw, 4.5rem) var(--ex-gut);
+    border-top: 1px solid var(--ex-hair);
+    text-align: center;
+  }
+  .ex-foot-name {
+    font-family: var(--pf-display);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+  }
+  .ex-top-link {
+    margin-top: 1rem;
+  }
+  .ex-top-link:hover {
+    color: var(--ink);
+  }
+
+  /* motion: restrained fades only */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      &:not([data-motion="none"]) :is(.ex-tl, .ex-card, .ex-letter, .ex-band-item, .ex-ruled-row, .ex-section-head) {
+        animation: ex-fade linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 55%;
+      }
+    }
+  }
+}
+@keyframes ex-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
