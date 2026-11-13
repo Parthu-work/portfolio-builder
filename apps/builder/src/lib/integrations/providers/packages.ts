@@ -12,6 +12,8 @@ import { ProviderError, type FetchCtx, type Provider, type ProviderData } from "
 const MAX_PACKAGES = 12;
 /** Downloads are looked up for the first few packages only: a handful of calls, made in parallel. */
 const MAX_STATS = 5;
+/** PyPI has no popularity order: at most this many of a user's projects are ranked by downloads. */
+const PYPI_SAMPLE = 20;
 const DAY = 86_400_000;
 
 type Registry = "npm" | "pypi";
@@ -97,23 +99,29 @@ async function pypi(user: string, ctx: FetchCtx): Promise<PackagesData> {
   if (res.status >= 400) throw new ProviderError("upstream", `PyPI answered HTTP ${res.status}.`);
   const all = parseUserPackages(res.text);
   if (!all.length) throw new ProviderError("not_found", "No PyPI projects for that user.");
-  const names = all.slice(0, MAX_PACKAGES);
-  type Info = { info?: { summary?: string; version?: string; package_url?: string; project_url?: string } };
-  const [infos, recents, overall] = await Promise.all([
-    Promise.all(names.map((n) => settle(providerJson<Info>(`https://pypi.org/pypi/${encodeURIComponent(n)}/json`, { signal: ctx.signal })))),
-    Promise.all(names.slice(0, MAX_STATS).map((n) => settle(providerJson<{ data?: { last_month?: number } }>(`https://pypistats.org/api/packages/${encodeURIComponent(n.toLowerCase())}/recent`, { signal: ctx.signal })))),
-    Promise.all(names.slice(0, MAX_STATS).map((n) => settle(providerJson<{ data?: { date: string; downloads: number; category?: string }[] }>(`https://pypistats.org/api/packages/${encodeURIComponent(n.toLowerCase())}/overall?mirrors=false`, { signal: ctx.signal })))),
+  // PyPI lists a user's projects alphabetically: rank a bounded sample by last month's downloads instead.
+  const sample = all.slice(0, PYPI_SAMPLE);
+  const recents = await Promise.all(sample.map((n) => settle(providerJson<{ data?: { last_month?: number } }>(`https://pypistats.org/api/packages/${encodeURIComponent(n.toLowerCase())}/recent`, { signal: ctx.signal }))));
+  const ranked = sample
+    .map((name, i) => ({ name, monthly: typeof recents[i]?.data?.last_month === "number" ? recents[i]!.data!.last_month! : null }))
+    .sort((a, b) => (b.monthly ?? -1) - (a.monthly ?? -1))
+    .slice(0, MAX_PACKAGES);
+  type Info = { info?: { summary?: string; version?: string; package_url?: string } };
+  const withStats = ranked.filter((r) => r.monthly !== null).slice(0, MAX_STATS);
+  const [infos, overall] = await Promise.all([
+    Promise.all(ranked.map((r) => settle(providerJson<Info>(`https://pypi.org/pypi/${encodeURIComponent(r.name)}/json`, { signal: ctx.signal })))),
+    Promise.all(withStats.map((r) => settle(providerJson<{ data?: { date: string; downloads: number; category?: string }[] }>(`https://pypistats.org/api/packages/${encodeURIComponent(r.name.toLowerCase())}/overall?mirrors=false`, { signal: ctx.signal })))),
   ]);
   return {
     registry: "pypi",
     user,
     count: all.length,
-    packages: names.map((name, i) => ({
-      name,
+    packages: ranked.map((r, i) => ({
+      name: r.name,
       description: text(infos[i]?.info?.summary, 300),
       version: text(infos[i]?.info?.version, 40),
-      url: https(infos[i]?.info?.package_url) || `https://pypi.org/project/${encodeURIComponent(name)}/`,
-      monthly: typeof recents[i]?.data?.last_month === "number" ? recents[i]!.data!.last_month! : null,
+      url: https(infos[i]?.info?.package_url) || `https://pypi.org/project/${encodeURIComponent(r.name)}/`,
+      monthly: r.monthly,
     })),
     weeks: weekly(overall.flatMap((o) => (o?.data ?? []).filter((d) => !d.category || d.category === "without_mirrors").map((d) => ({ day: d.date, downloads: d.downloads })))),
   };

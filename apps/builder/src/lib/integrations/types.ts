@@ -1,4 +1,5 @@
 import type { IntegrationConfig, Portfolio, Section } from "@runtime/schema/portfolio";
+import type { ProofSet } from "./sections";
 
 export type { IntegrationConfig };
 
@@ -112,6 +113,8 @@ export type ConnectionInfo = {
   error: string | null;
   verified: boolean;
   verifyCode: string | null;
+  /** For annotating providers (proof links): the checks, so the editor preview can show the same marks as the live site. */
+  proofs: ProofSet | null;
   /** For providers that check things (proof links): what was checked and how it went. */
   details: { label: string; ok: boolean; detail: string }[];
   /** Everything the provider can show, before the user's `hidden` choices: the source for the toggles. */

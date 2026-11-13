@@ -11,7 +11,7 @@ import { Button, buttonStyles, Menu, MenuContent, MenuItem, MenuSeparator, MenuT
 import { cn } from "@/lib/cn";
 import { api, ApiError } from "@/lib/client";
 import { track } from "@/lib/track";
-import { resync } from "@/lib/integrations/sections";
+import { annotateProofs, resync, stripProofs } from "@/lib/integrations/sections";
 import { ChecksPanel } from "./ChecksPanel";
 import { ConnectionsPanel, transform, useConnections } from "./ConnectionsPanel";
 import { EditorContext } from "./context";
@@ -59,6 +59,8 @@ export function Editor({ id, initial, userId, initialPublishedAt, initialPublish
   const offered = useRef(false);
   const { listing, put, drop, reload } = useConnections(id);
 
+  // The live site marks entries whose proof link was checked; show the same in the preview (never in the saved draft).
+  const previewDoc = useMemo(() => (listing?.connections ?? []).reduce((doc, c) => (c.proofs ? annotateProofs(doc, c.proofs) : doc), stripProofs(portfolio)), [listing, portfolio]);
   const hasUnpublished = useMemo(() => !published || JSON.stringify(published) !== JSON.stringify(portfolio), [published, portfolio]);
   const ctx = useMemo(() => ({ userId, portfolioId: id, issueAt: issues.at }), [userId, id, issues.at]);
 
@@ -228,7 +230,7 @@ export function Editor({ id, initial, userId, initialPublishedAt, initialPublish
             </Tabs>
           </aside>
           <main id="main" tabIndex={-1} aria-label="Live preview" className={cn("min-w-0 flex-1 bg-panel2 outline-none lg:block", pane === "edit" && "max-lg:hidden", device !== "desktop" && "lg:p-4")}>
-            <Preview portfolio={portfolio} device={device} focus={openSection} />
+            <Preview portfolio={previewDoc} device={device} focus={openSection} />
           </main>
         </div>
       </div>

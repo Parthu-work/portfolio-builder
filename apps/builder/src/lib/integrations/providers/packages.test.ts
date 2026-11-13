@@ -104,4 +104,25 @@ describe("packages provider", () => {
   it("keeps only complete weeks", () => {
     expect(weekly([{ day: "2026-11-09", downloads: 5 }])).toEqual([]);
   });
+
+  it("ranks PyPI projects by last month's downloads, since PyPI lists them alphabetically", async () => {
+    route([
+      [/^https:\/\/pypi\.org\/pypi$/, 200, fx("pypi-user-packages.xml")],
+      [/pypi\.org\/pypi\/(fastqueue|tiny-utils)\/json$/, 200, fx("pypi-tiny-utils.json")],
+      [/pypistats\.org\/api\/packages\/fastqueue\/recent$/, 200, fx("pypistats-recent-fastqueue.json")],
+      [/pypistats\.org\/api\/packages\/tiny-utils\/recent$/, 200, JSON.stringify({ data: { last_month: 9000 } })],
+    ]);
+    const d = (await packagesProvider.fetch("pypi/maya", {}, ctx())) as unknown as PackagesData;
+    expect(d.packages.map((p) => [p.name, p.monthly])).toEqual([
+      ["tiny-utils", 9000],
+      ["fastqueue", 3400],
+    ]);
+  });
+
+  it("reads a real PyPI XML-RPC answer (recorded 2026-11-13)", () => {
+    const names = parseUserPackages(fx("recorded-pypi-user-packages-kennethreitz.xml"));
+    expect(names.length).toBeGreaterThan(50);
+    expect(names.slice(0, 2)).toEqual(["acat-player", "args"]);
+    expect(names).toContain("records");
+  });
 });
