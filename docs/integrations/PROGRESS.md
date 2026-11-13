@@ -6,7 +6,7 @@ Queue and rules: [`MASTER_PROMPT.md`](./MASTER_PROMPT.md). Status is one of `tod
 | --- | --- | --- | --- | --- | --- |
 | F1 | schema-chart | Chart field, sync metadata, integrations config | done | see `git log --grep schema-chart` | `chart` type (4 variants, inline SVG, theme tokens), `sync` + provenance line via `Rest`, `integrations` config; no schema version bump. Extra optional `sync.source` / `note` / `live`. Proven in all 23 templates. |
 | F2 | framework | Storage, provider framework, API routes, merge on read | done | see `git log --grep framework` | `integration_snapshots` migration + store (local, Supabase, missing-table safe), `lib/integrations` (Provider interface, registry, HTTP helper, mock provider), connect / refresh / preview / verify / disconnect routes, merge on read with 12 h SWR via `after()` and a 6 h per-account floor, zip bake-in, `FEATURE_INTEGRATIONS` + per-provider kill switch. Mock provider is registered only when there is no real backend (dev, tests, `LOCAL_MODE` e2e) because e2e runs a production build. |
-| F3 | editor-ui | Connected accounts panel, verification, e2e | todo | | |
+| F3 | editor-ui | Connected accounts panel, verification, e2e | in-progress | | |
 | 1 | github | GitHub | todo | | |
 | 2 | leetcode | LeetCode | todo | | |
 | 3 | codeforces | Codeforces | todo | | |

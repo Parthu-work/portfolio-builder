@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Copy, Eye, EyeOff, Plus, Settings2, Trash2 } from "lucide-react";
+import { ChevronDown, Copy, Eye, EyeOff, Lock, Plus, Settings2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { emptyValue, newId, type FieldDef, type Section } from "@runtime/schema/portfolio";
 import { createItem, presetFor } from "@runtime/schema/presets";
@@ -8,6 +8,7 @@ import { toEntry } from "@runtime/render/view";
 import { getTemplateMeta } from "@runtime/templates/meta";
 import { Button, Input, Label, Select } from "@/components/ui";
 import { cn } from "@/lib/cn";
+import { toggles } from "@/lib/integrations/sections";
 import { track } from "@/lib/track";
 import { useEditorContext } from "./context";
 import { FieldDefsEditor } from "./FieldDefsEditor";
@@ -17,7 +18,49 @@ import type { Update } from "./state";
 
 const LAYOUT_LABELS: Record<string, string> = { timeline: "Timeline", grid: "Cards", list: "List", quotes: "Quotes", metrics: "Big numbers", tags: "Tag groups" };
 
-export function SectionEditor({ section, index, update, templateId }: { section: Section; index: number; update: Update; templateId: string }) {
+/**
+ * A section filled from a connected account: its content comes from the
+ * provider and is rebuilt on every refresh, so only the title (and, from the
+ * list, order and visibility) are the user's to change.
+ */
+function SyncedSection({ section, index, update, onManageSynced }: { section: Section; index: number; update: Update; onManageSynced?: () => void }) {
+  const sync = section.sync!;
+  const sid = `s-${section.id}`;
+  const contents = toggles(section, { id: section.id.split("_")[0]! });
+  return (
+    <div className="grid gap-4 border-t border-rule p-3 pt-4">
+      <div className="grid gap-1.5">
+        <Label htmlFor={`${sid}-title`}>Section title</Label>
+        <Input id={`${sid}-title`} value={section.title} maxLength={120} onChange={(e) => update((d) => void (d.sections[index]?.id === section.id && (d.sections[index]!.title = e.target.value)), `${section.id}:title`)} />
+      </div>
+      <div className="grid gap-2 rounded-lg bg-panel2 p-3 text-[0.8125rem]">
+        <p className="flex items-center gap-1.5 font-medium">
+          <Lock className="size-3.5" aria-hidden="true" /> Synced from {sync.source ?? sync.provider} · {sync.account}
+        </p>
+        <p className="text-dim">This content updates itself and is read-only. Rename, reorder or hide the section here; choose which numbers, charts and entries appear under Accounts.</p>
+        {contents.length ? (
+          <ul className="grid list-disc gap-0.5 pl-5" aria-label="Synced contents">
+            {contents.map((c) => (
+              <li key={c.key}>{c.label}</li>
+            ))}
+          </ul>
+        ) : null}
+        {onManageSynced ? (
+          <Button size="sm" className="w-fit" onClick={onManageSynced}>
+            Choose what appears
+          </Button>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+export function SectionEditor({ section, index, update, templateId, onManageSynced }: { section: Section; index: number; update: Update; templateId: string; onManageSynced?: () => void }) {
+  if (section.sync) return <SyncedSection section={section} index={index} update={update} onManageSynced={onManageSynced} />;
+  return <EditableSection section={section} index={index} update={update} templateId={templateId} />;
+}
+
+function EditableSection({ section, index, update, templateId }: { section: Section; index: number; update: Update; templateId: string }) {
   const { issueAt } = useEditorContext();
   const [shaping, setShaping] = useState(false);
   const [openItem, setOpenItem] = useState<string | null>(null);

@@ -104,3 +104,85 @@ test("API: connect → preview → toggle → publish → public data → verify
   expect((await ok(await page.request.get(base))).connections).toEqual([]);
   expect((await post(page, `${base}/${integrationId}/refresh`)).status()).toBe(404);
 });
+
+/**
+ * The Connected accounts panel, as a person uses it: connect, choose what
+ * appears, verify, publish, see it live, disconnect. Keyboard and labels only.
+ */
+test("Editor: connect → preview → toggle → verify → publish → public page → disconnect", async ({ page, request }) => {
+  const id = uid();
+  await signIn(page, `int-ui-${id}@example.com`, "/new");
+  const portfolioId = await createPortfolio(page, { template: "Signal", start: "Developer", name: "Uma Interface", slug: `int-ui-${id}` });
+  await saved(page);
+  const preview = page.frameLocator('iframe[title="Live preview of your portfolio"]');
+
+  await page.getByRole("tab", { name: "Accounts" }).click();
+  await expect(page.getByRole("heading", { name: "Connected accounts" })).toBeVisible();
+  await page.getByRole("radio", { name: /Mock Judge/ }).check();
+  const handle = page.getByLabel("Mock Judge handle");
+
+  // A malformed handle is caught before any request; a missing account is reported inline.
+  await handle.fill("Not A Handle");
+  await page.getByRole("button", { name: "Connect", exact: true }).click();
+  await expect(page.getByText("That does not look like a Mock Judge handle.")).toBeVisible();
+  await handle.fill("missing");
+  await page.getByRole("button", { name: "Connect", exact: true }).click();
+  await expect(page.getByText("No such account.")).toBeVisible();
+
+  await handle.fill("owner-uma");
+  await page.getByRole("button", { name: "Connect", exact: true }).click();
+  const card = page.locator("[data-connection=mock]");
+  await expect(card.getByRole("heading", { name: /Mock Judge · owner-uma/ })).toBeVisible();
+  await expect(card.getByText("Experimental")).toBeVisible();
+  await expect(card.getByText("Public profile")).toBeVisible();
+  await expect(card.getByTestId("synced-at")).toContainText("Last synced");
+
+  // The live preview shows the synced data straight away, with provenance.
+  await expect(preview.getByRole("heading", { name: "Mock Judge", exact: true })).toBeVisible();
+  await expect(preview.getByText("day streak", { exact: true })).toBeVisible();
+  await expect(preview.locator(".pf-sync").first()).toContainText("Public profile · Experimental");
+
+  // Hide one metric and switch badges off.
+  await card.getByRole("checkbox", { name: "day streak" }).uncheck();
+  await expect(preview.getByText("day streak", { exact: true })).toHaveCount(0);
+  await card.getByRole("checkbox", { name: "Show badges" }).uncheck();
+  await expect(preview.getByRole("heading", { name: "Mock Judge badges" })).toHaveCount(0);
+
+  // Synced sections are listed with a lock and are read-only.
+  await page.getByRole("tab", { name: "Content" }).click();
+  await page.getByRole("button", { name: /Mock Judge\s*Synced/ }).click();
+  await expect(page.getByText("This content updates itself and is read-only.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Delete section Mock Judge" })).toHaveCount(0);
+  await page.getByLabel("Section title").last().fill("Judge stats");
+  await page.getByRole("button", { name: "Choose what appears" }).click();
+
+  // Verify ownership with the bio code.
+  await expect(card.getByTestId("verify-code")).toHaveText(/^persona-[A-Z2-9]{6}$/);
+  await card.getByRole("button", { name: "Verify" }).click();
+  await expect(card.getByText("Verified owner")).toBeVisible();
+  await expect(card.getByTestId("verify-code")).toHaveCount(0);
+
+  await saved(page);
+  await page.getByTestId("publish").click();
+  await expect(page.getByTestId("publish")).toHaveText("Published");
+
+  const pub = async () => (await (await request.get(`/api/public/portfolios/${portfolioId}`)).json()).portfolio as Doc;
+  const synced = (await pub()).sections.filter((s) => s.sync);
+  expect(synced.map((s) => s.title)).toEqual(["Judge stats"]);
+  expect(synced[0]!.items!.map((i) => i.id)).toEqual(["solved"]);
+  expect(synced[0]!.sync).toMatchObject({ provider: "mock", account: "owner-uma", verified: true });
+
+  await page.goto(`/p/int-ui-${id}`);
+  await expect(page.getByRole("heading", { name: "Judge stats" })).toBeVisible();
+  await expect(page.locator(".pf-sync")).toContainText("Verified owner");
+
+  // Disconnect, after confirming: the data leaves the draft and the public site.
+  await page.goto(`/edit/${portfolioId}`);
+  await page.getByRole("tab", { name: "Accounts" }).click();
+  await card.getByRole("button", { name: "Disconnect" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Disconnect" }).click();
+  await expect(card).toHaveCount(0);
+  await expect(preview.getByRole("heading", { name: "Judge stats" })).toHaveCount(0);
+  expect((await pub()).sections.some((s) => s.sync)).toBe(false);
+  await saved(page);
+});
