@@ -175,9 +175,9 @@ Security model: user-facing operations run with the user's session, so **RLS is 
 
 ## Integrations
 
-People can connect accounts (GitHub, LeetCode, Codeforces, …) so their portfolio shows live, real numbers. The feature is **off by default** (`FEATURE_INTEGRATIONS=1` turns it on) and is being built in stages — see [`docs/integrations/PROGRESS.md`](docs/integrations/PROGRESS.md) for what has landed and the manual ops steps.
+People can connect accounts (GitHub, LeetCode, Codeforces, …) so their portfolio shows live, real numbers. The feature is **off by default** (`FEATURE_INTEGRATIONS=1` turns it on). Fourteen providers are built (GeeksforGeeks/HackerRank is blocked: no public API and bot-protected pages); see [`docs/integrations/PROGRESS.md`](docs/integrations/PROGRESS.md) for details and the manual steps to switch it on in production.
 
-What exists in the data model and renderer today (works in all 23 templates, no template code involved):
+The data model and renderer (works in all 23 templates, no template code involved):
 
 - **`chart` field type** — `heatmap`, `line`, `bars` or `rings`, drawn once in `apps/runtime/src/render/Chart.tsx` as static inline SVG using theme tokens, with an accessible name and a hidden data table.
 - **`sync` on a section** — marks it as fetched from a connected account; the renderer adds one quiet provenance line ("Live from github.com · updated … · Verified owner"). "Verified owner" appears only when ownership was actually checked.

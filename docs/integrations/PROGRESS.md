@@ -33,8 +33,9 @@ Manual steps, in the order they must be done. Nothing here is needed while `FEAT
    - `STACKEXCHANGE_KEY` — optional; raises the Stack Exchange quota.
 3. **GitHub sign-in (optional, for automatic "Verified owner")**: keep the GitHub provider enabled in Supabase Auth. Users who signed in with GitHub are verified without a bio code.
 4. **ORCID sign-in (later, optional)**: register a public API client at orcid.org/developer-tools and add ORCID as a sign-in method, so researchers can be marked "Verified owner" (needs a small code change to match the signed-in iD, like GitHub's).
-5. **Switch the feature on**: set `FEATURE_INTEGRATIONS=1` on the builder and redeploy. Do this last.
-6. **Kill switches** (no deploy of code needed): `INTEGRATION_<PROVIDER>_DISABLED=1`, e.g. `INTEGRATION_LEETCODE_DISABLED=1`, stops all calls to that provider; data already fetched keeps showing.
+5. **Smoke-test on a preview deployment** (with the migration applied and `FEATURE_INTEGRATIONS=1` set on the preview only): connect one real account per provider you care about and check the numbers against the profile. Provider unit tests use hand-built fixtures in each API's documented shape, not live recordings, so this is the first contact with the real APIs. Experimental providers (LeetCode, Credly, CodeChef) are the most likely to need a fix; switch any that fail off with its kill switch (step 7) rather than delaying the rest.
+6. **Switch the feature on**: set `FEATURE_INTEGRATIONS=1` on the builder and redeploy. Do this last.
+7. **Kill switches** (no deploy of code needed): `INTEGRATION_<PROVIDER>_DISABLED=1`, e.g. `INTEGRATION_LEETCODE_DISABLED=1`, stops all calls to that provider; data already fetched keeps showing. Ids: `github`, `leetcode`, `codeforces`, `stackoverflow`, `credly`, `writing`, `packages`, `huggingface`, `gitlab`, `orcid`, `wakatime`, `codechef`, `achievements`, `proof-links` (env name upper-cased with `-` as `_`, e.g. `INTEGRATION_PROOF_LINKS_DISABLED=1`).
 
 Notes:
 
