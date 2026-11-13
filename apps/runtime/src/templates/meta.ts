@@ -302,7 +302,7 @@ export const TEMPLATES: TemplateMeta[] = [
         tk("0.96 0.02 95", "0.93 0.03 95", "0.16 0.01 270", "0.42 0.02 270", "0.86 0.025 95", "0.55 0.03 95", "0.48 0.24 25", "0.99 0.01 95", "0.45 0.2 265"),
         tk("0.16 0.01 270", "0.21 0.014 270", "0.96 0.02 95", "0.77 0.03 95", "0.3 0.015 270", "0.57 0.02 270", "0.72 0.19 28", "0.15 0.02 28", "0.75 0.13 265")),
     ],
-    fontPairs: [fp("anybody", "Anybody + Inter", F.anybody, F.inter), fp("syne", "Syne + Inter", F.syne, F.inter), fp("bricolage", "Bricolage + DM Sans", F.bric, F.dm)],
+    fontPairs: [{ ...fp("anybody", "Anybody + Inter", F.anybody, F.inter), display: `${F.anybody}, "Kinetic Fallback", ${SANS}` }, fp("syne", "Syne + Inter", F.syne, F.inter), fp("bricolage", "Bricolage + DM Sans", F.bric, F.dm)],
   },
   {
     id: "archive",

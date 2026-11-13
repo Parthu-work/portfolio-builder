@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Cover, TemplateRoot } from "../../render/Root";
 import { Links, Prose, Rest, Socials, Tail } from "../../render/FieldValue";
 import { Img } from "../../render/Img";
@@ -199,6 +200,10 @@ export default function Arcade({ portfolio }: TemplateProps) {
   const v = viewPortfolio(portfolio);
   const { hero } = v;
   const entries = v.sections.reduce((n, s) => n + s.entries.length, 0);
+  // One word per line, sized so the longest word fits: the line count never depends on which font has loaded.
+  const words = hero.name.split(/\s+/).filter(Boolean);
+  const longest = Math.max(4, ...words.map((w) => w.length));
+  const nameSize = { "--ac-size": `min(12vw, ${(86 / (longest * 1.05)).toFixed(2)}vw)` } as CSSProperties;
   const projects = v.sections.filter((s) => s.kind === "projects").reduce((n, s) => n + s.entries.length, 0);
   const stats = [
     { k: "Levels", v: v.sections.length },
@@ -225,7 +230,14 @@ export default function Arcade({ portfolio }: TemplateProps) {
           <section id="top" className={`ac-title ${hero.present ? "" : "ac-title-compact"}`}>
             <div className="ac-title-text">
               {hero.eyebrow ? <p className="ac-tag-label ac-blink-label">{hero.eyebrow}</p> : null}
-              <h1 className="ac-name">{hero.name}</h1>
+              <h1 className="ac-name" style={nameSize}>
+                {words.map((w, i) => (
+                  <span key={i} className="ac-name-word">
+                    {w}
+                    {i < words.length - 1 ? " " : null}
+                  </span>
+                ))}
+              </h1>
               {hero.headline ? <p className="ac-headline">{hero.headline}</p> : null}
               {hero.present && hero.tagline ? <Prose html={hero.tagline} className="ac-prose" /> : null}
               {hero.present ? <Links links={hero.links} primaryFirst /> : null}
