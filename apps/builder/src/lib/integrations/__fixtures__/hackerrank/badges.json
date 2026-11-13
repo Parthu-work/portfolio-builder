@@ -1,0 +1,33 @@
+{
+ "models": [
+  {
+   "badge_type": "problem_solving",
+   "badge_name": "Problem Solving",
+   "url": "/domains/algorithms",
+   "stars": 5,
+   "current_points": 2200,
+   "solved": 180,
+   "total_challenges": 563,
+   "level": 5,
+   "hacker_rank": 4120
+  },
+  {
+   "badge_type": "python",
+   "badge_name": "Python",
+   "stars": 4,
+   "solved": 90,
+   "total_challenges": 115
+  },
+  {
+   "badge_type": "sql",
+   "badge_name": "Sql",
+   "stars": 0,
+   "solved": 2
+  },
+  {
+   "badge_type": "java",
+   "stars": 3
+  }
+ ],
+ "version": 4
+}

@@ -1,0 +1,13 @@
+{
+ "message": "data retrieved successfully",
+ "data": {
+  "name": "Maya Okafor",
+  "institute_name": "IIT Example",
+  "institute_rank": "12",
+  "score": 1430,
+  "total_problems_solved": "612",
+  "monthly_score": 40,
+  "pod_solved_longest_streak": "57",
+  "created_date": "2021-01-01"
+ }
+}
