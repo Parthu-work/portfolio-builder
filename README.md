@@ -2,7 +2,7 @@
 
 Pick a template → fill a fully dynamic form → watch a live preview → deploy to **your own** Vercel account in one click. Free, open source, no code.
 
-- **22 original templates** — Signal, Editorial, Bento, Aurora, Brutal, Cinematic, Swiss, Desktop OS, Paper, Casefile, Card, Quiet, Kinetic, Archive, Vision, Terra, Lumen, Margin, Thread, Sketchbook, Vivid, Arcade — each with 3 OKLCH palettes (light + dark, WCAG AA checked in CI) and 3 font pairs.
+- **23 original templates** — Signal, Editorial, Bento, Aurora, Brutal, Cinematic, Swiss, Desktop OS, Paper, Casefile, Card, Quiet, Kinetic, Archive, Vision, Terra, Lumen, Margin, Thread, Sketchbook, Vivid, Arcade, Executive — each with 3 OKLCH palettes (light + dark, WCAG AA checked in CI) and 3 font pairs.
 - **Fully dynamic content** — 15 preset section kinds plus custom sections; add, rename, reorder and remove fields in *any* section; 18 field types. Every template renders every section and field.
 - **Users own their site** — it deploys into their Vercel account and GitHub repo; the runtime is MIT licensed and keeps working if the builder is down.
 - **$0 to run** — Vercel Hobby + Supabase free tier. No Vercel-only products, so it can move to Cloudflare Workers (OpenNext) with config changes only.
@@ -22,7 +22,7 @@ flowchart LR
   subgraph Runtime["apps/runtime — Next.js 15, standalone, MIT"]
     SCHEMA["src/schema — Zod portfolio schema, presets, migrate(), seeds"]
     RENDER["src/render — view model, sanitizer, generic FieldValue"]
-    TPL["src/templates/* — 22 templates"]
+    TPL["src/templates/* — 23 templates"]
   end
 
   subgraph Supabase["Supabase (free tier)"]
