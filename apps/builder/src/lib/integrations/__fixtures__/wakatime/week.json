@@ -1,0 +1,71 @@
+{
+ "data": {
+  "status": "ok",
+  "is_up_to_date": true,
+  "is_coding_activity_visible": true,
+  "is_other_usage_visible": true,
+  "range": "last_7_days",
+  "total_seconds": 75840.2,
+  "daily_average": 10834,
+  "human_readable_total": "21 hrs 4 mins",
+  "human_readable_daily_average": "3 hrs 0 mins",
+  "languages": [
+   {
+    "name": "TypeScript",
+    "percent": 61.234,
+    "total_seconds": 6123,
+    "text": "x"
+   },
+   {
+    "name": "Go",
+    "percent": 22.5,
+    "total_seconds": 2250,
+    "text": "x"
+   },
+   {
+    "name": "Markdown",
+    "percent": 9.1,
+    "total_seconds": 910,
+    "text": "x"
+   },
+   {
+    "name": "YAML",
+    "percent": 4.0,
+    "total_seconds": 400,
+    "text": "x"
+   },
+   {
+    "name": "Bash",
+    "percent": 2.0,
+    "total_seconds": 200,
+    "text": "x"
+   },
+   {
+    "name": "JSON",
+    "percent": 1.0,
+    "total_seconds": 100,
+    "text": "x"
+   },
+   {
+    "name": "Other",
+    "percent": 0.166,
+    "total_seconds": 16,
+    "text": "x"
+   }
+  ],
+  "editors": [
+   {
+    "name": "VS Code",
+    "percent": 88.0,
+    "total_seconds": 8800,
+    "text": "x"
+   },
+   {
+    "name": "Vim",
+    "percent": 12.0,
+    "total_seconds": 1200,
+    "text": "x"
+   }
+  ]
+ }
+}
