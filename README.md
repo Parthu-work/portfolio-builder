@@ -198,6 +198,7 @@ How it works (`apps/builder/src/lib/integrations/`):
 | LeetCode | Experimental (unofficial public GraphQL) | Solved easy/medium/hard (rings), submission heatmap, problems solved, contest rating, top percentile, contests, max streak, active days; badges (incl. Knight/Guardian) as awards; most-solved topics as skills. Bio code in About me. |
 | Codeforces | Official (public API, no key) | Current and max rating with rank titles, rated contests, rating history (line). Bio code in First name or Organization. |
 | Stack Overflow | Official (Stack Exchange API 2.3; `STACKEXCHANGE_KEY` optional) | Reputation, gold/silver/bronze counts, top tags by answer score (bars), gold and silver badges as awards. Bio code in About me. |
+| Credly | Experimental (public `badges.json`) | Certifications (name, issuer, issue date) linking to each issuer-backed badge page; HTTPS badge images on request. Labelled "Issuer-verified on Credly"; no ownership check of our own. |
 | Achievement wall | No network (aggregator) | One "big numbers" section with each connected provider's own strongest signals (e.g. LeetCode Knight, Codeforces max rating, GitHub stars), each labelled with its source and verification. Verified accounts only unless the user opts in. |
 
 ## Adding a template — the template contract

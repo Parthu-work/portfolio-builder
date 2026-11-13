@@ -1,0 +1,117 @@
+{
+ "data": [
+  {
+   "id": "0b7c1a52-3d4e-4f60-9a1b-2c3d4e5f6a7b",
+   "issued_at_date": "2025-03-14",
+   "expires_at_date": null,
+   "public": true,
+   "state": "accepted",
+   "image_url": "https://images.credly.com/size/340x340/images/aws-saa.png",
+   "badge_template": {
+    "name": "AWS Certified Solutions Architect – Associate",
+    "image_url": "https://images.credly.com/size/340x340/images/t.png"
+   },
+   "issuer": {
+    "summary": "issued by Amazon Web Services Training and Certification",
+    "entities": [
+     {
+      "label": "Issued by",
+      "primary": true,
+      "entity": {
+       "type": "Organization",
+       "name": "Amazon Web Services Training and Certification"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "1c8d2b63-4e5f-4071-8b2c-3d4e5f6a7b8c",
+   "issued_at_date": "2024-11-02",
+   "expires_at_date": null,
+   "public": true,
+   "state": "accepted",
+   "image_url": "http://insecure.example.com/x.png",
+   "badge_template": {
+    "name": "Professional Cloud Developer",
+    "image_url": "https://images.credly.com/size/340x340/images/t.png"
+   },
+   "issuer": {
+    "summary": "issued by Google Cloud",
+    "entities": [
+     {
+      "label": "Issued by",
+      "primary": true,
+      "entity": {
+       "type": "Organization",
+       "name": "Google Cloud"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "2d9e3c74-5f60-4182-9c3d-4e5f6a7b8c9d",
+   "issued_at_date": "2024-01-01",
+   "expires_at_date": null,
+   "public": false,
+   "state": "accepted",
+   "image_url": "https://images.credly.com/a.png",
+   "badge_template": {
+    "name": "Hidden one",
+    "image_url": "https://images.credly.com/size/340x340/images/t.png"
+   },
+   "issuer": {
+    "summary": "issued by IBM",
+    "entities": [
+     {
+      "label": "Issued by",
+      "primary": true,
+      "entity": {
+       "type": "Organization",
+       "name": "IBM"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "3e0f4d85-6071-4293-8d4e-5f6a7b8c9d0e",
+   "issued_at_date": "2024-01-01",
+   "expires_at_date": null,
+   "public": true,
+   "state": "pending",
+   "image_url": "https://images.credly.com/a.png",
+   "badge_template": {
+    "name": "Pending one",
+    "image_url": "https://images.credly.com/size/340x340/images/t.png"
+   },
+   "issuer": {
+    "summary": "issued by IBM",
+    "entities": [
+     {
+      "label": "Issued by",
+      "primary": true,
+      "entity": {
+       "type": "Organization",
+       "name": "IBM"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "not a uuid!",
+   "badge_template": {
+    "name": "Odd"
+   }
+  }
+ ],
+ "metadata": {
+  "count": 5,
+  "current_page": 1,
+  "total_count": 5,
+  "total_pages": 1,
+  "per": 48
+ }
+}
