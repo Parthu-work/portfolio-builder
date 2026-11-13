@@ -27,13 +27,22 @@ const host = (url: string) => {
   }
 };
 
+function sourceOf(provider: Provider, row: SnapshotRow): string | null {
+  try {
+    const s = row.data === null || row.data === undefined ? null : provider.sourceOf?.(row.data as ProviderData);
+    return typeof s === "string" && s ? s.slice(0, 80) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function syncOf(provider: Provider, row: SnapshotRow, live = true): Sync {
   return {
     provider: provider.id,
     account: row.account,
     syncedAt: row.fetchedAt,
     verified: row.verified,
-    source: provider.aggregate ? "your connected accounts" : host(provider.homepage),
+    source: provider.aggregate ? "your connected accounts" : (sourceOf(provider, row) ?? host(provider.homepage)),
     ...(provider.official ? {} : { experimental: true }),
     ...(provider.unverifiedNote ? { note: provider.unverifiedNote } : {}),
     ...(live ? {} : { live: false }),
