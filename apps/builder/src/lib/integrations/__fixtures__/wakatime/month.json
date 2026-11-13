@@ -1,0 +1,19 @@
+{
+ "data": {
+  "status": "ok",
+  "is_coding_activity_visible": true,
+  "is_other_usage_visible": false,
+  "range": "last_30_days",
+  "total_seconds": 320000,
+  "human_readable_total": "88 hrs 53 mins",
+  "human_readable_daily_average": "2 hrs 57 mins",
+  "languages": [
+   {
+    "name": "TypeScript",
+    "percent": 70.0,
+    "total_seconds": 7000,
+    "text": "x"
+   }
+  ]
+ }
+}

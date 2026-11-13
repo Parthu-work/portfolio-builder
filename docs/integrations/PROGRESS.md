@@ -18,7 +18,7 @@ Queue and rules: [`MASTER_PROMPT.md`](./MASTER_PROMPT.md). Status is one of `tod
 | 9 | huggingface | Hugging Face | done | see `git log --grep "integrations): huggingface"` | Existence checked via `/api/users/<n>/overview`, then `/api/organizations/<n>/overview`. Lists capped at 100 per kind; a capped count shows as "100+". Hub `downloads` is a 30-day figure and is labelled so. Only repos whose owner is the account are kept. No ownership check. |
 | 10 | gitlab | GitLab | done | see `git log --grep "integrations): gitlab"` | gitlab.com only (self-managed instances not supported). 2 calls per refresh (`/users?username`, `/users/:id/projects` by stars, 100 max, "+" when capped). Blocked users read as not found; only gitlab.com project links kept. |
 | 11 | orcid | ORCID | done | see `git log --grep "integrations): orcid"` | One call (`/works`, JSON). iD checksum (ISO 7064 MOD 11-2) validated before any request. One work per group (ORCID's preferred summary). Shows "Public profile" until ORCID OAuth exists (see Ops). |
-| 12 | wakatime | WakaTime | todo | | |
+| 12 | wakatime | WakaTime | done | see `git log --grep "integrations): wakatime"` | Fetches `last_7_days` and `last_30_days` (2 calls) so the range option switches without a refetch. Times are WakaTime's own human-readable strings. Private (`is_coding_activity_visible: false` or 401/403) → "private" error with instructions; languages/editors left out when the user hides them. Stats still being calculated → temporary error, last good data stays. |
 | 13 | codechef | CodeChef | todo | | |
 | 14 | gfg-hackerrank | GeeksforGeeks and HackerRank | todo | | |
 | 15 | proof-links | Proof links | todo | | |
