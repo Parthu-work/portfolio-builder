@@ -14,7 +14,7 @@ export const GET = route<undefined, P>({ auth: "user" }, async ({ store, user },
   if (!rows) return json({ enabled: false, providers: [], connections: [] });
   const connections = rows.flatMap((row) => {
     const provider = findProvider(row.provider);
-    return provider ? [connectionInfo(provider, row, configFor(provider, row, portfolio))] : [];
+    return provider ? [connectionInfo(provider, row, configFor(provider, row, portfolio), { rows, find: findProvider })] : [];
   });
   return json({ enabled: true, providers: listProviders().map(providerInfo), connections });
 });
@@ -27,6 +27,7 @@ export const POST = route<typeof ConnectSchema, P>({ auth: "user", body: Connect
   const portfolio = await ownPortfolio(store, user!.id, id);
   const provider = getProvider(body.provider);
   if (!provider) throw new HttpError(404, "Unknown provider.");
+  if (provider.fixedAccount && body.account !== provider.fixedAccount) throw new HttpError(422, `${provider.name} needs no account.`);
   if (!provider.accountPattern.test(body.account)) throw new HttpError(422, `That does not look like a ${provider.name} ${provider.accountLabel.toLowerCase()}.`);
   const existing = await store.listSnapshots(portfolio.id);
   if (!existing) throw unavailable();
@@ -37,6 +38,7 @@ export const POST = route<typeof ConnectSchema, P>({ auth: "user", body: Connect
   const row = await connect(store, portfolio.id, provider, body.account, body.options ?? {}, Date.now(), user!.linked).catch(toHttp);
   if (!row) throw unavailable();
   const config = configFor(provider, row, portfolio, body);
+  const siblings = { rows: [...existing, row], find: findProvider };
   await audit({ action: "integration.connect", entityType: "portfolio", entityId: portfolio.id, before: null, after: { provider: provider.id, account: row.account } });
-  return json({ config, connection: connectionInfo(provider, row, config), sections: sectionsFor(provider, row, config) }, { status: 201 });
+  return json({ config, connection: connectionInfo(provider, row, config, siblings), sections: sectionsFor(provider, row, config, true, siblings) }, { status: 201 });
 });

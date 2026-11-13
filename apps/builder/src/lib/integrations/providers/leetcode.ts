@@ -200,6 +200,15 @@ export const leetcodeProvider: Provider = {
     return sections;
   },
 
+  highlights(raw) {
+    const d = raw as unknown as LeetcodeData;
+    return [
+      ...(d.contest?.badge ? [{ id: "badge", value: d.contest.badge, label: "LeetCode contest rank" }] : []),
+      ...(d.contest ? [{ id: "rating", value: n(d.contest.rating), label: "LeetCode contest rating" }] : []),
+      ...(d.solved.all > 0 ? [{ id: "solved", value: n(d.solved.all), label: "LeetCode problems solved" }] : []),
+    ];
+  },
+
   verify: {
     method: "bio-code",
     instructions: "Add the code to the Summary (About me) on your LeetCode profile (leetcode.com/profile), save, then press Verify. You can remove it afterwards.",

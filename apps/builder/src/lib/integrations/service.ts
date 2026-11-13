@@ -5,7 +5,7 @@ import type { SnapshotRow, Store } from "../store/types";
 import { TIMEOUT_MS } from "./http";
 import { findProvider, getProvider, serverToken } from "./registry";
 import { applyHidden, mergeSynced, stamp } from "./sections";
-import { ProviderError, type ConnectionInfo, type Provider, type ProviderData } from "./types";
+import { ProviderError, type ConnectionInfo, type HighlightSource, type Provider, type ProviderData } from "./types";
 
 /** Snapshots older than this are refreshed in the background the next time a site reads them. */
 export const REFRESH_AFTER_MS = 12 * 60 * 60 * 1000;
@@ -33,7 +33,7 @@ export function syncOf(provider: Provider, row: SnapshotRow, live = true): Sync 
     account: row.account,
     syncedAt: row.fetchedAt,
     verified: row.verified,
-    source: host(provider.homepage),
+    source: provider.aggregate ? "your connected accounts" : host(provider.homepage),
     ...(provider.official ? {} : { experimental: true }),
     ...(provider.unverifiedNote ? { note: provider.unverifiedNote } : {}),
     ...(live ? {} : { live: false }),
@@ -44,12 +44,38 @@ export function defaultConfig(provider: Provider, row: Pick<SnapshotRow, "id" | 
   return { id: row.id, provider: provider.id, account: row.account, options: Object.fromEntries((provider.options ?? []).map((o) => [o.key, o.default])), hidden: [] };
 }
 
+/** Every snapshot of a portfolio: aggregators read their siblings from it. */
+export type Siblings = { rows: SnapshotRow[]; find: (id: string) => Provider | null };
+
+/** What the other connected accounts offer an aggregator, with the provenance each item will carry. */
+export function highlightSources(siblings: Siblings | undefined): HighlightSource[] {
+  if (!siblings) return [];
+  return siblings.rows.flatMap((row) => {
+    const provider = siblings.find(row.provider);
+    if (!provider?.highlights || provider.aggregate || row.data === null || row.data === undefined) return [];
+    let highlights;
+    try {
+      highlights = provider.highlights(row.data as ProviderData);
+    } catch {
+      return [];
+    }
+    const sync = syncOf(provider, row);
+    return highlights.length ? [{ provider: provider.id, name: provider.name, source: sync.source ?? provider.id, account: row.account, verified: row.verified, ...(provider.unverifiedNote ? { note: provider.unverifiedNote } : {}), fetchedAt: row.fetchedAt, highlights }] : [];
+  });
+}
+
 /** Runs a provider's mapping defensively: a bug or odd data in one provider can never break a page. */
-function mapSections(provider: Provider, row: SnapshotRow, cfg: IntegrationConfig, live: boolean): Section[] {
+function mapSections(provider: Provider, row: SnapshotRow, cfg: IntegrationConfig, live: boolean, siblings?: Siblings): Section[] {
   if (row.data === null || row.data === undefined) return [];
   let raw: Section[];
+  let stampRow = row;
   try {
-    raw = provider.toSections(row.data as ProviderData, cfg);
+    if (provider.aggregate) {
+      const sources = highlightSources(siblings);
+      const newest = sources.map((x) => x.fetchedAt).sort().at(-1);
+      if (newest) stampRow = { ...row, fetchedAt: newest };
+      raw = provider.aggregate(sources, cfg);
+    } else raw = provider.toSections(row.data as ProviderData, cfg);
   } catch {
     return [];
   }
@@ -59,15 +85,15 @@ function mapSections(provider: Provider, row: SnapshotRow, cfg: IntegrationConfi
     const parsed = SectionSchema.safeParse(s);
     if (parsed.success) valid.push(parsed.data);
   }
-  return stamp(valid, syncOf(provider, row, live));
+  return stamp(valid, syncOf(provider, stampRow, live));
 }
 
 /** The sections an account contributes, after the user's choices. */
-export function sectionsFor(provider: Provider, row: SnapshotRow, cfg: IntegrationConfig, live = true): Section[] {
-  return applyHidden(mapSections(provider, row, cfg, live), cfg);
+export function sectionsFor(provider: Provider, row: SnapshotRow, cfg: IntegrationConfig, live = true, siblings?: Siblings): Section[] {
+  return applyHidden(mapSections(provider, row, cfg, live, siblings), cfg);
 }
 
-export function connectionInfo(provider: Provider, row: SnapshotRow, cfg?: IntegrationConfig): ConnectionInfo {
+export function connectionInfo(provider: Provider, row: SnapshotRow, cfg?: IntegrationConfig, siblings?: Siblings): ConnectionInfo {
   return {
     id: row.id,
     provider: row.provider,
@@ -77,7 +103,7 @@ export function connectionInfo(provider: Provider, row: SnapshotRow, cfg?: Integ
     error: row.error,
     verified: row.verified,
     verifyCode: row.verified ? null : row.verifyCode,
-    available: mapSections(provider, row, { ...(cfg ?? defaultConfig(provider, row)), id: row.id, hidden: [] }, true),
+    available: mapSections(provider, row, { ...(cfg ?? defaultConfig(provider, row)), id: row.id, hidden: [] }, true, siblings),
   };
 }
 
@@ -155,7 +181,7 @@ export async function mergeLive(store: Store, portfolioId: string, doc: Portfoli
     const provider = deps.find(row.provider);
     if (!provider) continue;
     const cfg = doc.integrations?.find((c) => c.id === row.id) ?? defaultConfig(provider, row);
-    generated.push(...sectionsFor(provider, row, { ...cfg, id: row.id, provider: row.provider, account: row.account }, opts.live !== false));
+    generated.push(...sectionsFor(provider, row, { ...cfg, id: row.id, provider: row.provider, account: row.account }, opts.live !== false, { rows, find: deps.find }));
     if (deps.now() - Date.parse(row.fetchedAt) > REFRESH_AFTER_MS) stale.push(row);
   }
   return { portfolio: mergeSynced(doc, generated), stale };

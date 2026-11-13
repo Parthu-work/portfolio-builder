@@ -31,6 +31,12 @@ export type FetchCtx = { token?: string; signal: AbortSignal };
 /** A user-facing switch a provider offers beyond hiding individual items. */
 export type ProviderOption = { key: string; label: string; default: boolean };
 
+/** One of an account's strongest, provider-given signals (e.g. "Knight" contest badge). Never computed or scored by us. */
+export type Highlight = { id: string; value: string; label: string };
+
+/** A connected account as an aggregator sees it: its highlights plus their provenance. */
+export type HighlightSource = { provider: string; name: string; source: string; account: string; verified: boolean; note?: string; fetchedAt: string; highlights: Highlight[] };
+
 export interface Provider {
   id: string;
   name: string;
@@ -40,6 +46,12 @@ export interface Provider {
   accountLabel: string;
   /** Handles are validated against this before any network call. */
   accountPattern: RegExp;
+  /** For providers that need no handle (aggregators): the account is always this. */
+  fixedAccount?: string;
+  /** The account's strongest signals, for the Achievement wall. At most a few, each exactly as the provider reported it. */
+  highlights?(data: ProviderData): Highlight[];
+  /** Aggregators build their sections from the other connected accounts; `fetch` then only stamps the time. */
+  aggregate?(sources: HighlightSource[], cfg: IntegrationConfig): Section[];
   /** Not offered for new connections unless the server has this provider's token (see `serverToken`). */
   needsToken?: boolean;
   /** Shown under the handle input, e.g. "Your username, as in github.com/<username>". */
@@ -78,6 +90,8 @@ export type ProviderInfo = {
   accountPattern: string;
   options: ProviderOption[];
   verify: { method: "oauth" | "bio-code"; instructions: string } | null;
+  fixedAccount: string | null;
+  aggregate: boolean;
 };
 
 /** What the browser is told about a connected account. */

@@ -179,6 +179,14 @@ export const githubProvider: Provider = {
     return sections;
   },
 
+  highlights(raw) {
+    const d = raw as unknown as GithubData;
+    return [
+      ...(d.stars > 0 ? [{ id: "stars", value: n(d.stars), label: "GitHub stars on public repositories" }] : []),
+      ...(d.contributions > 0 ? [{ id: "contributions", value: n(d.contributions), label: "GitHub contributions in the last year" }] : []),
+    ];
+  },
+
   ownerId: (data) => (typeof data.id === "number" ? String(data.id) : null),
 
   verify: {
