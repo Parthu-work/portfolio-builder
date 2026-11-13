@@ -1,0 +1,19 @@
+{
+ "data": {
+  "publication": {
+   "posts": {
+    "totalDocuments": 27,
+    "edges": [
+     {
+      "node": {
+       "title": "Designing for p99",
+       "url": "https://maya.hashnode.dev/designing-for-p99",
+       "publishedAt": "2026-09-30T08:00:00.000Z",
+       "brief": "Latency budgets in practice."
+      }
+     }
+    ]
+   }
+  }
+ }
+}

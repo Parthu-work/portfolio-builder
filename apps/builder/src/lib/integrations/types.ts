@@ -46,6 +46,8 @@ export interface Provider {
   accountLabel: string;
   /** Handles are validated against this before any network call. */
   accountPattern: RegExp;
+  /** Where this account's data came from, when it varies per account (e.g. "medium.com"). Defaults to the homepage's host. */
+  sourceOf?(data: ProviderData): string | null;
   /** For providers that need no handle (aggregators): the account is always this. */
   fixedAccount?: string;
   /** The account's strongest signals, for the Achievement wall. At most a few, each exactly as the provider reported it. */
