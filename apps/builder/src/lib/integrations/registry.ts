@@ -3,6 +3,7 @@ import { backendMode, env, flags } from "../env";
 import { githubProvider } from "./providers/github";
 import { gitlabProvider } from "./providers/gitlab";
 import { achievementsProvider } from "./providers/achievements";
+import { codechefProvider } from "./providers/codechef";
 import { codeforcesProvider } from "./providers/codeforces";
 import { huggingfaceProvider } from "./providers/huggingface";
 import { credlyProvider } from "./providers/credly";
@@ -16,7 +17,7 @@ import { packagesProvider } from "./providers/packages";
 import type { Provider, ProviderInfo } from "./types";
 
 /** Real providers, in the order the editor shows them. Each lives in ./providers/<id>.ts. */
-const PROVIDERS: Provider[] = [githubProvider, leetcodeProvider, codeforcesProvider, stackoverflowProvider, credlyProvider, writingProvider, packagesProvider, huggingfaceProvider, gitlabProvider, orcidProvider, wakatimeProvider, achievementsProvider];
+const PROVIDERS: Provider[] = [githubProvider, leetcodeProvider, codeforcesProvider, stackoverflowProvider, credlyProvider, writingProvider, packagesProvider, huggingfaceProvider, gitlabProvider, orcidProvider, wakatimeProvider, codechefProvider, achievementsProvider];
 
 /**
  * The mock provider exists only where there is no real backend: development

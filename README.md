@@ -205,6 +205,7 @@ How it works (`apps/builder/src/lib/integrations/`):
 | GitLab | Official (REST v4, gitlab.com, no token) | Public project count and total stars, top 6 projects by stars as project entries. Bio code in the GitLab bio. |
 | ORCID | Official (public API v3.0) | Works newest first (up to 15) in the publications section, with DOIs as doi.org links, plus a works count. The iD (checksum-validated) is the identifier; ORCID sign-in is a later step. |
 | WakaTime | Official (public stats only) | Coding time and daily average for the last 7 (or 30) days, languages and editors (bars). Private stats get a clear how-to-make-public message. |
+| CodeChef | Experimental (public profile page, parsed server-side) | Rating with stars, highest rating, global and country rank, problems solved — each only if the page shows it. "Public profile"; no ownership check. |
 | Achievement wall | No network (aggregator) | One "big numbers" section with each connected provider's own strongest signals (e.g. LeetCode Knight, Codeforces max rating, GitHub stars), each labelled with its source and verification. Verified accounts only unless the user opts in. |
 
 ## Adding a template — the template contract
