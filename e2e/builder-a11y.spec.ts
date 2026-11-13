@@ -44,6 +44,11 @@ for (const scheme of ["light", "dark"] as const) {
       await audit(page, "editor theme");
       await page.getByRole("tab", { name: "Profile" }).click();
       await audit(page, "editor profile");
+      await page.getByRole("tab", { name: "Accounts" }).click();
+      await page.getByLabel("Mock Judge handle").fill("axe-tester");
+      await page.getByRole("button", { name: "Connect", exact: true }).click();
+      await expect(page.getByTestId("verify-code")).toBeVisible();
+      await audit(page, "editor accounts");
       await saved(page);
 
       await page.goto("/dashboard");

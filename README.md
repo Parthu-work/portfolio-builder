@@ -189,6 +189,7 @@ How it works (`apps/builder/src/lib/integrations/`):
 - The latest fetch per account is stored in **`integration_snapshots`** (public data only — no tokens, no passwords). Disconnecting deletes it.
 - **Merge on read:** `GET /api/public/portfolios/[id]` swaps the content of synced sections for the latest snapshot, keeping the user's position, title and visibility. Snapshots older than 12 hours are served as they are and refreshed after the response; a provider is called automatically at most once per 6 hours per account. Deployed sites therefore update themselves with no cron and no redeploy. A failed refresh keeps the last good data.
 - **Zip export** bakes the latest snapshot in, worded "From … as of …" because it stops updating.
+- **Editor:** an **Accounts** tab (only when the flag is on) lists providers ("Official API" or "Experimental"), connects a handle with inline validation, lets the user pick where new sections go and switch every metric, chart and entry on or off, verify ownership with a bio code, refresh (once per 10 minutes) and disconnect. Synced sections show a lock in the section list: content is read-only, but they can be renamed, reordered and hidden.
 - **Flags:** `FEATURE_INTEGRATIONS=1` enables everything; `INTEGRATION_<PROVIDER>_DISABLED=1` stops calls to one provider. With the flag off, or before the migration is applied, the app behaves exactly as before.
 
 | Provider | API | Shows |

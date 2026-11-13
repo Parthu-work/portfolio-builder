@@ -88,7 +88,7 @@ function ConnectForm({ portfolio, update, portfolioId, put, providers }: Shared 
       transform(update, (doc) => syncAccount(doc, res.config, res.sections, after || undefined));
       put(res.connection);
       setAccount("");
-      toast.success(`${provider.name} connected. Choose what appears below.`);
+      toast.success(`${provider.name} connected. Choose what appears on your site.`);
     } catch (e) {
       setError(errorText(e, "Could not connect. Please try again."));
     } finally {
