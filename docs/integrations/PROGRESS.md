@@ -1,6 +1,6 @@
 # Integrations — progress
 
-Queue and rules: [`MASTER_PROMPT.md`](./MASTER_PROMPT.md). Status is one of `todo`, `in-progress`, `done`, `blocked`.
+Queue and rules: [`MASTER_PROMPT.md`](./MASTER_PROMPT.md). Latest status report: [`STATUS_REPORT.md`](./STATUS_REPORT.md). Status is one of `todo`, `in-progress`, `done`, `blocked`.
 
 | # | id | name | status | commit | notes |
 | --- | --- | --- | --- | --- | --- |
