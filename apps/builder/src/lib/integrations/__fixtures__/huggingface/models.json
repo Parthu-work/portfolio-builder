@@ -1,0 +1,25 @@
+[
+ {
+  "_id": "1",
+  "id": "maya/tiny-ner",
+  "likes": 41,
+  "downloads": 18230,
+  "pipeline_tag": "token-classification",
+  "library_name": "transformers",
+  "createdAt": "2025-02-01T00:00:00.000Z",
+  "modelId": "maya/tiny-ner"
+ },
+ {
+  "_id": "2",
+  "id": "maya/qlora-7b",
+  "likes": 3,
+  "downloads": 0,
+  "pipeline_tag": "text-generation"
+ },
+ {
+  "_id": "3",
+  "id": "someone-else/forked",
+  "likes": 999,
+  "downloads": 999
+ }
+]
