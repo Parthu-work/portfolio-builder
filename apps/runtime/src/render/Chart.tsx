@@ -89,10 +89,10 @@ function Line({ chart }: { chart: ChartValue }) {
         {points.length > 1 ? <polygon points={`${px(0)},${B} ${path} ${px(points.length - 1)},${B}`} style={{ ...SIG, fillOpacity: 0.1 }} /> : null}
         {points.length > 1 ? <polyline points={path} fill="none" style={{ stroke: "var(--sig)" }} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" /> : null}
         <circle cx={px(points.length - 1)} cy={py(last.y)} r={3.5} style={{ ...SIG, stroke: "var(--ground)" }} strokeWidth={1.5} />
-        <text x={L} y={T - 5} fontSize={9} style={MUTE}>{`${fmt(hi)}${chart.unit ? ` ${chart.unit}` : ""}`}</text>
-        <text x={L} y={H - 12} fontSize={9} style={MUTE}>{clip(points[0]!.x, 20)}</text>
-        {points.length > 1 ? <text x={R} y={H - 12} fontSize={9} textAnchor="end" style={MUTE}>{clip(last.x, 20)}</text> : null}
-        <text x={R} y={T - 5} fontSize={9} textAnchor="end" fontWeight={600} style={INK}>{`${clip(name(last), 18)} · ${fmt(last.y)}`}</text>
+        <text x={L} y={T - 5} fontSize={10} style={MUTE}>{`${fmt(hi)}${chart.unit ? ` ${chart.unit}` : ""}`}</text>
+        <text x={L} y={H - 12} fontSize={10} style={MUTE}>{clip(points[0]!.x, 20)}</text>
+        {points.length > 1 ? <text x={R} y={H - 12} fontSize={10} textAnchor="end" style={MUTE}>{clip(last.x, 20)}</text> : null}
+        <text x={R} y={T - 5} fontSize={10} textAnchor="end" fontWeight={600} style={INK}>{`${clip(name(last), 18)} · ${fmt(last.y)}`}</text>
       </>
     ),
   };
@@ -117,10 +117,10 @@ function Bars({ chart }: { chart: ChartValue }) {
       const y = i * ROW;
       return (
         <g key={i}>
-          <text x={0} y={y + 13.5} fontSize={10} style={INK}>{clip(name(p), 17)}</text>
+          <text x={0} y={y + 13.5} fontSize={11} style={INK}>{clip(name(p), 17)}</text>
           <rect x={x0} y={y + 6} width={x1 - x0} height={8} rx={4} style={{ ...TRACK, fillOpacity: 0.6 }} />
           {w ? <rect x={x0} y={y + 6} width={w} height={8} rx={4} style={SIG} /> : null}
-          <text x={320} y={y + 13.5} fontSize={10} textAnchor="end" style={{ ...MUTE, fontVariantNumeric: "tabular-nums" }}>{`${fmt(p.y)}${chart.unit ?? ""}`}</text>
+          <text x={320} y={y + 13.5} fontSize={11} textAnchor="end" style={{ ...MUTE, fontVariantNumeric: "tabular-nums" }}>{`${fmt(p.y)}${chart.unit ?? ""}`}</text>
         </g>
       );
     }),
