@@ -125,14 +125,15 @@
   }
   .vv-name {
     font-family: var(--pf-display);
-    font-size: clamp(3.25rem, 13.5vw, 14rem);
+    overflow-wrap: normal;
+    font-size: clamp(2.5rem, var(--vv-size, 13.5vw), 14rem);
     font-weight: 800;
     line-height: 0.88;
     letter-spacing: -0.04em;
     text-wrap: balance;
   }
   .vv-hero-compact .vv-name {
-    font-size: clamp(2.75rem, 8vw, 7rem);
+    font-size: clamp(2.25rem, min(8vw, var(--vv-size, 8vw)), 7rem);
   }
   .vv-hero-foot {
     display: grid;

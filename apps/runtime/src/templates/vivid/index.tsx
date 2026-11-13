@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Cover, TemplateRoot } from "../../render/Root";
 import { Links, Prose, Rest, Socials, Tags, Tail } from "../../render/FieldValue";
 import { Img } from "../../render/Img";
@@ -171,6 +172,9 @@ function Items({ s, lang }: { s: SectionView; lang: string }) {
 export default function Vivid({ portfolio }: TemplateProps) {
   const v = viewPortfolio(portfolio);
   const { hero } = v;
+  // Wide display faces: size the name so its longest word always fits on one line.
+  const longest = Math.max(4, ...hero.name.split(/\s+/).map((w) => w.length));
+  const nameSize = { "--vv-size": `min(13.5vw, ${(88 / (longest * 0.95)).toFixed(2)}vw)` } as CSSProperties;
   return (
     <TemplateRoot portfolio={portfolio}>
       <header className="vv-bar">
@@ -194,7 +198,9 @@ export default function Vivid({ portfolio }: TemplateProps) {
           <span aria-hidden="true" className="vv-glow vv-glow-a" />
           <span aria-hidden="true" className="vv-glow vv-glow-b" />
           {hero.eyebrow ? <p className="vv-label vv-eyebrow">{hero.eyebrow}</p> : null}
-          <h1 className="vv-outline vv-name">{hero.name}</h1>
+          <h1 className="vv-outline vv-name" style={nameSize}>
+            {hero.name}
+          </h1>
           <div className="vv-hero-foot">
             {hero.headline ? <p className="vv-headline">{hero.headline}</p> : null}
             <div className="vv-hero-side">
