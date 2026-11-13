@@ -71,6 +71,9 @@ importers:
       '@fontsource-variable/syne':
         specifier: ^5.3.0
         version: 5.3.0
+      '@fontsource/silkscreen':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@hookform/resolvers':
         specifier: ^7.0.5
         version: 7.0.5(@standard-schema/spec@1.1.0)(react-hook-form@7.92.0(@types/react@19.3.0)(react@19.3.1))(zod@3.25.76)
@@ -217,6 +220,9 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0
       '@fontsource-variable/syne':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/silkscreen':
         specifier: ^5.3.0
         version: 5.3.0
       framer-motion:
@@ -568,6 +574,9 @@ packages:
 
   '@fontsource-variable/syne@5.3.0':
     resolution: {integrity: sha512-GUNH65fUfWHQcX7bO0BGgScE465gawpTId45aDfhHcVj/upbb6b+2d++5keKP128vK8+LtE4dvLkKTsxoh7TwA==}
+
+  '@fontsource/silkscreen@5.3.0':
+    resolution: {integrity: sha512-M1NQ3LQH0LFNvyFPd/piHEGMImPPtpLglNnLC6Vdcq9kL0jNIOtTQmksAWCc4enbDnw1OnIpZtjNEfRqYm/QmA==}
 
   '@hookform/resolvers@7.0.5':
     resolution: {integrity: sha512-E7ca3tpIJxHPGhFOfXLlCCZh7up6EcnUTbgTt0SRUENXagq8DJnob9rK+VqsNCsfUuO6mMU5NYNm6BaL18flgQ==}
@@ -4128,6 +4137,8 @@ snapshots:
   '@fontsource-variable/space-grotesk@5.3.0': {}
 
   '@fontsource-variable/syne@5.3.0': {}
+
+  '@fontsource/silkscreen@5.3.0': {}
 
   '@hookform/resolvers@7.0.5(@standard-schema/spec@1.1.0)(react-hook-form@7.92.0(@types/react@19.3.0)(react@19.3.1))(zod@3.25.76)':
     dependencies:
