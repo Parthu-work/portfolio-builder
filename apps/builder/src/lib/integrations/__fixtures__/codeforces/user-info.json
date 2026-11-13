@@ -1,0 +1,16 @@
+{
+ "status": "OK",
+ "result": [
+  {
+   "handle": "tourist_fan",
+   "rating": 2310,
+   "maxRating": 2330,
+   "rank": "international master",
+   "maxRank": "international master",
+   "firstName": "Ravi",
+   "organization": "persona-CF3K9M",
+   "contribution": 3,
+   "lastOnlineTimeSeconds": 1763020000
+  }
+ ]
+}
