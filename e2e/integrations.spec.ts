@@ -118,7 +118,7 @@ test("Editor: connect → preview → toggle → verify → publish → public p
 
   await page.getByRole("tab", { name: "Accounts" }).click();
   await expect(page.getByRole("heading", { name: "Connected accounts" })).toBeVisible();
-  await page.getByRole("radio", { name: /Mock Judge/ }).check();
+  await page.getByRole("radio", { name: /Mock Judge/ }).check({ force: true });
   const handle = page.getByLabel("Mock Judge handle");
 
   // A malformed handle is caught before any request; a missing account is reported inline.
