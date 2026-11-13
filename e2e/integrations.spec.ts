@@ -162,19 +162,27 @@ test("Editor: connect → preview → toggle → verify → publish → public p
   await expect(card.getByText("Verified owner")).toBeVisible();
   await expect(card.getByTestId("verify-code")).toHaveCount(0);
 
+  // The Achievement wall gathers verified highlights from the other accounts, each with its source.
+  await page.getByRole("radio", { name: /Achievement wall/ }).check({ force: true });
+  await page.getByRole("button", { name: "Add Achievement wall" }).click();
+  await expect(page.locator("[data-connection=achievements]")).toBeVisible();
+  await expect(page.getByRole("radio", { name: /Achievement wall/ })).toHaveCount(0);
+  await expect(preview.getByText("Mock Judge problems solved", { exact: true })).toBeVisible();
+  await expect(preview.getByText("mock.example.com · Verified owner")).toBeVisible();
+
   await saved(page);
   await page.getByTestId("publish").click();
   await expect(page.getByTestId("publish")).toHaveText("Published");
 
   const pub = async () => (await (await request.get(`/api/public/portfolios/${portfolioId}`)).json()).portfolio as Doc;
   const synced = (await pub()).sections.filter((s) => s.sync);
-  expect(synced.map((s) => s.title)).toEqual(["Judge stats"]);
+  expect(synced.map((s) => s.title)).toEqual(["Judge stats", "Achievements"]);
   expect(synced[0]!.items!.map((i) => i.id)).toEqual(["solved"]);
   expect(synced[0]!.sync).toMatchObject({ provider: "mock", account: "owner-uma", verified: true });
 
   await page.goto(`/p/int-ui-${id}`);
   await expect(page.getByRole("heading", { name: "Judge stats" })).toBeVisible();
-  await expect(page.locator(".pf-sync")).toContainText("Verified owner");
+  await expect(page.locator(".pf-sync").first()).toContainText("Verified owner");
 
   // Disconnect, after confirming: the data leaves the draft and the public site.
   await page.goto(`/edit/${portfolioId}`);

@@ -80,6 +80,11 @@ export const mockProvider: Provider = {
     return sections;
   },
 
+  highlights(raw) {
+    const d = raw as MockData;
+    return [{ id: "solved", value: String(d.solved), label: "Mock Judge problems solved" }];
+  },
+
   verify: {
     method: "bio-code",
     instructions: "Paste the code into your Mock Judge bio, then press Verify. (In this mock, handles starting with “owner” pass.)",

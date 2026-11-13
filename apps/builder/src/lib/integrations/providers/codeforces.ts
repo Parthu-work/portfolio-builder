@@ -97,6 +97,11 @@ export const codeforcesProvider: Provider = {
     return [{ id: `${cfg.id}_rating`, kind: "custom", title: "On Codeforces", visible: true, layout: "metrics", fields, itemSchema: [{ key: "stat", label: "Stat", type: "metric" }], items }];
   },
 
+  highlights(raw) {
+    const d = raw as unknown as CodeforcesData;
+    return d.maxRating !== null ? [{ id: "max", value: n(d.maxRating), label: d.maxRank ? `Codeforces max rating · ${title(d.maxRank)}` : "Codeforces max rating" }] : [];
+  },
+
   verify: {
     method: "bio-code",
     instructions: "Put the code in the First name or Organization field of your Codeforces profile (codeforces.com/settings/social), save, then press Verify. You can change it back afterwards.",

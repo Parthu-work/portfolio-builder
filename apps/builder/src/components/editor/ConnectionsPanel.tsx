@@ -46,9 +46,15 @@ export function useConnections(portfolioId: string) {
       live = false;
     };
   }, [portfolioId]);
+  /** Aggregators (the Achievement wall) depend on every other account: re-read them after any change. */
+  const reload = useCallback(() => {
+    api<Listing>(base(portfolioId))
+      .then((l) => setListing((prev) => (prev?.enabled && l.enabled ? l : prev)))
+      .catch(() => {});
+  }, [portfolioId]);
   const put = useCallback((c: ConnectionInfo) => setListing((l) => l && { ...l, connections: l.connections.some((x) => x.id === c.id) ? l.connections.map((x) => (x.id === c.id ? c : x)) : [...l.connections, c] }), []);
   const drop = useCallback((id: string) => setListing((l) => l && { ...l, connections: l.connections.filter((x) => x.id !== id) }), []);
-  return { listing, put, drop };
+  return { listing, put, drop, reload };
 }
 
 function ProviderMark({ name }: { name: string }) {
@@ -63,20 +69,20 @@ function Kind({ official }: { official: boolean }) {
   return official ? <Badge tone="ok">Official API</Badge> : <Badge tone="warn">Experimental</Badge>;
 }
 
-type Shared = { portfolio: Portfolio; update: Update; portfolioId: string; put: (c: ConnectionInfo) => void };
+type Shared = { portfolio: Portfolio; update: Update; portfolioId: string; put: (c: ConnectionInfo) => void; changed: () => void };
 
-function ConnectForm({ portfolio, update, portfolioId, put, providers }: Shared & { providers: ProviderInfo[] }) {
+function ConnectForm({ portfolio, update, portfolioId, put, changed, providers }: Shared & { providers: ProviderInfo[] }) {
   const uid = useId();
   const [providerId, setProviderId] = useState(providers[0]?.id ?? "");
   const [account, setAccount] = useState("");
   const [after, setAfter] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const provider = providers.find((p) => p.id === providerId);
+  const provider = providers.find((p) => p.id === providerId) ?? providers[0];
   if (!provider) return null;
 
   const connect = async () => {
-    const handle = account.trim();
+    const handle = provider.fixedAccount ?? account.trim();
     if (!new RegExp(provider.accountPattern).test(handle)) {
       setError(`That does not look like a ${provider.name} ${provider.accountLabel.toLowerCase()}.`);
       return;
@@ -87,6 +93,7 @@ function ConnectForm({ portfolio, update, portfolioId, put, providers }: Shared 
       const res = await api<Result>(base(portfolioId), { body: { provider: provider.id, account: handle } });
       transform(update, (doc) => syncAccount(doc, res.config, res.sections, after || undefined));
       put(res.connection);
+      changed();
       setAccount("");
       toast.success(`${provider.name} connected. Choose what appears on your site.`);
     } catch (e) {
@@ -116,10 +123,10 @@ function ConnectForm({ portfolio, update, portfolioId, put, providers }: Shared 
               key={p.id}
               className={cn(
                 "flex cursor-pointer items-center gap-2 rounded-lg border bg-panel p-2 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-brand",
-                p.id === providerId ? "border-brand ring-1 ring-brand" : "border-rule hover:border-edge",
+                p.id === provider.id ? "border-brand ring-1 ring-brand" : "border-rule hover:border-edge",
               )}
             >
-              <input type="radio" name={`${uid}-provider`} value={p.id} checked={p.id === providerId} onChange={() => (setProviderId(p.id), setError(null))} className="sr-only" />
+              <input type="radio" name={`${uid}-provider`} value={p.id} checked={p.id === provider.id} onChange={() => (setProviderId(p.id), setError(null))} className="sr-only" />
               <ProviderMark name={p.name} />
               <span className="grid min-w-0 gap-0.5">
                 <span className="truncate text-sm font-medium">{p.name}</span>
@@ -130,10 +137,14 @@ function ConnectForm({ portfolio, update, portfolioId, put, providers }: Shared 
         </div>
       </fieldset>
       <div className="grid gap-1.5">
-        <Label htmlFor={`${uid}-account`}>
-          {provider.name} {provider.accountLabel.toLowerCase()}
-        </Label>
-        <Input id={`${uid}-account`} value={account} autoComplete="off" spellCheck={false} aria-invalid={Boolean(error)} aria-describedby={`${uid}-hint ${uid}-err`} onChange={(e) => setAccount(e.target.value)} />
+        {provider.fixedAccount ? null : (
+          <>
+            <Label htmlFor={`${uid}-account`}>
+              {provider.name} {provider.accountLabel.toLowerCase()}
+            </Label>
+            <Input id={`${uid}-account`} value={account} autoComplete="off" spellCheck={false} aria-invalid={Boolean(error)} aria-describedby={`${uid}-hint ${uid}-err`} onChange={(e) => setAccount(e.target.value)} />
+          </>
+        )}
         <p id={`${uid}-hint`} className="text-xs text-dim">
           {provider.accountHint ?? "Only what the platform shows publicly is read."} {provider.official ? "" : "Experimental: uses an unofficial endpoint that may stop working; the last good data keeps showing."}
         </p>
@@ -152,14 +163,14 @@ function ConnectForm({ portfolio, update, portfolioId, put, providers }: Shared 
             ))}
         </Select>
       </div>
-      <Button type="submit" variant="primary" disabled={busy || !account.trim()} className="w-fit">
-        {busy ? <Loader2 className="animate-spin" /> : null} {busy ? "Connecting…" : "Connect"}
+      <Button type="submit" variant="primary" disabled={busy || (!provider.fixedAccount && !account.trim())} className="w-fit">
+        {busy ? <Loader2 className="animate-spin" /> : null} {busy ? "Connecting…" : provider.fixedAccount ? `Add ${provider.name}` : "Connect"}
       </Button>
     </form>
   );
 }
 
-function ConnectionCard({ portfolio, update, portfolioId, put, drop, provider, connection }: Shared & { drop: (id: string) => void; provider: ProviderInfo | undefined; connection: ConnectionInfo }) {
+function ConnectionCard({ portfolio, update, portfolioId, put, changed, drop, provider, connection }: Shared & { drop: (id: string) => void; provider: ProviderInfo | undefined; connection: ConnectionInfo }) {
   const uid = useId();
   const [busy, setBusy] = useState<null | "refresh" | "verify" | "disconnect" | "options">(null);
   const [verifyMessage, setVerifyMessage] = useState<string | null>(null);
@@ -178,6 +189,7 @@ function ConnectionCard({ portfolio, update, portfolioId, put, drop, provider, c
   const applied = (res: Result) => {
     transform(update, (doc) => syncAccount(doc, res.config, res.sections));
     put(res.connection);
+    changed();
   };
 
   const run = async (kind: NonNullable<typeof busy>, fn: () => Promise<void>, fallback: string) => {
@@ -240,6 +252,7 @@ function ConnectionCard({ portfolio, update, portfolioId, put, drop, provider, c
         await api(url, { method: "DELETE" });
         transform(update, (doc) => removeAccount(doc, connection.id));
         drop(connection.id);
+        changed();
         toast(`${name} disconnected. Its data was deleted.`);
       },
       "Could not disconnect.",
@@ -251,7 +264,13 @@ function ConnectionCard({ portfolio, update, portfolioId, put, drop, provider, c
         <ProviderMark name={name} />
         <div className="grid min-w-0 flex-1 gap-1">
           <h4 className="truncate text-sm font-semibold">
-            {name} · <span className="font-mono font-normal">{connection.account}</span>
+            {name}
+            {provider?.fixedAccount ? null : (
+              <>
+                {" "}
+                · <span className="font-mono font-normal">{connection.account}</span>
+              </>
+            )}
           </h4>
           <div className="flex flex-wrap gap-1">
             {provider ? <Kind official={provider.official} /> : null}
@@ -259,7 +278,7 @@ function ConnectionCard({ portfolio, update, portfolioId, put, drop, provider, c
               <Badge tone="ok">
                 <ShieldCheck className="size-3" aria-hidden="true" /> Verified owner
               </Badge>
-            ) : (
+            ) : provider?.aggregate ? null : (
               <Badge>Public profile</Badge>
             )}
           </div>
@@ -382,8 +401,12 @@ function DisconnectDialog({ name, account, disabled, onConfirm }: { name: string
   );
 }
 
-export function ConnectionsPanel({ portfolio, update, portfolioId, listing, put, drop }: Omit<Shared, "put"> & { listing: Listing; put: (c: ConnectionInfo) => void; drop: (id: string) => void }) {
+export function ConnectionsPanel({ portfolio, update, portfolioId, listing, put, drop, reload }: Omit<Shared, "changed"> & { listing: Listing; drop: (id: string) => void; reload: () => void }) {
   const byId = new Map(listing.providers.map((p) => [p.id, p]));
+  const hasAggregate = listing.connections.some((c) => byId.get(c.provider)?.aggregate);
+  const changed = () => (hasAggregate ? reload() : undefined);
+  const connected = new Set(listing.connections.map((c) => `${c.provider}:${c.account}`));
+  const offered = listing.providers.filter((p) => !p.fixedAccount || !connected.has(`${p.id}:${p.fixedAccount}`));
   return (
     <section className="grid gap-4" aria-labelledby="accounts-h">
       <div className="grid gap-1">
@@ -395,11 +418,11 @@ export function ConnectionsPanel({ portfolio, update, portfolioId, listing, put,
       {listing.connections.length ? (
         <ul className="grid gap-3" aria-label="Connected accounts">
           {listing.connections.map((c) => (
-            <ConnectionCard key={c.id} portfolio={portfolio} update={update} portfolioId={portfolioId} put={put} drop={drop} provider={byId.get(c.provider)} connection={c} />
+            <ConnectionCard key={c.id} portfolio={portfolio} update={update} portfolioId={portfolioId} put={put} changed={changed} drop={drop} provider={byId.get(c.provider)} connection={c} />
           ))}
         </ul>
       ) : null}
-      {listing.providers.length ? <ConnectForm portfolio={portfolio} update={update} portfolioId={portfolioId} put={put} providers={listing.providers} /> : <p className="text-[0.8125rem] text-dim">No providers are available right now.</p>}
+      {offered.length ? <ConnectForm portfolio={portfolio} update={update} portfolioId={portfolioId} put={put} changed={reload} providers={offered} /> : <p className="text-[0.8125rem] text-dim">No providers are available right now.</p>}
     </section>
   );
 }

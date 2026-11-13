@@ -57,8 +57,7 @@ export function Editor({ id, initial, userId, initialPublishedAt, initialPublish
   const [publishing, setPublishing] = useState(false);
   const importInput = useRef<HTMLInputElement>(null);
   const offered = useRef(false);
-  const { listing, put, drop } = useConnections(id);
-  const resynced = useRef(false);
+  const { listing, put, drop, reload } = useConnections(id);
 
   const hasUnpublished = useMemo(() => !published || JSON.stringify(published) !== JSON.stringify(portfolio), [published, portfolio]);
   const ctx = useMemo(() => ({ userId, portfolioId: id, issueAt: issues.at }), [userId, id, issues.at]);
@@ -81,11 +80,9 @@ export function Editor({ id, initial, userId, initialPublishedAt, initialPublish
     }
   }, [id, initial, replace]);
 
-  // Show the latest fetched data in the editor too, not only on the live site.
+  // Show the latest fetched data in the editor too, not only on the live site (a no-op when nothing changed).
   useEffect(() => {
-    if (!listing?.enabled || resynced.current) return;
-    resynced.current = true;
-    if (listing.connections.length) transform(update, (doc) => resync(doc, listing.connections));
+    if (listing?.enabled && listing.connections.length) transform(update, (doc) => resync(doc, listing.connections));
   }, [listing, update]);
 
   const publish = async () => {
@@ -225,7 +222,7 @@ export function Editor({ id, initial, userId, initialPublishedAt, initialPublish
               </TabsContent>
               {listing?.enabled ? (
                 <TabsContent value="accounts" className="outline-none">
-                  <ConnectionsPanel portfolio={portfolio} update={update} portfolioId={id} listing={listing} put={put} drop={drop} />
+                  <ConnectionsPanel portfolio={portfolio} update={update} portfolioId={id} listing={listing} put={put} drop={drop} reload={reload} />
                 </TabsContent>
               ) : null}
             </Tabs>

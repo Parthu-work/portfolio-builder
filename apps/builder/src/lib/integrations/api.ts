@@ -5,7 +5,7 @@ import { HttpError } from "../api";
 import { flags } from "../env";
 import type { PortfolioRow, SnapshotRow, Store } from "../store/types";
 import { findProvider } from "./registry";
-import { defaultConfig } from "./service";
+import { defaultConfig, type Siblings } from "./service";
 import { ProviderError, type Provider } from "./types";
 
 const Uuid = z.string().uuid();
@@ -25,7 +25,7 @@ export async function ownPortfolio(store: Store, userId: string, id: string): Pr
 export const unavailable = () => new HttpError(503, "Connected accounts are not available yet. Please try again later.");
 
 /** The caller's portfolio, the snapshot and its provider — or a 404. */
-export async function ownConnection(store: Store, userId: string, id: string, integrationId: string): Promise<{ portfolio: PortfolioRow; row: SnapshotRow; provider: Provider }> {
+export async function ownConnection(store: Store, userId: string, id: string, integrationId: string): Promise<{ portfolio: PortfolioRow; row: SnapshotRow; provider: Provider; siblings: Siblings }> {
   requireEnabled();
   const portfolio = await ownPortfolio(store, userId, id);
   const rows = await store.listSnapshots(portfolio.id);
@@ -34,7 +34,7 @@ export async function ownConnection(store: Store, userId: string, id: string, in
   if (!row) throw new HttpError(404, "This account is not connected.");
   const provider = findProvider(row.provider);
   if (!provider) throw new HttpError(404, "This provider is no longer available.");
-  return { portfolio, row, provider };
+  return { portfolio, row, provider, siblings: { rows, find: findProvider } };
 }
 
 /** The user's choices for a connection: what the request sent, else what the saved draft holds, else defaults. */

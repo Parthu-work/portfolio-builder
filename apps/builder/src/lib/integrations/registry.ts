@@ -1,13 +1,14 @@
 import "server-only";
 import { backendMode, env, flags } from "../env";
 import { githubProvider } from "./providers/github";
+import { achievementsProvider } from "./providers/achievements";
 import { codeforcesProvider } from "./providers/codeforces";
 import { leetcodeProvider } from "./providers/leetcode";
 import { mockProvider } from "./providers/mock";
 import type { Provider, ProviderInfo } from "./types";
 
 /** Real providers, in the order the editor shows them. Each lives in ./providers/<id>.ts. */
-const PROVIDERS: Provider[] = [githubProvider, leetcodeProvider, codeforcesProvider];
+const PROVIDERS: Provider[] = [githubProvider, leetcodeProvider, codeforcesProvider, achievementsProvider];
 
 /**
  * The mock provider exists only where there is no real backend: development
@@ -44,4 +45,6 @@ export const providerInfo = (p: Provider): ProviderInfo => ({
   accountPattern: p.accountPattern.source,
   options: p.options ?? [],
   verify: p.verify ? { method: p.verify.method, instructions: p.verify.instructions } : null,
+  fixedAccount: p.fixedAccount ?? null,
+  aggregate: Boolean(p.aggregate),
 });
