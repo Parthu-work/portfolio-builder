@@ -79,8 +79,11 @@ export function mergeSynced(doc: Portfolio, generated: Section[] | null): Portfo
   return { ...doc, sections };
 }
 
-/** Adds sections that are new to the document (after the last synced section of the same account, else at the end, before Contact). */
-export function addMissing(doc: Portfolio, generated: Section[]): Portfolio {
+/**
+ * Adds sections that are new to the document: after the last synced section of
+ * the same account, else after the section `after` names, else before Contact.
+ */
+export function addMissing(doc: Portfolio, generated: Section[], after?: string): Portfolio {
   const have = new Set(doc.sections.map((s) => s.id));
   const missing = generated.filter((s) => !have.has(s.id));
   if (!missing.length) return doc;
@@ -88,6 +91,7 @@ export function addMissing(doc: Portfolio, generated: Section[]): Portfolio {
   for (const s of missing) {
     const sameAccount = (x: Section) => x.sync?.provider === s.sync?.provider && x.sync?.account === s.sync?.account;
     let at = sections.findLastIndex(sameAccount);
+    if (at < 0 && after) at = sections.findIndex((x) => x.id === after);
     if (at < 0) {
       const contact = sections.findIndex((x) => x.kind === "contact");
       at = contact < 0 ? sections.length - 1 : contact - 1;
@@ -98,3 +102,55 @@ export function addMissing(doc: Portfolio, generated: Section[]): Portfolio {
 }
 
 export const stamp = (sections: Section[], sync: Sync): Section[] => sections.map((s) => ({ ...s, sync }));
+
+const ofAccount = (cfgId: string) => (s: Section) => Boolean(s.sync) && s.id.startsWith(`${cfgId}_`);
+
+/**
+ * The editor's side of a connection: stores the account's choices and brings
+ * its synced sections up to date, keeping where the user put them, their
+ * titles and visibility. New sections go after `after` (a section id) if given.
+ */
+export function syncAccount(doc: Portfolio, cfg: IntegrationConfig, generated: Section[], after?: string): Portfolio {
+  const mine = ofAccount(cfg.id);
+  const fresh = new Map(generated.map((s) => [s.id, s]));
+  const sections = doc.sections.flatMap((s) => {
+    if (!mine(s)) return [s];
+    const next = fresh.get(s.id);
+    return next ? [{ ...next, title: s.title || next.title, visible: s.visible }] : [];
+  });
+  const configs = doc.integrations ?? [];
+  const integrations = configs.some((c) => c.id === cfg.id) ? configs.map((c) => (c.id === cfg.id ? cfg : c)) : [...configs, cfg];
+  return addMissing({ ...doc, sections, integrations }, generated, after);
+}
+
+/** Removes a disconnected account's choices and synced sections. */
+export function removeAccount(doc: Portfolio, cfgId: string): Portfolio {
+  const mine = ofAccount(cfgId);
+  return { ...doc, sections: doc.sections.filter((s) => !mine(s)), integrations: (doc.integrations ?? []).filter((c) => c.id !== cfgId) };
+}
+
+const canonical = (v: unknown): unknown => {
+  if (Array.isArray(v)) return v.map(canonical);
+  if (v && typeof v === "object")
+    return Object.fromEntries(
+      Object.keys(v)
+        .sort()
+        .map((k) => [k, canonical((v as Record<string, unknown>)[k])]),
+    );
+  return v;
+};
+const sameData = (a: unknown, b: unknown) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
+
+/**
+ * Brings a draft in line with the latest snapshots (a background refresh may
+ * have fetched newer data since it was saved). Returns the same document when
+ * nothing changed. Accounts the draft has no choices for are left alone.
+ */
+export function resync(doc: Portfolio, connections: { id: string; available: Section[] }[]): Portfolio {
+  let next = doc;
+  for (const c of connections) {
+    const cfg = doc.integrations?.find((x) => x.id === c.id);
+    if (cfg) next = syncAccount(next, cfg, applyHidden(c.available, cfg));
+  }
+  return sameData(next, doc) ? doc : next;
+}

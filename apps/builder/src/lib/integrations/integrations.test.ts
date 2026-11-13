@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { PortfolioSchema, type Portfolio, type Section } from "@runtime/schema/portfolio";
+import { PortfolioSchema, type IntegrationConfig, type Portfolio, type Section } from "@runtime/schema/portfolio";
 import { SEEDS } from "@runtime/schema/seeds";
 import { viewPortfolio } from "@runtime/render/view";
 import { LocalStore } from "../store/local";
@@ -8,7 +8,7 @@ import { isMissingTable, SupabaseStore } from "../store/supabase";
 import { providerFetch, providerJson } from "./http";
 import { mockProvider } from "./providers/mock";
 import { findProvider, getProvider, listProviders, providerInfo } from "./registry";
-import { addMissing, applyHidden, mergeSynced, toggles } from "./sections";
+import { addMissing, applyHidden, mergeSynced, removeAccount, resync, syncAccount, toggles } from "./sections";
 import { connect, connectionInfo, defaultConfig, mergeLive, newVerifyCode, refresh, refreshStale, REFRESH_AFTER_MS, sectionsFor } from "./service";
 import { ProviderError, type Provider } from "./types";
 
@@ -181,6 +181,51 @@ describe("hidden choices", () => {
     expect(some[0]!.items!.map((i) => i.id)).toEqual(["n"]);
     expect(applyHidden(sections, { ...cfg, hidden: ["stats"] })).toEqual([]);
     expect(applyHidden(sections, { ...cfg, hidden: ["stats.trend", "stats#m", "stats#n"] })).toEqual([]);
+  });
+});
+
+describe("editor sync of one account", () => {
+  const p = fake();
+  const stamped = (n: number, cfg: IntegrationConfig) => p.toSections({ n }, cfg).map((s) => ({ ...s, sync: { provider: "fake", account: "maya", syncedAt: "2026-11-13T08:00:00Z", verified: false } }));
+  const cfg = { id: "i1", provider: "fake", account: "maya", options: {}, hidden: [] as string[] };
+
+  it("places a new account after the chosen section and stores its choices", () => {
+    const doc = base();
+    const target = doc.sections[1]!.id;
+    const next = syncAccount(doc, cfg, stamped(1, cfg), target);
+    expect(next.sections[2]!.id).toBe("i1_stats");
+    expect(next.integrations).toEqual([cfg]);
+    expect(PortfolioSchema.safeParse(next).success).toBe(true);
+  });
+
+  it("updates content in place, keeps the user's title and visibility, and leaves other accounts alone", () => {
+    const other = { ...cfg, id: "i2", account: "zed" };
+    let doc = syncAccount(syncAccount(base(), cfg, stamped(1, cfg)), other, stamped(5, other));
+    doc = { ...doc, sections: doc.sections.map((s) => (s.id === "i1_stats" ? { ...s, title: "Mine", visible: false } : s)) };
+    const at = doc.sections.findIndex((s) => s.id === "i1_stats");
+    const hiddenCfg = { ...cfg, hidden: ["stats#m"] };
+    const next = syncAccount(doc, hiddenCfg, applyHidden(stamped(9, cfg), hiddenCfg), doc.sections[0]!.id);
+    expect(next.sections[at]).toMatchObject({ id: "i1_stats", title: "Mine", visible: false });
+    expect(next.sections[at]!.items!.map((i) => i.values.stat)).toEqual([{ value: "9", label: "things" }]);
+    expect(next.sections.find((s) => s.id === "i2_stats")!.items![0]!.values.stat).toEqual({ value: "5", label: "things" });
+    expect(next.integrations).toEqual([hiddenCfg, other]);
+  });
+
+  it("resyncs a draft from newer snapshots, and returns it untouched when nothing changed", () => {
+    const doc = syncAccount(base(), cfg, stamped(1, cfg));
+    const reordered = JSON.parse(JSON.stringify(doc, (_k, v) => (v && typeof v === "object" && !Array.isArray(v) ? Object.fromEntries(Object.entries(v).reverse()) : v))) as Portfolio;
+    expect(resync(reordered, [{ id: "i1", available: stamped(1, cfg) }])).toBe(reordered);
+    expect(resync(doc, [{ id: "unknown", available: stamped(3, cfg) }])).toBe(doc);
+    const next = resync(doc, [{ id: "i1", available: stamped(3, cfg) }]);
+    expect(next.sections.find((s) => s.id === "i1_stats")!.items![0]!.values.stat).toEqual({ value: "3", label: "things" });
+  });
+
+  it("drops sections the account no longer produces, and everything on removal", () => {
+    const doc = syncAccount(base(), cfg, stamped(1, cfg));
+    expect(syncAccount(doc, { ...cfg, hidden: ["stats"] }, []).sections).toEqual(base().sections);
+    const removed = removeAccount(doc, "i1");
+    expect(removed.sections).toEqual(base().sections);
+    expect(removed.integrations).toEqual([]);
   });
 });
 

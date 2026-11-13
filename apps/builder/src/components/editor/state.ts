@@ -35,7 +35,7 @@ export function historyReducer(h: History, a: Action): History {
   }
 }
 
-export type Update = (recipe: (draft: Portfolio) => void, coalesceKey?: string) => void;
+export type Update = (recipe: (draft: Portfolio) => void | Portfolio, coalesceKey?: string) => void;
 
 export function useHistory(initial: Portfolio) {
   const [h, dispatch] = useReducer(historyReducer, { past: [], present: initial, future: [], lastKey: null, lastAt: 0 });

@@ -11,7 +11,9 @@ import { Button, buttonStyles, Menu, MenuContent, MenuItem, MenuSeparator, MenuT
 import { cn } from "@/lib/cn";
 import { api, ApiError } from "@/lib/client";
 import { track } from "@/lib/track";
+import { resync } from "@/lib/integrations/sections";
 import { ChecksPanel } from "./ChecksPanel";
+import { ConnectionsPanel, transform, useConnections } from "./ConnectionsPanel";
 import { EditorContext } from "./context";
 import { Preview, type Device } from "./Preview";
 import { ProfilePanel } from "./ProfilePanel";
@@ -55,6 +57,8 @@ export function Editor({ id, initial, userId, initialPublishedAt, initialPublish
   const [publishing, setPublishing] = useState(false);
   const importInput = useRef<HTMLInputElement>(null);
   const offered = useRef(false);
+  const { listing, put, drop } = useConnections(id);
+  const resynced = useRef(false);
 
   const hasUnpublished = useMemo(() => !published || JSON.stringify(published) !== JSON.stringify(portfolio), [published, portfolio]);
   const ctx = useMemo(() => ({ userId, portfolioId: id, issueAt: issues.at }), [userId, id, issues.at]);
@@ -76,6 +80,13 @@ export function Editor({ id, initial, userId, initialPublishedAt, initialPublish
       clearBackup(id);
     }
   }, [id, initial, replace]);
+
+  // Show the latest fetched data in the editor too, not only on the live site.
+  useEffect(() => {
+    if (!listing?.enabled || resynced.current) return;
+    resynced.current = true;
+    if (listing.connections.length) transform(update, (doc) => resync(doc, listing.connections));
+  }, [listing, update]);
 
   const publish = async () => {
     setPublishing(true);
@@ -200,10 +211,11 @@ export function Editor({ id, initial, userId, initialPublishedAt, initialPublish
                 <TabsTrigger value="content">Content</TabsTrigger>
                 <TabsTrigger value="theme">Theme</TabsTrigger>
                 <TabsTrigger value="profile">Profile</TabsTrigger>
+                {listing?.enabled ? <TabsTrigger value="accounts">Accounts</TabsTrigger> : null}
               </TabsList>
               <TabsContent value="content" className="grid gap-3 outline-none">
                 <ChecksPanel portfolio={portfolio} onJump={jump} />
-                <SectionList portfolio={portfolio} update={update} undo={undo} open={openSection} setOpen={setOpenSection} />
+                <SectionList portfolio={portfolio} update={update} undo={undo} open={openSection} setOpen={setOpenSection} onManageSynced={listing?.enabled ? () => setTab("accounts") : undefined} />
               </TabsContent>
               <TabsContent value="theme" className="outline-none">
                 <ThemePanel portfolio={portfolio} update={update} replace={replace} />
@@ -211,6 +223,11 @@ export function Editor({ id, initial, userId, initialPublishedAt, initialPublish
               <TabsContent value="profile" className="outline-none">
                 <ProfilePanel portfolio={portfolio} update={update} />
               </TabsContent>
+              {listing?.enabled ? (
+                <TabsContent value="accounts" className="outline-none">
+                  <ConnectionsPanel portfolio={portfolio} update={update} portfolioId={id} listing={listing} put={put} drop={drop} />
+                </TabsContent>
+              ) : null}
             </Tabs>
           </aside>
           <main id="main" tabIndex={-1} aria-label="Live preview" className={cn("min-w-0 flex-1 bg-panel2 outline-none lg:block", pane === "edit" && "max-lg:hidden", device !== "desktop" && "lg:p-4")}>
